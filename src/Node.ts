@@ -83,6 +83,52 @@ export class Node {
     if (iconDataUrl && this._diagram) {
       this._diagram.trackNodeWithIcon(this, iconDataUrl);
     }
+
+    // Handle Custom nodes with external icons
+    if (this._isCustomNode() && this._diagram) {
+      // Track the pending icon load so render can wait for it
+      const iconLoadPromise = this._handleCustomNodeIcon();
+      this._diagram.trackPendingIconLoad(iconLoadPromise);
+    }
+  }
+
+  /**
+   * Check if this is a Custom node (has external icon)
+   * @internal
+   */
+  private _isCustomNode(): boolean {
+    return (
+      "getIconUrl" in this &&
+      typeof (this as { getIconUrl: () => string }).getIconUrl === "function"
+    );
+  }
+
+  /**
+   * Handle loading and tracking of Custom node icon
+   * @internal
+   */
+  private async _handleCustomNodeIcon(): Promise<void> {
+    const customNode = this as unknown as {
+      getIconUrl: () => string;
+      loadIcon: () => Promise<string | null>;
+    };
+    const iconUrl = customNode.getIconUrl();
+
+    // If it's already a data URL, track it directly
+    if (iconUrl.startsWith("data:")) {
+      this._diagram!.trackNodeWithIcon(this, iconUrl);
+      return;
+    }
+
+    // Otherwise, load the icon asynchronously
+    try {
+      const dataUrl = await customNode.loadIcon();
+      if (dataUrl && this._diagram) {
+        this._diagram.trackNodeWithIcon(this, dataUrl);
+      }
+    } catch (error) {
+      console.warn(`Failed to load custom icon for node ${this._id}:`, error);
+    }
   }
 
   get nodeId(): string {

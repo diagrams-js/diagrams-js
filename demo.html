@@ -75,6 +75,7 @@
         margin: 0;
         border-radius: 8px;
         max-height: 450px;
+        max-width: 50vw;
         overflow-y: auto;
       }
       pre code {
@@ -369,13 +370,54 @@ const svg = await diagram.render();</code></pre>
           </div>
         </div>
       </div>
+
+      <!-- Example 6: Custom Nodes with Remote Icons -->
+      <div class="example">
+        <h2>Example 6: Custom Nodes with Remote Icons</h2>
+        <div class="example-content">
+          <div class="code-section">
+            <div class="code-header">TypeScript Code</div>
+            <pre><code class="language-typescript">import { Diagram, Custom, Cluster } from "diagrams-ts";
+
+const diagram = new Diagram("Custom with remote icons", {
+  direction: "LR"
+});
+
+// Use remote icons from GitHub (PNG images)
+const diagrams = diagram.add(
+  new Custom("Diagrams", "https://raw.githubusercontent.com/mingrammer/diagrams/master/assets/img/diagrams.png")
+);
+
+const providersCluster = diagram.cluster("Some Providers");
+
+const openstack = providersCluster.add(
+  new Custom("OpenStack", "https://raw.githubusercontent.com/mingrammer/diagrams/master/resources/openstack/openstack.png")
+);
+
+const elastic = providersCluster.add(
+  new Custom("Elastic", "https://raw.githubusercontent.com/mingrammer/diagrams/master/resources/elastic/saas/elastic.png")
+);
+
+diagrams.to(openstack);
+diagrams.to(elastic);
+
+const svg = await diagram.render();</code></pre>
+          </div>
+          <div class="diagram-section">
+            <div class="diagram-header">Rendered Diagram</div>
+            <div class="diagram-container" id="diagram6">
+              <div class="loading">Loading...</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
 
     <script type="module">
-      import { Diagram } from "./dist/index.js";
+      import { Diagram, Custom } from "./dist/index.js";
       import { EC2, ECS, EKS, Lambda } from "./dist/providers/aws/compute.js";
       import { RDS, ElastiCache, Redshift } from "./dist/providers/aws/database.js";
       import { ALB, Route53 } from "./dist/providers/aws/network.js";
@@ -560,11 +602,53 @@ const svg = await diagram.render();</code></pre>
         }
       }
 
+      async function renderDiagram6() {
+        try {
+          const diagram = new Diagram("Custom with remote icons", {
+            direction: "LR",
+          });
+
+          const diagrams = diagram.add(
+            new Custom(
+              "Diagrams",
+              "https://raw.githubusercontent.com/mingrammer/diagrams/master/assets/img/diagrams.png",
+            ),
+          );
+
+          const providersCluster = diagram.cluster("Some Providers");
+
+          const openstack = providersCluster.add(
+            new Custom(
+              "OpenStack",
+              "https://raw.githubusercontent.com/mingrammer/diagrams/master/resources/openstack/openstack.png",
+            ),
+          );
+
+          const elastic = providersCluster.add(
+            new Custom(
+              "Elastic",
+              "https://raw.githubusercontent.com/mingrammer/diagrams/master/resources/elastic/saas/elastic.png",
+            ),
+          );
+
+          diagrams.to(openstack);
+          diagrams.to(elastic);
+
+          const svg = await diagram.render();
+          document.getElementById("diagram6").innerHTML = svg;
+          diagram.destroy();
+        } catch (e) {
+          document.getElementById("diagram6").innerHTML =
+            '<div class="error">' + e.message + "</div>";
+        }
+      }
+
       renderDiagram1();
       renderDiagram2();
       renderDiagram3();
       renderDiagram4();
       renderDiagram5();
+      renderDiagram6();
     </script>
   </body>
 </html>

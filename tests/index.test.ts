@@ -294,3 +294,90 @@ describe("Image Rendering", () => {
     diagram.destroy();
   });
 });
+
+describe("Custom Nodes", () => {
+  it("should create Custom node with data URL icon", async () => {
+    const { Custom } = await import("../src/Custom.js");
+
+    const diagram = new Diagram("Custom Node Test");
+    const testIconData =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+
+    const custom = diagram.add(new Custom("My Service", testIconData));
+    expect(custom.getIconUrl()).toBe(testIconData);
+
+    // Render and check that icon is injected
+    const result = await diagram.render();
+    expect(typeof result).toBe("string");
+    expect(result).toContain("<image");
+    expect(result).toContain('href="data:image/png;base64,');
+
+    diagram.destroy();
+  });
+
+  it("should deduplicate icons using <use> tags for multiple Custom nodes", async () => {
+    const { Custom } = await import("../src/Custom.js");
+
+    const diagram = new Diagram("Custom Nodes Deduplication Test");
+    const testIconData =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+
+    // Create multiple Custom nodes with the same icon
+    const node1 = diagram.add(new Custom("Service 1", testIconData));
+    const node2 = diagram.add(new Custom("Service 2", testIconData));
+    const node3 = diagram.add(new Custom("Service 3", testIconData));
+
+    node1.to(node2);
+    node2.to(node3);
+
+    const result = await diagram.render();
+    expect(typeof result).toBe("string");
+
+    // Should have <defs> section with icon definition
+    expect(result).toContain("<defs>");
+
+    // Should use <use> tags for deduplication
+    expect(result).toContain("<use");
+    expect(result).toContain('href="#icon-');
+
+    // Cast to string for regex matching
+    const resultStr = result as string;
+
+    // Should only have one icon definition, not three
+    const iconDefMatches = resultStr.match(/<g id="icon-/g);
+    expect(iconDefMatches?.length).toBe(1);
+
+    // Should have three <use> references
+    const useMatches = resultStr.match(/<use href="/g);
+    expect(useMatches?.length).toBe(3);
+
+    diagram.destroy();
+  });
+
+  it("should handle different icons for different Custom nodes", async () => {
+    const { Custom } = await import("../src/Custom.js");
+
+    const diagram = new Diagram("Custom Nodes Different Icons Test");
+    const iconData1 =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+    const iconData2 =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFxgIArlYOPQAAAABJRU5ErkJggg==";
+
+    const node1 = diagram.add(new Custom("Service A", iconData1));
+    const node2 = diagram.add(new Custom("Service B", iconData2));
+
+    node1.to(node2);
+
+    const result = await diagram.render();
+    expect(typeof result).toBe("string");
+
+    // Cast to string for regex matching
+    const resultStr = result as string;
+
+    // Should have two different icon definitions
+    const iconDefMatches = resultStr.match(/<g id="icon-/g);
+    expect(iconDefMatches?.length).toBe(2);
+
+    diagram.destroy();
+  });
+});

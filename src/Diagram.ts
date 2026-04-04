@@ -63,6 +63,7 @@ export class Diagram {
   private _viz: Viz | null = null;
   private _nodeIconMap: NodeIconMap[] = [];
   private _iconData: IconData = {};
+  private _pendingIconLoads: Array<Promise<void>> = [];
 
   constructor(name = "", options: DiagramOptions = {}) {
     this.name = options.name ?? name;
@@ -170,6 +171,14 @@ export class Diagram {
       icon: iconKey,
       iconPath: iconDataUrl,
     });
+  }
+
+  /**
+   * Track a pending icon load promise
+   * @internal
+   */
+  trackPendingIconLoad(promise: Promise<void>): void {
+    this._pendingIconLoads.push(promise);
   }
 
   /**
@@ -311,10 +320,23 @@ export class Diagram {
   }
 
   /**
+   * Wait for all pending icon loads to complete
+   */
+  private async _waitForIconLoads(): Promise<void> {
+    if (this._pendingIconLoads.length === 0) return;
+
+    await Promise.all(this._pendingIconLoads);
+    this._pendingIconLoads = []; // Clear after waiting
+  }
+
+  /**
    * Render the diagram
    * @param options - Optional render options including format, filename, dimensions, and scale
    */
   async render(options: RenderOptions = {}): Promise<Uint8Array | string> {
+    // Wait for any pending icon loads (e.g., Custom nodes with remote icons)
+    await this._waitForIconLoads();
+
     if (!this._viz) {
       this._viz = await instance();
     }

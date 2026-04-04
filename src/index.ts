@@ -3,6 +3,7 @@ export { Diagram } from "./Diagram.js";
 export { Cluster } from "./Cluster.js";
 export { Node, setIconBaseDir, getIconBaseDir } from "./Node.js";
 export { Edge } from "./Edge.js";
+export { Custom } from "./Custom.js";
 
 // Context management
 export {
