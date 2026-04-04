@@ -4,13 +4,18 @@ import { setDiagram } from "./context.js";
 import { Cluster } from "./Cluster.js";
 import type { Node } from "./Node.js";
 import { Edge } from "./Edge.js";
-import { THEMES, type DiagramOptions, type ThemeName, type ThemeConfig } from "./types.js";
+import {
+  THEMES,
+  type DiagramOptions,
+  type RenderOptions,
+  type ThemeName,
+  type ThemeConfig,
+} from "./types.js";
 import type { NodeIconMap, IconData } from "./icons.js";
 
 export class Diagram {
   private static directions = ["TB", "BT", "LR", "RL"] as const;
   private static curveStyles = ["ortho", "curved", "spline", "polyline"] as const;
-  private static outFormats = ["png", "jpg", "svg", "pdf", "dot"] as const;
 
   private static defaultGraphAttrs: Record<string, string> = {
     pad: "0.05",
@@ -44,7 +49,6 @@ export class Diagram {
   filename: string;
   direction: "TB" | "BT" | "LR" | "RL";
   curveStyle: "ortho" | "curved" | "spline" | "polyline";
-  outformat: string | string[];
   autolabel: boolean;
   strict: boolean;
   theme: ThemeName;
@@ -76,18 +80,6 @@ export class Diagram {
       throw new Error(`"${curveStyle}" is not a valid curve style`);
     }
     this.curveStyle = curveStyle;
-
-    const outformat = options.outformat ?? "svg";
-    if (Array.isArray(outformat)) {
-      for (const fmt of outformat) {
-        if (!Diagram.outFormats.includes(fmt as (typeof Diagram.outFormats)[number])) {
-          throw new Error(`"${fmt}" is not a valid output format`);
-        }
-      }
-    } else if (!Diagram.outFormats.includes(outformat as (typeof Diagram.outFormats)[number])) {
-      throw new Error(`"${outformat}" is not a valid output format`);
-    }
-    this.outformat = outformat;
 
     const theme = options.theme ?? "neutral";
     if (!(theme in THEMES)) {
@@ -320,19 +312,20 @@ export class Diagram {
 
   /**
    * Render the diagram
-   * @param options - Optional render options
+   * @param options - Optional render options including format, filename, dimensions, and scale
    */
-  async render(_options?: { injectIcons?: boolean }): Promise<Uint8Array | string> {
+  async render(options: RenderOptions = {}): Promise<Uint8Array | string> {
     if (!this._viz) {
       this._viz = await instance();
     }
 
     const dot = this._buildDot();
-    const format = Array.isArray(this.outformat) ? this.outformat[0] : this.outformat;
+    const format = options.format ?? "svg";
 
     // Always render to SVG first - Graphviz WASM doesn't support PNG output
     // We'll convert to PNG after rendering if needed
     const needsIconInjection = this._nodeIconMap.length > 0;
+    const shouldInjectIcons = options.injectIcons ?? needsIconInjection;
     const renderFormat = "svg";
 
     const result = this._viz.render(dot, { format: renderFormat });
@@ -346,7 +339,7 @@ export class Diagram {
     let output: string | Uint8Array = result.output as string;
 
     // Auto-inject icons if nodes with icons were created
-    if (needsIconInjection) {
+    if (shouldInjectIcons) {
       // Auto-load icons and inject them
       await this._autoLoadAndInjectIcons();
 
@@ -358,7 +351,7 @@ export class Diagram {
 
     // If PNG format was requested, convert SVG to PNG
     if (format === "png") {
-      output = await this._svgToPng(output as string);
+      output = await this._svgToPng(output as string, options);
     }
 
     return output;
@@ -375,20 +368,24 @@ export class Diagram {
    * Convert SVG string to PNG binary data
    * Uses Canvas API in browser, sharp in Node.js
    * @param svgString - The SVG string to convert
+   * @param options - Optional render options for dimensions and scale
    * @returns Promise resolving to PNG data as Uint8Array
    */
-  private async _svgToPng(svgString: string): Promise<Uint8Array> {
+  private async _svgToPng(svgString: string, options: RenderOptions = {}): Promise<Uint8Array> {
     if (this._isBrowser()) {
-      return this._svgToPngBrowser(svgString);
+      return this._svgToPngBrowser(svgString, options);
     } else {
-      return this._svgToPngNode(svgString);
+      return this._svgToPngNode(svgString, options);
     }
   }
 
   /**
    * Convert SVG to PNG using Canvas API (browser only)
    */
-  private async _svgToPngBrowser(svgString: string): Promise<Uint8Array> {
+  private async _svgToPngBrowser(
+    svgString: string,
+    options: RenderOptions = {},
+  ): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
       const img = new Image();
       const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
@@ -420,10 +417,15 @@ export class Diagram {
           }
         }
 
-        // Create canvas at 2x resolution for crisp output
+        // Apply user-specified dimensions or scale
+        const scale = options.scale ?? 2;
+        if (options.width) width = options.width;
+        if (options.height) height = options.height;
+
+        // Create canvas at scaled resolution
         const canvas = document.createElement("canvas");
-        canvas.width = width * 2;
-        canvas.height = height * 2;
+        canvas.width = width * scale;
+        canvas.height = height * scale;
 
         const ctx = canvas.getContext("2d");
         if (!ctx) {
@@ -436,8 +438,8 @@ export class Diagram {
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Draw SVG at 2x scale
-        ctx.scale(2, 2);
+        // Draw SVG at specified scale
+        ctx.scale(scale, scale);
         ctx.drawImage(img, 0, 0, width, height);
 
         // Convert to blob
@@ -473,7 +475,7 @@ export class Diagram {
   /**
    * Convert SVG to PNG using sharp (Node.js only)
    */
-  private async _svgToPngNode(svgString: string): Promise<Uint8Array> {
+  private async _svgToPngNode(svgString: string, options: RenderOptions = {}): Promise<Uint8Array> {
     try {
       // Dynamic import to avoid bundling sharp in browser builds
       const sharp = await import("sharp");
@@ -497,10 +499,15 @@ export class Diagram {
         }
       }
 
-      // Convert SVG to PNG at 2x resolution for crisp output
+      // Apply user-specified dimensions or scale
+      const scale = options.scale ?? 2;
+      if (options.width) width = options.width;
+      if (options.height) height = options.height;
+
+      // Convert SVG to PNG at specified resolution
       const pngBuffer = await sharp
         .default(Buffer.from(svgString))
-        .resize(width * 2, height * 2)
+        .resize(width * scale, height * scale)
         .png()
         .toBuffer();
 
@@ -535,34 +542,28 @@ export class Diagram {
       );
     }
 
-    // Temporarily set the outformat to SVG for icon injection
-    const originalFormat = this.outformat;
-    this.outformat = "svg";
+    // Render to SVG for icon injection (icons can only be injected into SVG)
+    const output = await this.render({ format: "svg", injectIcons: false });
+    const svgString = typeof output === "string" ? output : new TextDecoder().decode(output);
 
-    try {
-      const output = await this.render({ injectIcons: false });
-      const svgString = typeof output === "string" ? output : new TextDecoder().decode(output);
-
-      const { injectIcons } = await import("./icons.js");
-      return injectIcons(svgString, map, data);
-    } finally {
-      // Restore original format
-      this.outformat = originalFormat;
-    }
+    const { injectIcons } = await import("./icons.js");
+    return injectIcons(svgString, map, data);
   }
 
   /**
    * Save the diagram to a file (Node.js only)
+   * @param filepath - Optional file path (defaults to diagram.filename with appropriate extension)
+   * @param options - Optional render options for format and dimensions
    */
-  async save(filepath?: string): Promise<void> {
-    const output = await this.render();
-    const path =
-      filepath ??
-      `${this.filename}.${Array.isArray(this.outformat) ? this.outformat[0] : this.outformat}`;
+  async save(filepath?: string, options: RenderOptions = {}): Promise<void> {
+    const format = options.format ?? "svg";
+    const output = await this.render({ ...options, format });
+    const path = filepath ?? `${this.filename}.${format}`;
 
     if (typeof globalThis !== "undefined" && "document" in globalThis) {
       // Browser environment - download file
-      const blob = new Blob([output as Uint8Array] as BlobPart[], { type: "image/png" });
+      const mimeType = format === "svg" ? "image/svg+xml" : `image/${format}`;
+      const blob = new Blob([output] as BlobPart[], { type: mimeType });
       const url = URL.createObjectURL(blob);
       const a = globalThis.document.createElement("a");
       a.href = url;

@@ -36,13 +36,21 @@ export interface DiagramOptions {
   filename?: string;
   direction?: "TB" | "BT" | "LR" | "RL";
   curvestyle?: "ortho" | "curved" | "spline" | "polyline";
-  outformat?: string | string[];
   autolabel?: boolean;
   strict?: boolean;
   theme?: ThemeName;
   graphAttr?: Record<string, string>;
   nodeAttr?: Record<string, string>;
   edgeAttr?: Record<string, string>;
+}
+
+export interface RenderOptions {
+  format?: "svg" | "png" | "jpg" | "pdf" | "dot";
+  filename?: string;
+  width?: number;
+  height?: number;
+  scale?: number;
+  injectIcons?: boolean;
 }
 
 export interface EdgeOptions {

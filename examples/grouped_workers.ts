@@ -5,7 +5,6 @@ import { Diagram, Node } from "../src/index.js";
 
 const diagram = new Diagram("Grouped Workers", {
   direction: "TB",
-  outformat: "svg",
 });
 
 // Create nodes

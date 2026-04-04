@@ -27,12 +27,14 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vp run build:core && vp run build:providers",
+    "build": "vp run build:core && vp run build:providers && vp run build:fix",
     "build:core": "vp pack src/index.ts",
     "build:providers": "node scripts/build-providers.mjs",
+    "build:fix": "vp check --fix",
     "dev": "vp pack --watch",
     "test": "vp test",
     "check": "vp check",
+    "fix": "vp check --fix",
     "prepublishOnly": "vp run build",
     "prepare": "vp config"
   },

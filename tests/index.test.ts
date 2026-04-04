@@ -174,7 +174,6 @@ describe("Image Rendering", () => {
   it("should render to SVG", async () => {
     const diagram = new Diagram("SVG Test", {
       direction: "TB",
-      outformat: "svg",
     });
     const node1 = diagram.add(new Node("Node 1"));
     const node2 = diagram.add(new Node("Node 2"));
@@ -188,16 +187,31 @@ describe("Image Rendering", () => {
     diagram.destroy();
   });
 
-  it("should render to PNG in Node.js", async () => {
-    const diagram = new Diagram("PNG Test", {
+  it("should render to SVG with explicit format option", async () => {
+    const diagram = new Diagram("SVG Test", {
       direction: "TB",
-      outformat: "png",
     });
     const node1 = diagram.add(new Node("Node 1"));
     const node2 = diagram.add(new Node("Node 2"));
     node1.to(node2);
 
-    const result = await diagram.render();
+    const result = await diagram.render({ format: "svg" });
+    expect(typeof result).toBe("string");
+    expect(result).toContain('<?xml version="1.0"');
+    expect(result).toContain("<svg");
+    expect(result).toContain("</svg>");
+    diagram.destroy();
+  });
+
+  it("should render to PNG in Node.js", async () => {
+    const diagram = new Diagram("PNG Test", {
+      direction: "TB",
+    });
+    const node1 = diagram.add(new Node("Node 1"));
+    const node2 = diagram.add(new Node("Node 2"));
+    node1.to(node2);
+
+    const result = await diagram.render({ format: "png" });
     expect(result instanceof Uint8Array).toBe(true);
     expect(result.length).toBeGreaterThan(0);
 
@@ -213,7 +227,6 @@ describe("Image Rendering", () => {
     // Create diagram and manually track icon data
     const diagram = new Diagram("Icon Tracking Test", {
       direction: "TB",
-      outformat: "svg",
     });
 
     const server = diagram.add(new Node("Server"));
@@ -235,7 +248,6 @@ describe("Image Rendering", () => {
   it("should render PNG with icons", async () => {
     const diagram = new Diagram("Icon PNG Test", {
       direction: "TB",
-      outformat: "png",
     });
 
     const server = diagram.add(new Node("Server"));
@@ -245,7 +257,7 @@ describe("Image Rendering", () => {
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
     diagram.trackNodeWithIcon(server, testIconData);
 
-    const result = await diagram.render();
+    const result = await diagram.render({ format: "png" });
     expect(result instanceof Uint8Array).toBe(true);
     expect(result.length).toBeGreaterThan(0);
 
@@ -254,6 +266,31 @@ describe("Image Rendering", () => {
     expect(result[1]).toBe(0x50);
     expect(result[2]).toBe(0x4e);
     expect(result[3]).toBe(0x47);
+    diagram.destroy();
+  });
+
+  it("should allow rendering same diagram to multiple formats", async () => {
+    const diagram = new Diagram("Multi Format Test", {
+      direction: "LR",
+    });
+    const node1 = diagram.add(new Node("A"));
+    const node2 = diagram.add(new Node("B"));
+    node1.to(node2);
+
+    // Render to SVG
+    const svg = await diagram.render({ format: "svg" });
+    expect(typeof svg).toBe("string");
+    expect(svg).toContain("<svg");
+
+    // Render to PNG
+    const png = await diagram.render({ format: "png" });
+    expect(png instanceof Uint8Array).toBe(true);
+    expect(png.length).toBeGreaterThan(0);
+
+    // Verify PNG magic bytes
+    expect(png[0]).toBe(0x89);
+    expect(png[1]).toBe(0x50);
+
     diagram.destroy();
   });
 });
