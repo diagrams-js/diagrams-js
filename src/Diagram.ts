@@ -14,7 +14,7 @@ export class Diagram {
 
   private static defaultGraphAttrs: Record<string, string> = {
     pad: "0.05",
-    splines: "spline",
+    splines: "ortho",
     nodesep: "0.15",
     ranksep: "0.20",
     fontname: "Sans-Serif",
@@ -71,7 +71,7 @@ export class Diagram {
     }
     this.direction = direction;
 
-    const curveStyle = options.curvestyle ?? "spline";
+    const curveStyle = options.curvestyle ?? "ortho";
     if (!Diagram.curveStyles.includes(curveStyle as (typeof Diagram.curveStyles)[number])) {
       throw new Error(`"${curveStyle}" is not a valid curve style`);
     }
