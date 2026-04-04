@@ -1,4 +1,4 @@
-# diagrams-ts
+# ts-diagrams
 
 A TypeScript port of the [diagrams](https://github.com/mingrammer/diagrams) Python library for drawing cloud system architecture diagrams as code.
 
@@ -14,11 +14,11 @@ A TypeScript port of the [diagrams](https://github.com/mingrammer/diagrams) Pyth
 ## Installation
 
 ```bash
-npm install diagrams-ts
+npm install ts-diagrams
 # or
-yarn add diagrams-ts
+yarn add ts-diagrams
 # or
-pnpm add diagrams-ts
+pnpm add ts-diagrams
 ```
 
 ## Quick Start
@@ -26,7 +26,7 @@ pnpm add diagrams-ts
 ### Basic Usage
 
 ```typescript
-import { Diagram, Node, Edge } from "diagrams-ts";
+import { Diagram, Node, Edge } from "ts-diagrams";
 
 // Create a diagram
 const diagram = new Diagram("Web Service", {
@@ -50,10 +50,10 @@ diagram.destroy();
 ### Using Cloud Providers (with Icons!)
 
 ```typescript
-import { Diagram } from "diagrams-ts";
-import { EC2, Lambda, RDS } from "diagrams-ts/providers/aws/compute";
-import { S3 } from "diagrams-ts/providers/aws/storage";
-import { ALB } from "diagrams-ts/providers/aws/network";
+import { Diagram } from "ts-diagrams";
+import { EC2, Lambda, RDS } from "ts-diagrams/providers/aws/compute";
+import { S3 } from "ts-diagrams/providers/aws/storage";
+import { ALB } from "ts-diagrams/providers/aws/network";
 
 const diagram = new Diagram("AWS Architecture", { direction: "TB" });
 
@@ -80,32 +80,32 @@ diagram.destroy();
 
 | Provider          | Import Path                            | Services                                                                       |
 | ----------------- | -------------------------------------- | ------------------------------------------------------------------------------ |
-| **AWS**           | `diagrams-ts/providers/aws/*`          | compute, database, storage, network, analytics, ML, IoT, security, and 18 more |
-| **Azure**         | `diagrams-ts/providers/azure/*`        | compute, databases, networking, storage, AI/ML, containers, and 24 more        |
-| **GCP**           | `diagrams-ts/providers/gcp/*`          | compute, database, storage, network, analytics, ML, operations, and 10 more    |
-| **Kubernetes**    | `diagrams-ts/providers/k8s/*`          | compute, network, storage, control plane, RBAC, and 10 more                    |
-| **Alibaba Cloud** | `diagrams-ts/providers/alibabacloud/*` | compute, database, storage, network, security, and 9 more                      |
-| **DigitalOcean**  | `diagrams-ts/providers/digitalocean/*` | compute, database, network, storage                                            |
-| **Elastic**       | `diagrams-ts/providers/elastic/*`      | Elasticsearch, Beats, Kibana, and 7 more                                       |
-| **Firebase**      | `diagrams-ts/providers/firebase/*`     | develop, grow, quality, base, and 4 more                                       |
-| **Generic**       | `diagrams-ts/providers/generic/*`      | compute, database, network, OS, storage                                        |
-| **GIS**           | `diagrams-ts/providers/gis/*`          | data, desktop, mobile, server, and 11 more                                     |
-| **IBM**           | `diagrams-ts/providers/ibm/*`          | compute, data, network, security, and 13 more                                  |
-| **OCI**           | `diagrams-ts/providers/oci/*`          | compute, database, network, storage, and 7 more                                |
-| **On-Prem**       | `diagrams-ts/providers/onprem/*`       | compute, database, networking, monitoring, and 30 more                         |
-| **OpenStack**     | `diagrams-ts/providers/openstack/*`    | compute, networking, storage, and 18 more                                      |
-| **Outscale**      | `diagrams-ts/providers/outscale/*`     | compute, network, security, storage                                            |
-| **Programming**   | `diagrams-ts/providers/programming/*`  | languages, frameworks, runtimes                                                |
-| **SaaS**          | `diagrams-ts/providers/saas/*`         | alerting, analytics, CDN, chat, and 14 more                                    |
+| **AWS**           | `ts-diagrams/providers/aws/*`          | compute, database, storage, network, analytics, ML, IoT, security, and 18 more |
+| **Azure**         | `ts-diagrams/providers/azure/*`        | compute, databases, networking, storage, AI/ML, containers, and 24 more        |
+| **GCP**           | `ts-diagrams/providers/gcp/*`          | compute, database, storage, network, analytics, ML, operations, and 10 more    |
+| **Kubernetes**    | `ts-diagrams/providers/k8s/*`          | compute, network, storage, control plane, RBAC, and 10 more                    |
+| **Alibaba Cloud** | `ts-diagrams/providers/alibabacloud/*` | compute, database, storage, network, security, and 9 more                      |
+| **DigitalOcean**  | `ts-diagrams/providers/digitalocean/*` | compute, database, network, storage                                            |
+| **Elastic**       | `ts-diagrams/providers/elastic/*`      | Elasticsearch, Beats, Kibana, and 7 more                                       |
+| **Firebase**      | `ts-diagrams/providers/firebase/*`     | develop, grow, quality, base, and 4 more                                       |
+| **Generic**       | `ts-diagrams/providers/generic/*`      | compute, database, network, OS, storage                                        |
+| **GIS**           | `ts-diagrams/providers/gis/*`          | data, desktop, mobile, server, and 11 more                                     |
+| **IBM**           | `ts-diagrams/providers/ibm/*`          | compute, data, network, security, and 13 more                                  |
+| **OCI**           | `ts-diagrams/providers/oci/*`          | compute, database, network, storage, and 7 more                                |
+| **On-Prem**       | `ts-diagrams/providers/onprem/*`       | compute, database, networking, monitoring, and 30 more                         |
+| **OpenStack**     | `ts-diagrams/providers/openstack/*`    | compute, networking, storage, and 18 more                                      |
+| **Outscale**      | `ts-diagrams/providers/outscale/*`     | compute, network, security, storage                                            |
+| **Programming**   | `ts-diagrams/providers/programming/*`  | languages, frameworks, runtimes                                                |
+| **SaaS**          | `ts-diagrams/providers/saas/*`         | alerting, analytics, CDN, chat, and 14 more                                    |
 
 ### Example: AWS Architecture
 
 ```typescript
-import { Diagram } from "diagrams-ts";
-import { EC2, Lambda, AutoScaling } from "diagrams-ts/providers/aws/compute";
-import { RDS, Dynamodb } from "diagrams-ts/providers/aws/database";
-import { S3 } from "diagrams-ts/providers/aws/storage";
-import { Cloudfront, ALB } from "diagrams-ts/providers/aws/network";
+import { Diagram } from "ts-diagrams";
+import { EC2, Lambda, AutoScaling } from "ts-diagrams/providers/aws/compute";
+import { RDS, Dynamodb } from "ts-diagrams/providers/aws/database";
+import { S3 } from "ts-diagrams/providers/aws/storage";
+import { Cloudfront, ALB } from "ts-diagrams/providers/aws/network";
 
 const diagram = new Diagram("E-Commerce Platform", { direction: "TB" });
 
@@ -133,7 +133,7 @@ const svg = await diagram.render();
 All provider classes come with embedded icons. Just import and use:
 
 ```typescript
-import { EC2 } from "diagrams-ts/providers/aws/compute";
+import { EC2 } from "ts-diagrams/providers/aws/compute";
 
 // The EC2 icon is embedded and will appear automatically
 const server = diagram.add(new EC2("My Server"));

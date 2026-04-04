@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>diagrams-ts - Examples from Python diagrams</title>
+    <title>ts-diagrams - Examples from Python diagrams</title>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
       rel="stylesheet"
@@ -125,7 +125,7 @@
   <body>
     <div class="container">
       <header>
-        <h1>diagrams-ts Examples</h1>
+        <h1>ts-diagrams Examples</h1>
         <p class="subtitle">
           All examples from diagrams-py documentation, rendered in your browser
         </p>
@@ -137,10 +137,10 @@
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">TypeScript Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "diagrams-ts";
-import { EC2 } from "diagrams-ts/providers/aws/compute";
-import { RDS } from "diagrams-ts/providers/aws/database";
-import { ALB } from "diagrams-ts/providers/aws/network";
+            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
+import { EC2 } from "ts-diagrams/providers/aws/compute";
+import { RDS } from "ts-diagrams/providers/aws/database";
+import { ALB } from "ts-diagrams/providers/aws/network";
 
 const diagram = new Diagram("Grouped Workers", {
   direction: "TB",
@@ -176,10 +176,10 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">TypeScript Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "diagrams-ts";
-import { ECS } from "diagrams-ts/providers/aws/compute";
-import { RDS, ElastiCache } from "diagrams-ts/providers/aws/database";
-import { ALB, Route53 } from "diagrams-ts/providers/aws/network";
+            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
+import { ECS } from "ts-diagrams/providers/aws/compute";
+import { RDS, ElastiCache } from "ts-diagrams/providers/aws/database";
+import { ALB, Route53 } from "ts-diagrams/providers/aws/network";
 
 const diagram = new Diagram("Clustered Web Services");
 
@@ -222,11 +222,11 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">TypeScript Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "diagrams-ts";
-import { ECS, EKS, Lambda } from "diagrams-ts/providers/aws/compute";
-import { Redshift } from "diagrams-ts/providers/aws/database";
-import { SQS } from "diagrams-ts/providers/aws/integration";
-import { S3 } from "diagrams-ts/providers/aws/storage";
+            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
+import { ECS, EKS, Lambda } from "ts-diagrams/providers/aws/compute";
+import { Redshift } from "ts-diagrams/providers/aws/database";
+import { SQS } from "ts-diagrams/providers/aws/integration";
+import { S3 } from "ts-diagrams/providers/aws/storage";
 
 const diagram = new Diagram("Event Processing");
 
@@ -276,12 +276,12 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">TypeScript Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "diagrams-ts";
-import { BigQuery, Dataflow, PubSub } from "diagrams-ts/providers/gcp/analytics";
-import { AppEngine, Functions } from "diagrams-ts/providers/gcp/compute";
-import { BigTable } from "diagrams-ts/providers/gcp/database";
-import { IotCore } from "diagrams-ts/providers/gcp/iot";
-import { GCS } from "diagrams-ts/providers/gcp/storage";
+            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
+import { BigQuery, Dataflow, PubSub } from "ts-diagrams/providers/gcp/analytics";
+import { AppEngine, Functions } from "ts-diagrams/providers/gcp/compute";
+import { BigTable } from "ts-diagrams/providers/gcp/database";
+import { IotCore } from "ts-diagrams/providers/gcp/iot";
+import { GCS } from "ts-diagrams/providers/gcp/storage";
 
 const diagram = new Diagram("Message Collecting");
 
@@ -334,10 +334,10 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">TypeScript Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "diagrams-ts";
-import { HPA } from "diagrams-ts/providers/k8s/clusterconfig";
-import { Deployment, Pod, ReplicaSet } from "diagrams-ts/providers/k8s/compute";
-import { Ingress, Service } from "diagrams-ts/providers/k8s/network";
+            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
+import { HPA } from "ts-diagrams/providers/k8s/clusterconfig";
+import { Deployment, Pod, ReplicaSet } from "ts-diagrams/providers/k8s/compute";
+import { Ingress, Service } from "ts-diagrams/providers/k8s/network";
 
 const diagram = new Diagram("Exposed Pod with 3 Replicas");
 
@@ -377,7 +377,7 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">TypeScript Code</div>
-            <pre><code class="language-typescript">import { Diagram, Custom, Cluster } from "diagrams-ts";
+            <pre><code class="language-typescript">import { Diagram, Custom, Cluster } from "ts-diagrams";
 
 const diagram = new Diagram("Custom with remote icons", {
   direction: "LR"

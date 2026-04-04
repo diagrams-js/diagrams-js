@@ -1,4 +1,4 @@
-# diagrams-ts Build System
+# ts-diagrams Build System
 
 ## Overview
 
@@ -34,7 +34,7 @@ vp check
 ## Project Structure
 
 ```
-diagrams-ts/
+ts-diagrams/
 ├── src/
 │   ├── core/                 # Core classes (Diagram, Node, Edge, Cluster)
 │   │   ├── Diagram.ts
@@ -75,9 +75,9 @@ diagrams-ts/
 ### Basic Usage (with providers)
 
 ```typescript
-import { Diagram, setIconBaseDir } from "diagrams-ts";
-import { EC2, S3, Lambda } from "diagrams-ts/providers/aws/compute";
-import { RDS } from "diagrams-ts/providers/aws/database";
+import { Diagram, setIconBaseDir } from "ts-diagrams";
+import { EC2, S3, Lambda } from "ts-diagrams/providers/aws/compute";
+import { RDS } from "ts-diagrams/providers/aws/database";
 
 setIconBaseDir("resources");
 
@@ -101,10 +101,10 @@ Only the providers you import are included in your bundle:
 
 ```typescript
 // ✅ Good - Only AWS compute classes bundled
-import { EC2 } from "diagrams-ts/providers/aws/compute";
+import { EC2 } from "ts-diagrams/providers/aws/compute";
 
 // ❌ Bad - Would bundle entire library
-import * as providers from "diagrams-ts/providers";
+import * as providers from "ts-diagrams/providers";
 ```
 
 ## Providers (17 Total)
@@ -139,13 +139,13 @@ The package includes:
 Users can install and use immediately without compiling:
 
 ```bash
-npm install diagrams-ts
+npm install ts-diagrams
 ```
 
 ```typescript
 // Works out of the box
-import { Diagram } from "diagrams-ts";
-import { EC2 } from "diagrams-ts/providers/aws/compute";
+import { Diagram } from "ts-diagrams";
+import { EC2 } from "ts-diagrams/providers/aws/compute";
 ```
 
 ## Build Output
