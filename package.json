@@ -38,10 +38,14 @@
     "@types/node": "^25.5.0",
     "@types/sharp": "^0.32.0",
     "@typescript/native-preview": "7.0.0-dev.20260328.1",
+    "@viz-js/viz": "^3.25.0",
     "bumpp": "^11.0.1",
     "esbuild": "^0.28.0",
     "typescript": "^6.0.2",
     "vite-plus": "^0.1.14"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.33.0"
   },
   "packageManager": "pnpm@10.33.0",
   "pnpm": {
@@ -52,8 +56,5 @@
   },
   "inlinedDependencies": {
     "@viz-js/viz": "3.25.0"
-  },
-  "optionalDependencies": {
-    "sharp": "^0.33.0"
   }
 }

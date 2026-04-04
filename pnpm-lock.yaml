@@ -21,6 +21,9 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260328.1
         version: 7.0.0-dev.20260328.1
+      '@viz-js/viz':
+        specifier: ^3.25.0
+        version: 3.25.0
       bumpp:
         specifier: ^11.0.1
         version: 11.0.1
@@ -770,6 +773,9 @@ packages:
   '@typescript/native-preview@7.0.0-dev.20260328.1':
     resolution: {integrity: sha512-e2f1LaETJ1wFIZSZAJwsAumWixGaRslUjESf0nSrZGUensq3ZwXddoDJPPoDLkSAr/Fa3v5aff+dJ39UbNfbNQ==}
     hasBin: true
+
+  '@viz-js/viz@3.25.0':
+    resolution: {integrity: sha512-dM7zAYMdf7mcRz5Kdb+YJb6+qv5Rjk0rPZ18gROdpMrP/3S7RFOp8uxybeiz5RypHrE1zo1vccA8Twh4mIcLZw==}
 
   '@voidzero-dev/vite-plus-core@0.1.15':
     resolution: {integrity: sha512-0qAbqwcvQwiC8xGKSSuFtsjJUEM4LZzpXF7dffRazghGEQ8HH8NAvVryp/PiMSFwreJlV3rujwL4amKjnwCHpg==}
@@ -1684,6 +1690,8 @@ snapshots:
       '@typescript/native-preview-linux-x64': 7.0.0-dev.20260328.1
       '@typescript/native-preview-win32-arm64': 7.0.0-dev.20260328.1
       '@typescript/native-preview-win32-x64': 7.0.0-dev.20260328.1
+
+  '@viz-js/viz@3.25.0': {}
 
   '@voidzero-dev/vite-plus-core@0.1.15(@types/node@25.5.2)(esbuild@0.28.0)(jiti@2.6.1)(typescript@6.0.2)(yaml@2.8.3)':
     dependencies:

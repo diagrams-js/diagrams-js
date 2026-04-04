@@ -481,15 +481,15 @@ export class Diagram {
     try {
       // Dynamic import to avoid bundling sharp in browser builds
       const sharp = await import("sharp");
-      
+
       // Parse SVG to get dimensions for scaling
       const widthMatch = svgString.match(/width="([\d.]+)pt"/);
       const heightMatch = svgString.match(/height="([\d.]+)pt"/);
       const viewBoxMatch = svgString.match(/viewBox="[^"]+"/);
-      
+
       let width = 800;
       let height = 600;
-      
+
       if (widthMatch && heightMatch) {
         width = parseFloat(widthMatch[1]);
         height = parseFloat(heightMatch[1]);
@@ -500,17 +500,18 @@ export class Diagram {
           height = parseFloat(parts[3]);
         }
       }
-      
+
       // Convert SVG to PNG at 2x resolution for crisp output
-      const pngBuffer = await sharp.default(Buffer.from(svgString))
+      const pngBuffer = await sharp
+        .default(Buffer.from(svgString))
         .resize(width * 2, height * 2)
         .png()
         .toBuffer();
-      
+
       return new Uint8Array(pngBuffer);
     } catch (error) {
       throw new Error(
-        `Failed to convert SVG to PNG. Make sure 'sharp' is installed: npm install sharp. Error: ${error}`
+        `Failed to convert SVG to PNG. Make sure 'sharp' is installed: npm install sharp. Error: ${error}`,
       );
     }
   }

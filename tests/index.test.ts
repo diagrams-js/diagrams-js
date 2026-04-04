@@ -197,3 +197,97 @@ describe("Cluster", () => {
     diagram.destroy();
   });
 });
+
+describe("Image Rendering", () => {
+  beforeEach(() => {
+    while (clearDiagram()) {
+      // Keep clearing until empty
+    }
+  });
+
+  it("should render to SVG", async () => {
+    const diagram = new Diagram("SVG Test", {
+      direction: "TB",
+      outformat: "svg",
+    });
+    const node1 = diagram.add(new Node("Node 1"));
+    const node2 = diagram.add(new Node("Node 2"));
+    node1.to(node2);
+
+    const result = await diagram.render();
+    expect(typeof result).toBe("string");
+    expect(result).toContain('<?xml version="1.0"');
+    expect(result).toContain("<svg");
+    expect(result).toContain("</svg>");
+    diagram.destroy();
+  });
+
+  it("should render to PNG in Node.js", async () => {
+    const diagram = new Diagram("PNG Test", {
+      direction: "TB",
+      outformat: "png",
+    });
+    const node1 = diagram.add(new Node("Node 1"));
+    const node2 = diagram.add(new Node("Node 2"));
+    node1.to(node2);
+
+    const result = await diagram.render();
+    expect(result instanceof Uint8Array).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
+
+    // Check PNG magic bytes
+    const pngMagic = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+    for (let i = 0; i < pngMagic.length; i++) {
+      expect(result[i]).toBe(pngMagic[i]);
+    }
+    diagram.destroy();
+  });
+
+  it("should support icon data tracking", async () => {
+    // Create diagram and manually track icon data
+    const diagram = new Diagram("Icon Tracking Test", {
+      direction: "TB",
+      outformat: "svg",
+    });
+
+    const server = diagram.add(new Node("Server"));
+
+    // Manually track node with icon data (simulating provider class behavior)
+    const testIconData =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+    diagram.trackNodeWithIcon(server, testIconData);
+
+    const result = await diagram.render();
+    expect(typeof result).toBe("string");
+
+    // Check that icon image was injected
+    expect(result).toContain("<image");
+    expect(result).toContain('href="data:image/png;base64,');
+    diagram.destroy();
+  });
+
+  it("should render PNG with icons", async () => {
+    const diagram = new Diagram("Icon PNG Test", {
+      direction: "TB",
+      outformat: "png",
+    });
+
+    const server = diagram.add(new Node("Server"));
+
+    // Manually track node with icon data
+    const testIconData =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+    diagram.trackNodeWithIcon(server, testIconData);
+
+    const result = await diagram.render();
+    expect(result instanceof Uint8Array).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
+
+    // Verify PNG magic bytes
+    expect(result[0]).toBe(0x89);
+    expect(result[1]).toBe(0x50);
+    expect(result[2]).toBe(0x4e);
+    expect(result[3]).toBe(0x47);
+    diagram.destroy();
+  });
+});

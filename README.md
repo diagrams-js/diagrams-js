@@ -261,12 +261,14 @@ const diagram = new Diagram("Themed", { theme: "blues" });
 - **PNG**: `outformat: "png"` - Works in browsers (Canvas API) and Node.js (with sharp)
 
 ### Browser PNG Export
+
 ```typescript
 const diagram = new Diagram("My Diagram", { outformat: "png" });
 const pngDataUrl = await diagram.render();
 ```
 
 ### Node.js PNG Export
+
 For PNG output in Node.js, install the optional `sharp` dependency:
 
 ```bash

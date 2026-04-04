@@ -15,6 +15,15 @@ export default defineConfig({
     // Ensure proper ESM output
     format: ["esm"],
   },
+  test: {
+    // Ensure @viz-js/viz can be resolved in tests
+    deps: {
+      inline: [/@viz-js\/viz/],
+    },
+  },
+  optimizeDeps: {
+    include: ["@viz-js/viz"],
+  },
   lint: {
     options: {
       typeAware: true,
