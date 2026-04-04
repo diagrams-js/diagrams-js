@@ -77,7 +77,7 @@ export class Diagram {
     }
     this.curveStyle = curveStyle;
 
-    const outformat = options.outformat ?? "png";
+    const outformat = options.outformat ?? "svg";
     if (Array.isArray(outformat)) {
       for (const fmt of outformat) {
         if (!Diagram.outFormats.includes(fmt as (typeof Diagram.outFormats)[number])) {
