@@ -106,7 +106,13 @@ export class Node {
       const target = targetOrUndefined!;
       if (Array.isArray(target)) {
         for (const t of target) {
-          this.connect(t, targetOrEdge);
+          // Create a copy of the edge for each target to avoid shared state
+          const edgeCopy = new Edge({
+            ...targetOrEdge.attrs,
+            node: this,
+            forward: true,
+          });
+          this.connect(t, edgeCopy);
         }
         return target;
       }
@@ -114,14 +120,16 @@ export class Node {
     }
 
     const target = targetOrEdge;
-    const edge = new Edge({ node: this, forward: true });
 
     if (Array.isArray(target)) {
       for (const t of target) {
+        // Create a new edge for each target to avoid shared state
+        const edge = new Edge({ node: this, forward: true });
         this.connect(t, edge);
       }
       return target;
     }
+    const edge = new Edge({ node: this, forward: true });
     return this.connect(target, edge);
   }
 
@@ -129,23 +137,29 @@ export class Node {
    * Connect from another node (reverse direction)
    * Python: Self << Node
    * TypeScript: node.from(otherNode)
-   * 
-   * Example: pod.from(rs) means rs -> pod (arrow from rs to pod)
+   *
+   * Example: pod.from(rs) creates pod << rs (arrow from pod back to rs)
+   * This creates edges with dir=back
    */
   from(source: Node): Node;
   from(sources: Node[]): Node;
   from(sources: Node | Node[]): Node {
-    // When we call p.from(rs), we want rs -> p (arrow from rs to p)
-    // So we create a forward edge from source to this node
-    const edge = new Edge({ node: this, forward: true });
+    // When we call p.from(rs), we want pod << rs
+    // This creates an edge from pod to rs with dir=back
+    // Graphviz will place pod to the left of rs, and the arrow points back
 
     if (Array.isArray(sources)) {
       for (const source of sources) {
-        source.connect(this, edge);
+        // Create a new edge for each source to avoid shared state
+        // Edge goes from this (target) to source with reverse=true (dir=back)
+        const edge = new Edge({ node: source, reverse: true });
+        this.connect(source, edge);
       }
       return this;
     }
-    return sources.connect(this, edge);
+    // Edge goes from this (target) to source with reverse=true (dir=back)
+    const edge = new Edge({ node: sources, reverse: true });
+    return this.connect(sources, edge);
   }
 
   /**

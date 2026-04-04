@@ -97,7 +97,10 @@ describe("Node connections", () => {
     node2.from(node1);
 
     const dot = diagram.toString();
-    expect(dot).toContain('"' + node1.nodeId + '" -> "' + node2.nodeId + '"');
+    // node2.from(node1) creates an edge from node2 to node1 with dir=back
+    // This places node2 to the left of node1 in the layout
+    expect(dot).toContain('"' + node2.nodeId + '" -> "' + node1.nodeId + '"');
+    expect(dot).toContain('dir="back"');
     diagram.destroy();
   });
 
