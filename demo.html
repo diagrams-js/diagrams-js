@@ -144,7 +144,6 @@ import { ALB } from "diagrams-ts/providers/aws/network";
 
 const diagram = new Diagram("Grouped Workers", {
   direction: "TB",
-  outformat: "svg",
 });
 
 const lb = diagram.add(new ALB("lb"));
@@ -177,7 +176,7 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">TypeScript Code</div>
-            <pre><code class="language-typescript">import { Diagram, Cluster } from "diagrams-ts";
+            <pre><code class="language-typescript">import { Diagram } from "diagrams-ts";
 import { ECS } from "diagrams-ts/providers/aws/compute";
 import { RDS, ElastiCache } from "diagrams-ts/providers/aws/database";
 import { ALB, Route53 } from "diagrams-ts/providers/aws/network";
@@ -187,26 +186,26 @@ const diagram = new Diagram("Clustered Web Services");
 const dns = diagram.add(new Route53("dns"));
 const lb = diagram.add(new ALB("lb"));
 
-diagram.cluster("Services", (svc) => {
-  const svcGroup = [
-    svc.add(new ECS("web1")),
-    svc.add(new ECS("web2")),
-    svc.add(new ECS("web3")),
-  ];
-  lb.to(svcGroup);
-  
-  svc.cluster("DB Cluster", (db) => {
-    const dbPrimary = db.add(new RDS("userdb"));
-    const dbReplica = db.add(new RDS("userdb ro"));
-    dbPrimary.with(dbReplica);
-    svcGroup.forEach(s => s.to(dbPrimary));
-  });
-});
+const svcCluster = diagram.cluster("Services");
+const svcGroup = [
+  svcCluster.add(new ECS("web1")),
+  svcCluster.add(new ECS("web2")),
+  svcCluster.add(new ECS("web3")),
+];
+lb.to(svcGroup);
+
+const dbCluster = diagram.cluster("DB Cluster");
+const dbPrimary = dbCluster.add(new RDS("userdb"));
+const dbReplica = dbCluster.add(new RDS("userdb ro"));
+dbPrimary.with(dbReplica);
+svcGroup.forEach(s => s.to(dbPrimary));
 
 const memcached = diagram.add(new ElastiCache("memcached"));
+svcGroup.forEach(s => s.to(memcached));
 
-// Connect services to memcached
-dns.to(lb);</code></pre>
+dns.to(lb);
+
+const svg = await diagram.render();</code></pre>
           </div>
           <div class="diagram-section">
             <div class="diagram-header">Rendered Diagram</div>
@@ -223,7 +222,7 @@ dns.to(lb);</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">TypeScript Code</div>
-            <pre><code class="language-typescript">import { Diagram, Cluster } from "diagrams-ts";
+            <pre><code class="language-typescript">import { Diagram } from "diagrams-ts";
 import { ECS, EKS, Lambda } from "diagrams-ts/providers/aws/compute";
 import { Redshift } from "diagrams-ts/providers/aws/database";
 import { SQS } from "diagrams-ts/providers/aws/integration";
@@ -235,31 +234,29 @@ const source = diagram.add(new EKS("k8s source"));
 const store = diagram.add(new S3("events store"));
 const dw = diagram.add(new Redshift("analytics"));
 
-diagram.cluster("Event Flows", (flows) => {
-  flows.cluster("Event Workers", (workers) => {
-    const workerNodes = [
-      workers.add(new ECS("worker1")),
-      workers.add(new ECS("worker2")),
-      workers.add(new ECS("worker3")),
-    ];
-    source.to(workerNodes);
-    
-    const queue = flows.add(new SQS("event queue"));
-    workerNodes.forEach(w => w.to(queue));
-    
-    flows.cluster("Processing", (proc) => {
-      const handlers = [
-        proc.add(new Lambda("proc1")),
-        proc.add(new Lambda("proc2")),
-        proc.add(new Lambda("proc3")),
-      ];
-      queue.to(handlers);
-      handlers.forEach(h => {
-        h.to(store);
-        h.to(dw);
-      });
-    });
-  });
+const flowsCluster = diagram.cluster("Event Flows");
+
+const workersCluster = flowsCluster.cluster("Event Workers");
+const workerNodes = [
+  workersCluster.add(new ECS("worker1")),
+  workersCluster.add(new ECS("worker2")),
+  workersCluster.add(new ECS("worker3")),
+];
+source.to(workerNodes);
+
+const queue = flowsCluster.add(new SQS("event queue"));
+workerNodes.forEach(w => w.to(queue));
+
+const procCluster = flowsCluster.cluster("Processing");
+const handlers = [
+  procCluster.add(new Lambda("proc1")),
+  procCluster.add(new Lambda("proc2")),
+  procCluster.add(new Lambda("proc3")),
+];
+queue.to(handlers);
+handlers.forEach(h => {
+  h.to(store);
+  h.to(dw);
 });
 
 const svg = await diagram.render();</code></pre>
@@ -279,7 +276,7 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">TypeScript Code</div>
-            <pre><code class="language-typescript">import { Diagram, Cluster } from "diagrams-ts";
+            <pre><code class="language-typescript">import { Diagram } from "diagrams-ts";
 import { BigQuery, Dataflow, PubSub } from "diagrams-ts/providers/gcp/analytics";
 import { AppEngine, Functions } from "diagrams-ts/providers/gcp/compute";
 import { BigTable } from "diagrams-ts/providers/gcp/database";
@@ -290,41 +287,35 @@ const diagram = new Diagram("Message Collecting");
 
 const pubsub = diagram.add(new PubSub("pubsub"));
 
-diagram.cluster("Source of Data", (source) => {
-  const sources = [
-    source.add(new IotCore("core1")),
-    source.add(new IotCore("core2")),
-    source.add(new IotCore("core3")),
-  ];
-  sources.forEach(s => s.to(pubsub));
-});
+const sourceCluster = diagram.cluster("Source of Data");
+const sources = [
+  sourceCluster.add(new IotCore("core1")),
+  sourceCluster.add(new IotCore("core2")),
+  sourceCluster.add(new IotCore("core3")),
+];
+sources.forEach(s => s.to(pubsub));
 
-diagram.cluster("Targets", (targets) => {
-  targets.cluster("Data Flow", (flow) => {
-    const dataflow = flow.add(new Dataflow("data flow"));
-    pubsub.to(dataflow);
-    
-    targets.cluster("Data Lake", (lake) => {
-      const bq = lake.add(new BigQuery("bq"));
-      const gcs = lake.add(new GCS("storage"));
-      dataflow.to([bq, gcs]);
-    });
-    
-    targets.cluster("Event Driven", (event) => {
-      event.cluster("Processing", (proc) => {
-        const engine = proc.add(new AppEngine("engine"));
-        const bigtable = proc.add(new BigTable("bigtable"));
-        dataflow.to(engine).to(bigtable);
-      });
-      
-      event.cluster("Serverless", (serverless) => {
-        const func = serverless.add(new Functions("func"));
-        const appengine = serverless.add(new AppEngine("appengine"));
-        dataflow.to(func).to(appengine);
-      });
-    });
-  });
-});
+const targetsCluster = diagram.cluster("Targets");
+const flowCluster = targetsCluster.cluster("Data Flow");
+const dataflow = flowCluster.add(new Dataflow("data flow"));
+pubsub.to(dataflow);
+
+const lakeCluster = targetsCluster.cluster("Data Lake");
+const bq = lakeCluster.add(new BigQuery("bq"));
+const gcs = lakeCluster.add(new GCS("storage"));
+dataflow.to([bq, gcs]);
+
+const eventCluster = targetsCluster.cluster("Event Driven");
+
+const procCluster = eventCluster.cluster("Processing");
+const engine = procCluster.add(new AppEngine("engine"));
+const bigtable = procCluster.add(new BigTable("bigtable"));
+dataflow.to(engine).to(bigtable);
+
+const serverlessCluster = eventCluster.cluster("Serverless");
+const func = serverlessCluster.add(new Functions("func"));
+const appengine = serverlessCluster.add(new AppEngine("appengine"));
+dataflow.to(func).to(appengine);
 
 const svg = await diagram.render();</code></pre>
           </div>
@@ -385,7 +376,7 @@ const svg = await diagram.render();</code></pre>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
 
     <script type="module">
-      import { Diagram, Cluster, Node } from "./dist/index.mjs";
+      import { Diagram } from "./dist/index.mjs";
       import { EC2, ECS, EKS, Lambda } from "./dist/providers/aws/compute.js";
       import {
         RDS,
@@ -414,10 +405,7 @@ const svg = await diagram.render();</code></pre>
 
       async function renderDiagram1() {
         try {
-          const diagram = new Diagram("Grouped Workers", {
-            direction: "TB",
-            outformat: "svg",
-          });
+          const diagram = new Diagram("Grouped Workers", { direction: "TB" });
           const lb = diagram.add(new ALB("lb"));
           const workers = [
             diagram.add(new EC2("worker1")),
@@ -440,32 +428,26 @@ const svg = await diagram.render();</code></pre>
 
       async function renderDiagram2() {
         try {
-          const diagram = new Diagram("Clustered Web Services", {
-            outformat: "svg",
-          });
+          const diagram = new Diagram("Clustered Web Services");
           const dns = diagram.add(new Route53("dns"));
           const lb = diagram.add(new ALB("lb"));
 
+          const svcCluster = diagram.cluster("Services");
+          const svcGroup = [
+            svcCluster.add(new ECS("web1")),
+            svcCluster.add(new ECS("web2")),
+            svcCluster.add(new ECS("web3")),
+          ];
+          lb.to(svcGroup);
+
+          const dbCluster = diagram.cluster("DB Cluster");
+          const dbPrimary = dbCluster.add(new RDS("userdb"));
+          const dbReplica = dbCluster.add(new RDS("userdb ro"));
+          dbPrimary.with(dbReplica);
+          svcGroup.forEach((s) => s.to(dbPrimary));
+
           const memcached = diagram.add(new ElastiCache("memcached"));
-
-          diagram.cluster("Services", (svc) => {
-            const svcGroup = [
-              svc.add(new ECS("web1")),
-              svc.add(new ECS("web2")),
-              svc.add(new ECS("web3")),
-            ];
-            lb.to(svcGroup);
-
-            diagram.cluster("DB Cluster", (db) => {
-              const dbPrimary = db.add(new RDS("userdb"));
-              const dbReplica = db.add(new RDS("userdb ro"));
-              dbPrimary.with(dbReplica);
-              svcGroup.forEach((s) => {
-                s.to(dbPrimary);
-                s.to(memcached);
-              });
-            });
-          });
+          svcGroup.forEach((s) => s.to(memcached));
 
           dns.to(lb);
           const svg = await diagram.render();
@@ -479,36 +461,34 @@ const svg = await diagram.render();</code></pre>
 
       async function renderDiagram3() {
         try {
-          const diagram = new Diagram("Event Processing", { outformat: "svg" });
+          const diagram = new Diagram("Event Processing");
           const source = diagram.add(new EKS("k8s source"));
           const store = diagram.add(new S3("events store"));
           const dw = diagram.add(new Redshift("analytics"));
 
-          diagram.cluster("Event Flows", (flows) => {
-            flows.cluster("Event Workers", (workers) => {
-              const workerNodes = [
-                workers.add(new ECS("worker1")),
-                workers.add(new ECS("worker2")),
-                workers.add(new ECS("worker3")),
-              ];
-              source.to(workerNodes);
+          const flowsCluster = diagram.cluster("Event Flows");
 
-              const queue = flows.add(new SQS("event queue"));
-              workerNodes.forEach((w) => w.to(queue));
+          const workersCluster = flowsCluster.cluster("Event Workers");
+          const workerNodes = [
+            workersCluster.add(new ECS("worker1")),
+            workersCluster.add(new ECS("worker2")),
+            workersCluster.add(new ECS("worker3")),
+          ];
+          source.to(workerNodes);
 
-              flows.cluster("Processing", (proc) => {
-                const handlers = [
-                  proc.add(new Lambda("proc1")),
-                  proc.add(new Lambda("proc2")),
-                  proc.add(new Lambda("proc3")),
-                ];
-                queue.to(handlers);
-                handlers.forEach((h) => {
-                  h.to(store);
-                  h.to(dw);
-                });
-              });
-            });
+          const queue = flowsCluster.add(new SQS("event queue"));
+          workerNodes.forEach((w) => w.to(queue));
+
+          const procCluster = flowsCluster.cluster("Processing");
+          const handlers = [
+            procCluster.add(new Lambda("proc1")),
+            procCluster.add(new Lambda("proc2")),
+            procCluster.add(new Lambda("proc3")),
+          ];
+          queue.to(handlers);
+          handlers.forEach((h) => {
+            h.to(store);
+            h.to(dw);
           });
 
           const svg = await diagram.render();
@@ -522,46 +502,38 @@ const svg = await diagram.render();</code></pre>
 
       async function renderDiagram4() {
         try {
-          const diagram = new Diagram("Message Collecting", {
-            outformat: "svg",
-          });
+          const diagram = new Diagram("Message Collecting");
           const pubsub = diagram.add(new PubSub("pubsub"));
 
-          diagram.cluster("Source of Data", (source) => {
-            const sources = [
-              source.add(new IotCore("core1")),
-              source.add(new IotCore("core2")),
-              source.add(new IotCore("core3")),
-            ];
-            sources.forEach((s) => s.to(pubsub));
-          });
+          const sourceCluster = diagram.cluster("Source of Data");
+          const sources = [
+            sourceCluster.add(new IotCore("core1")),
+            sourceCluster.add(new IotCore("core2")),
+            sourceCluster.add(new IotCore("core3")),
+          ];
+          sources.forEach((s) => s.to(pubsub));
 
-          diagram.cluster("Targets", (targets) => {
-            targets.cluster("Data Flow", (flow) => {
-              const dataflow = flow.add(new Dataflow("data flow"));
-              pubsub.to(dataflow);
+          const targetsCluster = diagram.cluster("Targets");
+          const flowCluster = targetsCluster.cluster("Data Flow");
+          const dataflow = flowCluster.add(new Dataflow("data flow"));
+          pubsub.to(dataflow);
 
-              targets.cluster("Data Lake", (lake) => {
-                const bq = lake.add(new BigQuery("bq"));
-                const gcs = lake.add(new GCS("storage"));
-                dataflow.to([bq, gcs]);
-              });
+          const lakeCluster = targetsCluster.cluster("Data Lake");
+          const bq = lakeCluster.add(new BigQuery("bq"));
+          const gcs = lakeCluster.add(new GCS("storage"));
+          dataflow.to([bq, gcs]);
 
-              targets.cluster("Event Driven", (event) => {
-                event.cluster("Processing", (proc) => {
-                  const engine = proc.add(new AppEngine("engine"));
-                  const bigtable = proc.add(new BigTable("bigtable"));
-                  dataflow.to(engine).to(bigtable);
-                });
+          const eventCluster = targetsCluster.cluster("Event Driven");
 
-                event.cluster("Serverless", (serverless) => {
-                  const func = serverless.add(new Functions("func"));
-                  const appengine = serverless.add(new AppEngine("appengine"));
-                  dataflow.to(func).to(appengine);
-                });
-              });
-            });
-          });
+          const procCluster = eventCluster.cluster("Processing");
+          const engine = procCluster.add(new AppEngine("engine"));
+          const bigtable = procCluster.add(new BigTable("bigtable"));
+          dataflow.to(engine).to(bigtable);
+
+          const serverlessCluster = eventCluster.cluster("Serverless");
+          const func = serverlessCluster.add(new Functions("func"));
+          const appengine = serverlessCluster.add(new AppEngine("appengine"));
+          dataflow.to(func).to(appengine);
 
           const svg = await diagram.render();
           document.getElementById("diagram4").innerHTML = svg;
@@ -574,9 +546,7 @@ const svg = await diagram.render();</code></pre>
 
       async function renderDiagram5() {
         try {
-          const diagram = new Diagram("Exposed Pod with 3 Replicas", {
-            outformat: "svg",
-          });
+          const diagram = new Diagram("Exposed Pod with 3 Replicas");
           const ingress = diagram.add(new Ingress("domain.com"));
           const svc = diagram.add(new Service("svc"));
           const pods = [

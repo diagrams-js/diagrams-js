@@ -1,17 +1,7 @@
-import { describe, it, expect, beforeEach } from "vite-plus/test";
-import { Diagram, Node, Edge, Cluster, setIconBaseDir, clearDiagram } from "../src/index.js";
-
-// Set up icon base directory
-setIconBaseDir("resources");
+import { describe, it, expect } from "vite-plus/test";
+import { Diagram, Node, Edge, Cluster } from "../src/index.js";
 
 describe("Diagram", () => {
-  beforeEach(() => {
-    // Clear any lingering context
-    while (clearDiagram()) {
-      // Keep clearing until empty
-    }
-  });
-
   it("should create a diagram with default options", () => {
     const diagram = new Diagram("Test Diagram", {});
     expect(diagram.name).toBe("Test Diagram");
@@ -36,22 +26,15 @@ describe("Diagram", () => {
 });
 
 describe("Node", () => {
-  beforeEach(() => {
-    // Clear any lingering context
-    while (clearDiagram()) {
-      // Keep clearing until empty
-    }
-  });
-
-  it("should throw error if created outside diagram context", () => {
-    expect(() => {
-      new Node("test");
-    }).toThrow("Global diagrams context not set up");
+  it("should create a node without context", () => {
+    const node = new Node("test");
+    expect(node.label).toBe("test");
+    expect(node.nodeId).toBeDefined();
   });
 
   it("should create a node within diagram context", () => {
     const diagram = new Diagram("Test", {});
-    const node = new Node("My Node");
+    const node = diagram.add(new Node("My Node"));
     expect(node.label).toBe("My Node");
     expect(node.nodeId).toBeDefined();
     diagram.destroy();
@@ -59,7 +42,7 @@ describe("Node", () => {
 
   it("should support autolabel", () => {
     const diagram = new Diagram("Test", { autolabel: true });
-    const node = new Node("test");
+    const node = diagram.add(new Node("test"));
     expect(node.label).toContain("Node");
     diagram.destroy();
   });
@@ -93,13 +76,6 @@ describe("Edge", () => {
 });
 
 describe("Node connections", () => {
-  beforeEach(() => {
-    // Clear any lingering context
-    while (clearDiagram()) {
-      // Keep clearing until empty
-    }
-  });
-
   it("should connect nodes with to()", () => {
     const diagram = new Diagram("Test", {});
     const node1 = diagram.add(new Node("Node1"));
@@ -166,22 +142,9 @@ describe("Node connections", () => {
 });
 
 describe("Cluster", () => {
-  beforeEach(() => {
-    // Clear any lingering context
-    while (clearDiagram()) {
-      // Keep clearing until empty
-    }
-  });
-
-  it("should throw error if created outside diagram context", () => {
-    expect(() => {
-      new Cluster("test");
-    }).toThrow("Global diagrams context not set up");
-  });
-
-  it("should create a cluster within diagram context", () => {
+  it("should create a cluster via diagram.cluster()", () => {
     const diagram = new Diagram("Test");
-    const cluster = new Cluster("My Cluster");
+    const cluster = diagram.cluster("My Cluster");
     expect(cluster.label).toBe("My Cluster");
     expect(cluster.name).toBe("cluster_My_Cluster");
     diagram.destroy();
@@ -189,22 +152,22 @@ describe("Cluster", () => {
 
   it("should nest clusters", () => {
     const diagram = new Diagram("Test");
-    const cluster1 = new Cluster("Outer");
-    cluster1.run(() => {
-      const cluster2 = new Cluster("Inner");
-      expect(cluster2.depth).toBe(1);
-    });
+    const cluster1 = diagram.cluster("Outer");
+    const cluster2 = cluster1.cluster("Inner");
+    expect(cluster2.depth).toBe(1);
+    diagram.destroy();
+  });
+
+  it("should add nodes to clusters explicitly", () => {
+    const diagram = new Diagram("Test");
+    const cluster = diagram.cluster("My Cluster");
+    const node = cluster.add(new Node("Test Node"));
+    expect(node.label).toBe("Test Node");
     diagram.destroy();
   });
 });
 
 describe("Image Rendering", () => {
-  beforeEach(() => {
-    while (clearDiagram()) {
-      // Keep clearing until empty
-    }
-  });
-
   it("should render to SVG", async () => {
     const diagram = new Diagram("SVG Test", {
       direction: "TB",

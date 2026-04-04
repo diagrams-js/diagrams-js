@@ -1,6 +1,5 @@
 import type { Diagram } from "./Diagram.js";
 import type { Node } from "./Node.js";
-import { getDiagram, getCluster, setCluster, clearCluster } from "./context.js";
 
 export class Cluster {
   private static defaultGraphAttrs: Record<string, string> = {
@@ -24,17 +23,18 @@ export class Cluster {
     label = "cluster",
     direction: "TB" | "BT" | "LR" | "RL" = "LR",
     graphAttr?: Record<string, string>,
+    diagram?: Diagram,
+    parent?: Cluster,
   ) {
     this.label = label;
     this.name = `cluster_${label.replace(/\s+/g, "_")}`;
 
-    // Node must belong to a diagram
-    const diagram = getDiagram();
+    // Diagram can be passed explicitly or must exist in context
     if (!diagram) {
-      throw new Error("Global diagrams context not set up. Create a Diagram first.");
+      throw new Error("Cluster must be created through diagram.cluster() or cluster.cluster()");
     }
     this._diagram = diagram;
-    this._parent = getCluster();
+    this._parent = parent;
 
     // Get theme configuration from the diagram
     const themeConfig = this._diagram.themeConfig;
@@ -70,9 +70,10 @@ export class Cluster {
 
   /**
    * Add a node to this cluster
-   * This provides API consistency with Diagram.add()
+   * Explicitly registers the node with this cluster
    */
   add<T extends Node>(node: T): T {
+    node._register(this);
     return node;
   }
 
@@ -84,26 +85,13 @@ export class Cluster {
   }
 
   /**
-   * Execute a callback with this cluster as the active context
-   */
-  run<T>(callback: (cluster: Cluster) => T): T {
-    setCluster(this);
-    try {
-      return callback(this);
-    } finally {
-      clearCluster();
-    }
-  }
-
-  /**
    * Create a nested cluster within this one
+   * @param label - The label for the nested cluster
+   * @returns The created nested cluster
    */
-  cluster(label: string, callback: (cluster: Cluster) => void): Cluster {
-    const child = new Cluster(label);
-    child.run((c) => {
-      callback(c);
-      this.subgraph(c);
-    });
+  cluster(label: string): Cluster {
+    const child = new Cluster(label, "LR", undefined, this._diagram, this);
+    this._subgraphs.push(child);
     return child;
   }
 

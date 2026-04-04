@@ -1,6 +1,5 @@
-import { getDiagram, getCluster } from "./context.js";
 import type { Diagram } from "./Diagram.js";
-import type { Cluster } from "./Cluster.js";
+import { Cluster } from "./Cluster.js";
 import { Edge } from "./Edge.js";
 import type { NodeOptions } from "./types.js";
 
@@ -31,23 +30,8 @@ export class Node {
   constructor(label = "", options: NodeOptions = {}) {
     this._id = options.nodeId ?? this._randId();
     this.label = label;
-
-    // Node must belong to a diagram
-    const diagram = getDiagram();
-    if (!diagram) {
-      throw new Error("Global diagrams context not set up. Create a Diagram first.");
-    }
-    this._diagram = diagram;
-
-    // Handle autolabel
-    if (diagram.autolabel) {
-      const prefix = this.constructor.name;
-      if (this.label) {
-        this.label = prefix + "\n" + this.label;
-      } else {
-        this.label = prefix;
-      }
-    }
+    this._diagram = null as unknown as Diagram;
+    this._cluster = undefined;
 
     // Check if this node has an icon data URL (embedded via esbuild dataurl loader)
     const iconDataUrl = (this.constructor as typeof Node)._iconDataUrl;
@@ -67,17 +51,35 @@ export class Node {
         this._attrs[key] = String(value);
       }
     }
+  }
 
-    this._cluster = getCluster();
-
-    // Add to cluster or diagram
-    if (this._cluster) {
-      this._cluster.node(this._id, this.label, this._attrs);
+  /**
+   * Register this node with a diagram or cluster
+   * Called by Diagram.add() or Cluster.add()
+   * @internal
+   */
+  _register(parent: Diagram | Cluster): void {
+    if (parent instanceof Cluster) {
+      this._cluster = parent;
+      this._diagram = parent._diagram;
+      parent.node(this._id, this.label, this._attrs);
     } else {
-      this._diagram.node(this._id, this.label, this._attrs);
+      this._diagram = parent;
+      parent.node(this._id, this.label, this._attrs);
+    }
+
+    // Handle autolabel
+    if (this._diagram.autolabel) {
+      const prefix = this.constructor.name;
+      if (this.label) {
+        this.label = prefix + "\n" + this.label;
+      } else {
+        this.label = prefix;
+      }
     }
 
     // Track this node if it has an icon data URL (for auto-icon injection)
+    const iconDataUrl = (this.constructor as typeof Node)._iconDataUrl;
     if (iconDataUrl && this._diagram) {
       this._diagram.trackNodeWithIcon(this, iconDataUrl);
     }

@@ -195,6 +195,7 @@ export class Diagram {
    * Add a node to this diagram
    */
   add<T extends Node>(node: T): T {
+    node._register(this);
     return node;
   }
 
@@ -225,16 +226,12 @@ export class Diagram {
 
   /**
    * Create a cluster
+   * @param label - The label for the cluster
+   * @returns The created cluster
    */
-  cluster(label: string, callback: (cluster: Cluster) => void): Cluster {
-    const cluster = new Cluster(label);
-    setCluster(cluster);
-    try {
-      callback(cluster);
-    } finally {
-      this.subgraph(cluster);
-      clearCluster();
-    }
+  cluster(label: string): Cluster {
+    const cluster = new Cluster(label, "LR", undefined, this);
+    this._clusters.push(cluster);
     return cluster;
   }
 
