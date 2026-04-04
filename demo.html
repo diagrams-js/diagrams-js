@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>diagrams-ts - Interactive Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+    }
+
+    .sidebar {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      height: fit-content;
+    }
+
+    .sidebar h2 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+
+    .example-btn {
+      display: block;
+      width: 100%;
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      font-size: 14px;
+      transition: all 0.3s;
+      text-align: left;
+    }
+
+    .example-btn:hover {
+      background: #5568d3;
+      transform: translateX(5px);
+    }
+
+    .example-btn.active {
+      background: #764ba2;
+    }
+
+    .content-area {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .diagram-output {
+      background: #f8f9fa;
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 30px;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .diagram-output svg {
+      max-width: 100%;
+      height: auto;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
+
+    .placeholder {
+      color: #999;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .code-section {
+      background: #1e1e1e;
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    .code-section h3 {
+      color: #fff;
+      margin-bottom: 15px;
+      font-size: 1em;
+    }
+
+    pre {
+      margin: 0;
+      color: #d4d4d4;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      color: #667eea;
+    }
+
+    .loading.active {
+      display: block;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error {
+      background: #ffebee;
+      border-left: 4px solid #f44336;
+      color: #c62828;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 0 4px 4px 0;
+      display: none;
+    }
+
+    .error.active {
+      display: block;
+    }
+
+    .download-btn {
+      background: #4caf50;
+      margin-top: 15px;
+    }
+
+    .download-btn:hover {
+      background: #45a049;
+    }
+
+    @media (max-width: 900px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>diagrams-ts</h1>
+      <p class="subtitle">Draw cloud architecture diagrams in your browser</p>
+    </header>
+
+    <div class="main-content">
+      <aside class="sidebar">
+        <h2>Example Diagrams</h2>
+        <button class="example-btn" onclick="loadExample('simple')">
+          Simple Flow
+        </button>
+        <button class="example-btn" onclick="loadExample('web-service')">
+          Web Service
+        </button>
+        <button class="example-btn" onclick="loadExample('clustered')">
+          Clustered Services
+        </button>
+        <button class="example-btn" onclick="loadExample('database')">
+          Database Architecture
+        </button>
+        <button class="example-btn" onclick="loadExample('microservices')">
+          Microservices
+        </button>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+          <h2>Features</h2>
+          <ul style="color: #666; font-size: 14px; line-height: 1.8; padding-left: 20px;">
+            <li>17 Cloud Providers</li>
+            <li>1000+ Node Classes</li>
+            <li>Tree-shakeable</li>
+            <li>TypeScript Support</li>
+            <li>SVG Output</li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="content-area">
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <p>Generating diagram...</p>
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div class="diagram-output" id="diagram-output">
+          <p class="placeholder">Click an example on the left to render a diagram</p>
+        </div>
+
+        <div class="code-section">
+          <h3>Code</h3>
+          <pre id="code-display"><code class="placeholder">// Select an example to see the code</code></pre>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    let currentDiagram = null;
+
+    const examples = {
+      simple: {
+        name: 'Simple Flow',
+        code: `import { Diagram, Node } from 'diagrams-ts';
+
+const diagram = new Diagram('Simple Flow', {
+  direction: 'LR',
+  outformat: 'svg'
+});
+
+const start = diagram.add(new Node('Start'));
+const process = diagram.add(new Node('Process'));
+const end = diagram.add(new Node('End'));
+
+start.to(process).to(end);
+
+await diagram.render();`,
+        generate: async (Diagram, Cluster, Node, Edge) => {
+          const diagram = new Diagram('Simple Flow', {
+            direction: 'LR',
+            outformat: 'svg',
+            show: false
+          });
+          
+          const start = diagram.add(new Node('Start'));
+          const process = diagram.add(new Node('Process'));
+          const end = diagram.add(new Node('End'));
+          
+          start.to(process).to(end);
+          
+          return diagram;
+        }
+      },
+      
+      'web-service': {
+        name: 'Web Service',
+        code: `import { Diagram, Node } from 'diagrams-ts';
+
+const diagram = new Diagram('Web Service', {
+  direction: 'TB',
+  outformat: 'svg'
+});
+
+const lb = diagram.add(new Node('Load Balancer'));
+const web1 = diagram.add(new Node('Web Server 1'));
+const web2 = diagram.add(new Node('Web Server 2'));
+const db = diagram.add(new Node('Database'));
+
+lb.to([web1, web2]);
+web1.to(db);
+web2.to(db);
+
+await diagram.render();`,
+        generate: async (Diagram, Cluster, Node, Edge) => {
+          const diagram = new Diagram('Web Service', {
+            direction: 'TB',
+            outformat: 'svg',
+            show: false
+          });
+          
+          const lb = diagram.add(new Node('Load Balancer'));
+          const web1 = diagram.add(new Node('Web Server 1'));
+          const web2 = diagram.add(new Node('Web Server 2'));
+          const db = diagram.add(new Node('Database'));
+          
+          lb.to([web1, web2]);
+          web1.to(db);
+          web2.to(db);
+          
+          return diagram;
+        }
+      },
+
+      clustered: {
+        name: 'Clustered Services',
+        code: `import { Diagram, Cluster, Node } from 'diagrams-ts';
+
+const diagram = new Diagram('Clustered Services', {
+  direction: 'LR',
+  outformat: 'svg'
+});
+
+const lb = diagram.add(new Node('LB'));
+
+diagram.cluster('Web Tier', (c) => {
+  const web1 = c.add(new Node('Web 1'));
+  const web2 = c.add(new Node('Web 2'));
+  lb.to([web1, web2]);
+});
+
+await diagram.render();`,
+        generate: async (Diagram, Cluster, Node, Edge) => {
+          const diagram = new Diagram('Clustered Services', {
+            direction: 'LR',
+            outformat: 'svg',
+            show: false
+          });
+          
+          const lb = diagram.add(new Node('Load Balancer'));
+          
+          diagram.cluster('Web Tier', (c) => {
+            const web1 = c.add(new Node('Web 1'));
+            const web2 = c.add(new Node('Web 2'));
+            lb.to([web1, web2]);
+          });
+          
+          diagram.cluster('Database Tier', (c) => {
+            const db1 = c.add(new Node('DB Primary'));
+            const db2 = c.add(new Node('DB Replica'));
+          });
+          
+          return diagram;
+        }
+      },
+
+      database: {
+        name: 'Database Architecture',
+        code: `import { Diagram, Node } from 'diagrams-ts';
+
+const diagram = new Diagram('Database Architecture', {
+  direction: 'TB',
+  outformat: 'svg'
+});
+
+const app = diagram.add(new Node('Application'));
+const cache = diagram.add(new Node('Redis Cache'));
+const primary = diagram.add(new Node('Primary DB'));
+const replica1 = diagram.add(new Node('Replica 1'));
+const replica2 = diagram.add(new Node('Replica 2'));
+
+app.to(cache);
+app.to(primary);
+primary.to([replica1, replica2]);
+
+await diagram.render();`,
+        generate: async (Diagram, Cluster, Node, Edge) => {
+          const diagram = new Diagram('Database Architecture', {
+            direction: 'TB',
+            outformat: 'svg',
+            show: false
+          });
+          
+          const app = diagram.add(new Node('Application'));
+          const cache = diagram.add(new Node('Redis Cache'));
+          const primary = diagram.add(new Node('Primary DB'));
+          const replica1 = diagram.add(new Node('Replica 1'));
+          const replica2 = diagram.add(new Node('Replica 2'));
+          
+          app.to(cache);
+          app.to(primary);
+          primary.to([replica1, replica2]);
+          
+          return diagram;
+        }
+      },
+
+      microservices: {
+        name: 'Microservices',
+        code: `import { Diagram, Node } from 'diagrams-ts';
+
+const diagram = new Diagram('Microservices', {
+  direction: 'LR',
+  outformat: 'svg'
+});
+
+const gateway = diagram.add(new Node('API Gateway'));
+const auth = diagram.add(new Node('Auth Service'));
+const user = diagram.add(new Node('User Service'));
+const order = diagram.add(new Node('Order Service'));
+const payment = diagram.add(new Node('Payment Service'));
+const message = diagram.add(new Node('Message Queue'));
+
+gateway.to([auth, user, order]);
+order.to(payment);
+order.to(message);
+payment.to(message);
+
+await diagram.render();`,
+        generate: async (Diagram, Cluster, Node, Edge) => {
+          const diagram = new Diagram('Microservices Architecture', {
+            direction: 'LR',
+            outformat: 'svg',
+            show: false
+          });
+          
+          const gateway = diagram.add(new Node('API Gateway'));
+          const auth = diagram.add(new Node('Auth Service'));
+          const user = diagram.add(new Node('User Service'));
+          const order = diagram.add(new Node('Order Service'));
+          const payment = diagram.add(new Node('Payment Service'));
+          const message = diagram.add(new Node('Message Queue'));
+          
+          gateway.to([auth, user, order]);
+          order.to(payment);
+          order.to(message);
+          payment.to(message);
+          
+          return diagram;
+        }
+      }
+    };
+
+    window.loadExample = async (exampleKey) => {
+      const loading = document.getElementById('loading');
+      const error = document.getElementById('error');
+      const output = document.getElementById('diagram-output');
+      const codeDisplay = document.getElementById('code-display');
+      const buttons = document.querySelectorAll('.example-btn');
+      
+      // Update active button
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Show loading
+      loading.classList.add('active');
+      error.classList.remove('active');
+      
+      try {
+        // Load the library
+        const module = await import('./dist/index.mjs');
+        const { Diagram, Cluster, Node, Edge, setIconBaseDir } = module;
+        
+        // Set icon base directory
+        setIconBaseDir('resources');
+        
+        // Get example
+        const example = examples[exampleKey];
+        if (!example) throw new Error('Unknown example');
+        
+        // Display code
+        codeDisplay.innerHTML = `<code>${escapeHtml(example.code)}</code>`;
+        
+        // Generate diagram
+        const diagram = await example.generate(Diagram, Cluster, Node, Edge);
+        
+        // Render to SVG
+        const svgOutput = await diagram.render();
+        
+        // Display SVG
+        if (typeof svgOutput === 'string') {
+          output.innerHTML = svgOutput;
+        } else {
+          // Convert Uint8Array to string
+          const decoder = new TextDecoder();
+          output.innerHTML = decoder.decode(svgOutput);
+        }
+        
+        // Add download button
+        const downloadBtn = document.createElement('button');
+        downloadBtn.className = 'download-btn';
+        downloadBtn.textContent = 'Download SVG';
+        downloadBtn.onclick = () => downloadSVG(example.name);
+        output.appendChild(downloadBtn);
+        
+        currentDiagram = diagram;
+        
+      } catch (err) {
+        console.error('Full error:', err);
+        error.innerHTML = `<strong>Error:</strong> ${err.message}`;
+        error.classList.add('active');
+        output.innerHTML = '<p class="placeholder">Failed to generate diagram. Check console for details.</p>';
+      } finally {
+        loading.classList.remove('active');
+      }
+    };
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function downloadSVG(filename) {
+      const svg = document.querySelector('#diagram-output svg');
+      if (!svg) return;
+      
+      const blob = new Blob([svg.outerHTML], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${filename.toLowerCase().replace(/\s+/g, '-')}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

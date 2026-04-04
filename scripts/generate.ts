@@ -1,0 +1,188 @@
+#!/usr/bin/env node
+
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
+import { PROVIDERS, UPPER_WORDS, TITLE_WORDS, ALIASES, type Provider } from "./config.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const ROOT_DIR = path.resolve(__dirname, "..");
+const RESOURCES_DIR = path.join(ROOT_DIR, "resources");
+const PROVIDERS_DIR = path.join(ROOT_DIR, "src", "providers");
+
+function toPascalCase(str: string): string {
+  return str
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join("");
+}
+
+function upOrTitle(provider: string, word: string): string {
+  const upperWords = UPPER_WORDS[provider] || [];
+  const titleWords = TITLE_WORDS[provider] || {};
+
+  if (upperWords.includes(word.toLowerCase())) {
+    return word.toUpperCase();
+  }
+  if (titleWords[word.toLowerCase()]) {
+    return titleWords[word.toLowerCase()];
+  }
+  return toPascalCase(word);
+}
+
+function generateClassName(provider: string, filename: string): string {
+  const base = path.basename(filename, ".png");
+  const parts = base.split("-");
+  return parts.map((part) => upOrTitle(provider, part)).join("");
+}
+
+function generateProviderIndex(provider: string): string {
+  const pascalProvider = toPascalCase(provider);
+  
+  return `import { Node } from "../../core/Node.js";
+
+export class _${pascalProvider} extends Node {
+  protected static override _provider = "${provider}";
+  protected static override _iconDir = "${provider}";
+}
+
+export class ${pascalProvider} extends _${pascalProvider} {
+  protected static override _icon = "${provider}.png";
+}
+`;
+}
+
+function generateModule(provider: string, serviceType: string, iconFiles: string[]): string {
+  const pascalProvider = toPascalCase(provider);
+  const pascalServiceType = toPascalCase(serviceType);
+  
+  const classMetas = iconFiles
+    .filter((file) => !file.includes("rounded"))
+    .map((file) => ({
+      name: generateClassName(provider, file),
+      icon: file,
+    }));
+
+  const aliases = ALIASES[provider]?.[serviceType] || {};
+
+  let code = `import { _${pascalProvider} } from "./index.js";
+
+class _${pascalServiceType} extends _${pascalProvider} {
+  protected static override _type = "${serviceType}";
+  protected static override _iconDir = "${provider}/${serviceType}";
+}
+
+`;
+
+  for (const meta of classMetas) {
+    code += `export class ${meta.name} extends _${pascalServiceType} {
+  protected static override _icon = "${meta.icon}";
+}
+
+`;
+  }
+
+  const aliasEntries = Object.entries(aliases).filter(([className, alias]) => className !== alias);
+  if (aliasEntries.length > 0) {
+    code += "// Aliases\n";
+    for (const [className, alias] of aliasEntries) {
+      code += `export const ${alias} = ${className};\n`;
+    }
+    code += "\n";
+  }
+
+  return code;
+}
+
+function generateProvider(provider: Provider): void {
+  console.log(`Generating ${provider}...`);
+
+  const providerDir = path.join(PROVIDERS_DIR, provider);
+  const resourceDir = path.join(RESOURCES_DIR, provider);
+
+  if (!fs.existsSync(resourceDir)) {
+    console.warn(`  Warning: Resource directory not found: ${resourceDir}`);
+    return;
+  }
+
+  if (!fs.existsSync(providerDir)) {
+    fs.mkdirSync(providerDir, { recursive: true });
+  }
+
+  const indexContent = generateProviderIndex(provider);
+  fs.writeFileSync(path.join(providerDir, "index.ts"), indexContent);
+  console.log(`  Created index.ts`);
+
+  const oldInitPath = path.join(providerDir, "__init__.ts");
+  if (fs.existsSync(oldInitPath)) {
+    fs.unlinkSync(oldInitPath);
+  }
+
+  const entries = fs.readdirSync(resourceDir, { withFileTypes: true });
+  
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      const serviceType = entry.name;
+      const serviceDir = path.join(resourceDir, serviceType);
+      
+      const files = fs.readdirSync(serviceDir);
+      const pngFiles = files
+        .filter((f) => f.endsWith(".png"))
+        .sort();
+
+      if (pngFiles.length === 0) {
+        continue;
+      }
+
+      const moduleContent = generateModule(provider, serviceType, pngFiles);
+      const moduleFile = path.join(providerDir, `${serviceType}.ts`);
+      fs.writeFileSync(moduleFile, moduleContent);
+      console.log(`  Created ${serviceType}.ts (${pngFiles.length} classes)`);
+    }
+  }
+
+  console.log(`  ✓ ${provider} generated successfully`);
+}
+
+function generateProvidersIndex(): void {
+  let code = "// Auto-generated providers index\n// Do not edit manually\n\n";
+
+  for (const provider of PROVIDERS) {
+    code += `export * from "./${provider}/index.js";\n`;
+  }
+
+  const indexPath = path.join(PROVIDERS_DIR, "index.ts");
+  fs.writeFileSync(indexPath, code);
+  console.log("Generated providers/index.ts");
+}
+
+function main(): void {
+  const args = process.argv.slice(2);
+  
+  if (!fs.existsSync(PROVIDERS_DIR)) {
+    fs.mkdirSync(PROVIDERS_DIR, { recursive: true });
+  }
+
+  if (args.length === 0) {
+    console.log("Generating all providers...\n");
+    for (const provider of PROVIDERS) {
+      generateProvider(provider);
+      console.log();
+    }
+    generateProvidersIndex();
+    console.log("\n✓ All providers generated successfully!");
+  } else {
+    const provider = args[0];
+    if (!PROVIDERS.includes(provider as Provider)) {
+      console.error(`Error: Unknown provider "${provider}"`);
+      console.error(`Valid providers: ${PROVIDERS.join(", ")}`);
+      process.exit(1);
+    }
+    generateProvider(provider as Provider);
+    generateProvidersIndex();
+  }
+}
+
+main();
