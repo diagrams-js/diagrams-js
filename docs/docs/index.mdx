@@ -1,0 +1,63 @@
+---
+title: ts-diagrams
+description: Draw cloud system architecture diagrams as code in TypeScript
+---
+
+# ts-diagrams
+
+A TypeScript port of the [diagrams](https://github.com/mingrammer/diagrams) Python library for drawing cloud system architecture diagrams as code.
+
+## Features
+
+- **Diagram as Code**: Define your architecture diagrams in TypeScript/JavaScript
+- **Cross-Platform**: Works in Node.js, Deno, Bun, browsers, and Cloudflare Workers
+- **Graphviz-Powered**: Uses `@viz-js/viz` (WebAssembly-based Graphviz) for rendering
+- **Type-Safe**: Full TypeScript support with autocompletion
+- **17 Providers**: AWS, Azure, GCP, Kubernetes, and more
+- **Custom Nodes**: Use your own icons and images
+- **Tree-Shakable**: Import only what you need
+
+## Quick Example
+
+```typescript
+import { Diagram } from 'ts-diagrams';
+import { EC2, Lambda } from 'ts-diagrams/providers/aws/compute';
+import { RDS } from 'ts-diagrams/providers/aws/database';
+import { S3 } from 'ts-diagrams/providers/aws/storage';
+
+const diagram = new Diagram('Web Architecture');
+
+const web = diagram.add(new EC2('Web Server'));
+const api = diagram.add(new Lambda('API'));
+const db = diagram.add(new RDS('Database'));
+const storage = diagram.add(new S3('Storage'));
+
+web.to(api).to(db);
+api.to(storage);
+
+const svg = await diagram.render();
+```
+
+## Installation
+
+```bash
+npm install ts-diagrams
+```
+
+## Get Started
+
+- [Installation](/getting-started/installation) - Install ts-diagrams in your project
+- [Quick Start](/getting-started/quick-start) - Create your first diagram
+- [Basic Diagrams](/guides/basic-diagrams) - Learn the basics
+
+## Providers
+
+- [AWS](/providers/aws) - 500+ services (EC2, S3, Lambda, RDS, etc.)
+- [Azure](/providers/azure) - 400+ services
+- [GCP](/providers/gcp) - 100+ services
+- [Kubernetes](/providers/k8s) - Pods, Deployments, Services
+- [And more...](/providers/) - 17 providers total
+
+## License
+
+MIT

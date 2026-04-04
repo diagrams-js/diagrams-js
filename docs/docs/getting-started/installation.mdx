@@ -1,0 +1,66 @@
+---
+title: Installation
+description: Install ts-diagrams in your project
+---
+
+# Installation
+
+## Prerequisites
+
+- Node.js 18+ (for Node.js environments)
+- TypeScript 5.0+ (recommended)
+
+## npm
+
+```bash
+npm install ts-diagrams
+```
+
+## yarn
+
+```bash
+yarn add ts-diagrams
+```
+
+## pnpm
+
+```bash
+pnpm add ts-diagrams
+```
+
+## Browser Usage
+
+For browser usage, you can import directly from a CDN:
+
+```html
+<script type="module">
+  import { Diagram } from 'https://esm.sh/ts-diagrams';
+  // ... your code
+</script>
+```
+
+## Optional Dependencies
+
+For PNG rendering in Node.js, install `sharp`:
+
+```bash
+npm install sharp
+```
+
+## TypeScript Configuration
+
+Make sure your `tsconfig.json` includes:
+
+```json
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022"
+  }
+}
+```
+
+## Next Steps
+
+- [Quick Start](/getting-started/quick-start) - Create your first diagram
