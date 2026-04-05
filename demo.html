@@ -141,9 +141,7 @@
     <div class="container">
       <header>
         <h1>diagrams-js Examples</h1>
-        <p class="subtitle">
-          diagrams-js examples, rendered in your browser
-        </p>
+        <p class="subtitle">diagrams-js examples, rendered in your browser</p>
       </header>
 
       <!-- Example 1: Grouped Workers on AWS -->
@@ -155,13 +153,13 @@
             <pre><code class="language-typescript">import { Diagram } from "diagrams-js";
 import { EC2 } from "diagrams-js/aws/compute";
 import { RDS } from "diagrams-js/aws/database";
-import { ALB } from "diagrams-js/aws/network";
+import { ELB } from "diagrams-js/aws/network";
 
 const diagram = new Diagram("Grouped Workers", {
   direction: "TB",
 });
 
-const lb = diagram.add(new ALB("lb"));
+const lb = diagram.add(new ELB("lb"));
 const workers = [
   diagram.add(new EC2("worker1")),
   diagram.add(new EC2("worker2")),
@@ -188,13 +186,13 @@ const svg = await diagram.render();</code></pre>
         import { Diagram } from "diagrams-js";
         import { EC2 } from "diagrams-js/aws/compute.js";
         import { RDS } from "diagrams-js/aws/database.js";
-        import { ALB } from "diagrams-js/aws/network.js";
+        import { ELB } from "diagrams-js/aws/network.js";
 
         const diagram = new Diagram("Grouped Workers", {
           direction: "TB",
         });
 
-        const lb = diagram.add(new ALB("lb"));
+        const lb = diagram.add(new ELB("lb"));
         const workers = [
           diagram.add(new EC2("worker1")),
           diagram.add(new EC2("worker2")),
@@ -226,12 +224,12 @@ const svg = await diagram.render();</code></pre>
             <pre><code class="language-typescript">import { Diagram } from "diagrams-js";
 import { ECS } from "diagrams-js/aws/compute";
 import { RDS, ElastiCache } from "diagrams-js/aws/database";
-import { ALB, Route53 } from "diagrams-js/aws/network";
+import { ELB, Route53 } from "diagrams-js/aws/network";
 
 const diagram = new Diagram("Clustered Web Services");
 
 const dns = diagram.add(new Route53("dns"));
-const lb = diagram.add(new ALB("lb"));
+const lb = diagram.add(new ELB("lb"));
 
 const svcCluster = diagram.cluster("Services");
 const svcGroup = [
@@ -266,12 +264,12 @@ const svg = await diagram.render();</code></pre>
         import { Diagram } from "diagrams-js";
         import { ECS } from "diagrams-js/aws/compute.js";
         import { RDS, ElastiCache } from "diagrams-js/aws/database.js";
-        import { ALB, Route53 } from "diagrams-js/aws/network.js";
+        import { ELB, Route53 } from "diagrams-js/aws/network.js";
 
         const diagram = new Diagram("Clustered Web Services");
 
         const dns = diagram.add(new Route53("dns"));
-        const lb = diagram.add(new ALB("lb"));
+        const lb = diagram.add(new ELB("lb"));
 
         const svcCluster = diagram.cluster("Services");
         const svcGroup = [
@@ -795,9 +793,9 @@ const svg = await diagram.render();</code></pre>
         }
       </script>
 
-      <!-- Example 8: Advanced Web Service with Colored Edges -->
+      <!-- Example 8: Advanced Web Service with On-Premises (with colors and labels) -->
       <div class="example">
-        <h2>Example 8: Advanced Web Service with Colored Edges</h2>
+        <h2>Example 8: Advanced Web Service with On-Premises (with colors and labels)</h2>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
@@ -922,34 +920,33 @@ const svg = await diagram.render();</code></pre>
         }
       </script>
 
-      <!-- Example 9: Custom Nodes with Remote Icons -->
+      <!-- Example 9: RabbitMQ Consumers with Custom Nodes -->
       <div class="example">
-        <h2>Example 9: Custom Nodes with Remote Icons</h2>
+        <h2>Example 9: RabbitMQ Consumers with Custom Nodes</h2>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
             <pre><code class="language-typescript">import { Diagram, Custom } from "diagrams-js";
+import { Pod } from "diagrams-js/k8s/compute";
+import { Aurora } from "diagrams-js/aws/database";
 
-const diagram = new Diagram("Custom with remote icons", {
-  direction: "LR"
-});
+const diagram = new Diagram("Broker Consumers");
 
-const diagrams = diagram.add(
-  new Custom("Diagrams", "https://raw.githubusercontent.com/mingrammer/diagrams/master/assets/img/diagrams.png")
+const consumersCluster = diagram.cluster("Consumers");
+const consumers = [
+  consumersCluster.add(new Pod("worker")),
+  consumersCluster.add(new Pod("worker")),
+  consumersCluster.add(new Pod("worker")),
+];
+
+const queue = diagram.add(
+  new Custom("Message queue", "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png")
 );
 
-const providersCluster = diagram.cluster("Some Providers");
+const database = diagram.add(new Aurora("Database"));
 
-const openstack = providersCluster.add(
-  new Custom("OpenStack", "https://raw.githubusercontent.com/mingrammer/diagrams/master/resources/openstack/openstack.png")
-);
-
-const elastic = providersCluster.add(
-  new Custom("Elastic", "https://raw.githubusercontent.com/mingrammer/diagrams/master/resources/elastic/saas/elastic.png")
-);
-
-diagrams.to(openstack);
-diagrams.to(elastic);
+queue.to(consumers);
+consumers.forEach((consumer) => consumer.to(database));
 
 const svg = await diagram.render();</code></pre>
           </div>
@@ -963,36 +960,26 @@ const svg = await diagram.render();</code></pre>
       </div>
       <script type="module">
         import { Diagram, Custom } from "diagrams-js";
+        import { Pod } from "diagrams-js/k8s/compute.js";
+        import { Aurora } from "diagrams-js/aws/database.js";
 
-        const diagram = new Diagram("Custom with remote icons", {
-          direction: "LR",
-        });
+        const diagram = new Diagram("Broker Consumers");
 
-        const diagrams = diagram.add(
-          new Custom(
-            "Diagrams",
-            "https://raw.githubusercontent.com/mingrammer/diagrams/master/assets/img/diagrams.png",
-          ),
+        const consumersCluster = diagram.cluster("Consumers");
+        const consumers = [
+          consumersCluster.add(new Pod("worker")),
+          consumersCluster.add(new Pod("worker")),
+          consumersCluster.add(new Pod("worker")),
+        ];
+
+        const queue = diagram.add(
+          new Custom("Message queue", "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png"),
         );
 
-        const providersCluster = diagram.cluster("Some Providers");
+        const database = diagram.add(new Aurora("Database"));
 
-        const openstack = providersCluster.add(
-          new Custom(
-            "OpenStack",
-            "https://raw.githubusercontent.com/mingrammer/diagrams/master/resources/openstack/openstack.png",
-          ),
-        );
-
-        const elastic = providersCluster.add(
-          new Custom(
-            "Elastic",
-            "https://raw.githubusercontent.com/mingrammer/diagrams/master/resources/elastic/saas/elastic.png",
-          ),
-        );
-
-        diagrams.to(openstack);
-        diagrams.to(elastic);
+        queue.to(consumers);
+        consumers.forEach((consumer) => consumer.to(database));
 
         try {
           const svg = await diagram.render();
