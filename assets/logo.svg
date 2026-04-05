@@ -1,0 +1,21 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background (Optional, transparent by default) -->
+  <rect width="200" height="200" fill="none"/>
+
+  <!-- Connecting Lines (The "Circuitry") -->
+  <path d="M45 65V115H130V145H150" stroke="#4A5568" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M130 55H110V95H170V145" stroke="#4A5568" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M45 165H65V145H85V185H130" stroke="#4A5568" stroke-width="4" stroke-linejoin="round"/>
+
+  <!-- Top Left Square (JS Yellow) -->
+  <rect x="10" y="10" width="60" height="60" rx="2" fill="#E8D44D" stroke="#4A5568" stroke-width="3"/>
+  
+  <!-- Top Right Square (TS Blue) -->
+  <rect x="130" y="10" width="60" height="60" rx="2" fill="#3178C6" stroke="#4A5568" stroke-width="3"/>
+  
+  <!-- Bottom Left Square (TS Blue) -->
+  <rect x="10" y="130" width="60" height="60" rx="2" fill="#3178C6" stroke="#4A5568" stroke-width="3"/>
+  
+  <!-- Bottom Right Square (JS Yellow) -->
+  <rect x="130" y="130" width="60" height="60" rx="2" fill="#E8D44D" stroke="#4A5568" stroke-width="3"/>
+</svg>
