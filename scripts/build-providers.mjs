@@ -62,6 +62,8 @@ async function buildProvider(provider) {
         outdir,
         outExtension: { ".js": ".js" },
         loader: { ".png": "dataurl" },
+        minify: true,
+        sourcemap: false,
         external: [
           "../../Node.js",
           "../../../Node.js",
@@ -77,17 +79,17 @@ async function buildProvider(provider) {
       let content = fs.readFileSync(outFile, "utf-8");
 
       // Replace imports from ../../Node.js to point to the main bundle
-      content = content.replace(/from\s+["']\.\.\/\.\.\/Node\.js["']/g, 'from "../../index.js"');
+      content = content.replace(/from\s*["']\.\.\/\.\.\/Node\.js["']/g, 'from "../../index.js"');
 
       // Replace imports from ../../../Node.js to point to main bundle
       content = content.replace(
-        /from\s+["']\.\.\/\.\.\/\.\.\/Node\.js["']/g,
+        /from\s*["']\.\.\/\.\.\/\.\.\/Node\.js["']/g,
         'from "../../../index.js"',
       );
 
       // Replace imports from ../../../../Node.js to point to main bundle
       content = content.replace(
-        /from\s+["']\.\.\/\.\.\/\.\.\/\.\.\/Node\.js["']/g,
+        /from\s*["']\.\.\/\.\.\/\.\.\/\.\.\/Node\.js["']/g,
         'from "../../../../index.js"',
       );
 

@@ -11,7 +11,7 @@ import {
   type ThemeName,
   type ThemeConfig,
 } from "./types.js";
-import type { NodeIconMap, IconData } from "./icons.js";
+import { injectIcons, type NodeIconMap, type IconData } from "./icons.js";
 
 export class Diagram {
   private static directions = ["TB", "BT", "LR", "RL"] as const;
@@ -402,7 +402,6 @@ export class Diagram {
       await this._autoLoadAndInjectIcons();
 
       if (Object.keys(this._iconData).length > 0 && this._nodeIconMap.length > 0) {
-        const { injectIcons } = await import("./icons.js");
         output = injectIcons(output as string, this._nodeIconMap, this._iconData);
       }
     }
@@ -812,7 +811,6 @@ export class Diagram {
     const output = await this.render({ format: "svg", injectIcons: false });
     const svgString = typeof output === "string" ? output : new TextDecoder().decode(output);
 
-    const { injectIcons } = await import("./icons.js");
     return injectIcons(svgString, map, data);
   }
 

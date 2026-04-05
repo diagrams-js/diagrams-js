@@ -12,6 +12,8 @@ export default defineConfig({
     },
     exports: true,
     format: ["esm"],
+    minify: true,
+    sourcemap: false,
   },
   optimizeDeps: {
     include: ["@viz-js/viz"],
