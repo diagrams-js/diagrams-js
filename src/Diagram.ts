@@ -58,7 +58,11 @@ export class Diagram {
   edgeAttr: Record<string, string>;
 
   private _nodes: Map<string, { label: string; attrs: Record<string, unknown> }> = new Map();
-  private _edges: Array<{ from: string; to: string; attrs: Record<string, string> }> = [];
+  private _edges: Array<{
+    from: string;
+    to: string;
+    attrs: Record<string, string>;
+  }> = [];
   private _clusters: Cluster[] = [];
   private _viz: Viz | null = null;
   private _nodeIconMap: NodeIconMap[] = [];
@@ -82,7 +86,7 @@ export class Diagram {
     }
     this.curveStyle = curveStyle;
 
-    const theme = options.theme ?? "neutral";
+    const theme = options.theme ?? "pastel";
     if (!(theme in THEMES)) {
       throw new Error(
         `"${theme}" is not a valid theme. Choose from: ${Object.keys(THEMES).join(", ")}`,
@@ -410,7 +414,9 @@ export class Diagram {
   ): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+      const svgBlob = new Blob([svgString], {
+        type: "image/svg+xml;charset=utf-8",
+      });
       const url = URL.createObjectURL(svgBlob);
 
       img.onload = () => {
