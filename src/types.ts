@@ -45,7 +45,7 @@ export interface DiagramOptions {
 }
 
 export interface RenderOptions {
-  format?: "svg" | "png" | "jpg" | "pdf" | "dot";
+  format?: "svg" | "png" | "jpg" | "dot";
   filename?: string;
   width?: number;
   height?: number;

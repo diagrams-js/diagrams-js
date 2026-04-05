@@ -166,7 +166,7 @@ const diagram = new Diagram(name: string, options?: DiagramOptions)
 
 - `direction`: `"TB" | "BT" | "LR" | "RL"` - Layout direction
 - `curvestyle`: `"ortho" | "curved" | "spline" | "polyline"` - Edge curve style
-- `outformat`: `"png" | "jpg" | "svg" | "pdf" | "dot"` - Output format(s)
+- `outformat`: `"png" | "jpg" | "svg" | "dot"` - Output format(s)
 - `theme`: `"neutral" | "pastel" | "blues" | "greens" | "orange"` - Color theme
 - `show`: `boolean` - Open rendered image after generation
 - `autolabel`: `boolean` - Auto-prefix node labels with class name

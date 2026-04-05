@@ -34,10 +34,10 @@ await diagram.save("diagram.png");
 
 ```typescript
 const svg = await diagram.render({
-  format: "svg", // 'svg' | 'png' | 'jpg' | 'pdf' | 'dot'
-  width: 800, // Output width (for PNG)
-  height: 600, // Output height (for PNG)
-  scale: 2, // Scale factor (default: 2 for PNG)
+  format: "svg", // 'svg' | 'png' | 'jpg' | 'dot'
+  width: 800, // Output width (for PNG/JPG)
+  height: 600, // Output height (for PNG/JPG)
+  scale: 2, // Scale factor (default: 2 for PNG/JPG)
   injectIcons: true, // Auto-inject icons
 });
 ```
