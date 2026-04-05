@@ -24,18 +24,18 @@ export interface Node {
   cluster: Cluster | undefined;
   _register(parent: Diagram | Cluster): void;
   to(target: Node): Node;
-  to(target: Node[]): Node[];
-  to(edge: Edge, target: Node): Node;
-  to(edge: Edge, target: Node[]): Node[];
+  to(targets: Node[]): Node[];
   to(edge: Edge): Edge;
+  to(edge: Edge, target: Node): Node;
+  to(edge: Edge, targets: Node[]): Node[];
   from(source: Node): Node;
   from(sources: Node[]): Node;
   from(edge: Edge, source: Node): Node;
-  from(edge: Edge, sources: Node[]): Node;
+  from(edge: Edge, sources: Node[]): Node[];
   with(target: Node): Node;
   with(targets: Node[]): Node[];
   with(edge: Edge, target: Node): Node;
-  with(edge: Edge, target: Node[]): Node[];
+  with(edge: Edge, targets: Node[]): Node[];
   connect(target: Node, edge: Edge): Node;
 }
 
@@ -159,10 +159,8 @@ export function Node(label = "", options: NodeOptions = {}): Node {
      * Python: Self >> Node (forward)
      * TypeScript: node.to(otherNode)
      */
-    to(
-      targetOrEdge: Node | Node[] | Edge,
-      targetOrUndefined?: Node | Node[],
-    ): Node | Node[] | Edge {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    to(targetOrEdge: any, targetOrUndefined?: any): any {
       if (isEdge(targetOrEdge)) {
         // Edge provided: node.to(edge, target?) or node.to(edge)
         targetOrEdge.node = node;
@@ -211,7 +209,8 @@ export function Node(label = "", options: NodeOptions = {}): Node {
      * Example: pod.from(rs) creates pod << rs (arrow from pod back to rs)
      * This creates edges with dir=back
      */
-    from(sourceOrEdge: Node | Node[] | Edge, sourceOrUndefined?: Node | Node[]): Node {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    from(sourceOrEdge: any, sourceOrUndefined?: any): any {
       if (isEdge(sourceOrEdge)) {
         // Edge provided: node.from(edge, source)
         sourceOrEdge.node = node;
@@ -256,7 +255,8 @@ export function Node(label = "", options: NodeOptions = {}): Node {
      * Python: Self - Node
      * TypeScript: node.with(otherNode)
      */
-    with(targetOrEdge: Node | Node[] | Edge, targetOrUndefined?: Node | Node[]): Node | Node[] {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    with(targetOrEdge: any, targetOrUndefined?: any): any {
       if (isEdge(targetOrEdge)) {
         // Edge provided: node.with(edge, target)
         // For undirected edges, don't set forward or reverse (results in dir="none")

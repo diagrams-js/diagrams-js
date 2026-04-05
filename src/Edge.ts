@@ -12,11 +12,7 @@ export interface Edge {
   forward: boolean;
   reverse: boolean;
   attrs: Record<string, string>;
-  to(target: Node): Node;
-  to(target: Edge): Edge;
   to(target: Node | Edge): Node | Edge;
-  from(target: Node): Node;
-  from(target: Edge): Edge;
   from(target: Node | Edge): Node | Edge;
 }
 

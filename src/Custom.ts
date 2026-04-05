@@ -44,12 +44,6 @@ export function Custom(
   const customNode = {
     ...baseNode,
     _iconUrl: iconUrl,
-    // Explicitly preserve methods from baseNode that might not be copied by spread
-    to: baseNode.to,
-    from: baseNode.from,
-    with: baseNode.with,
-    connect: baseNode.connect,
-    _register: baseNode._register,
     // Override _iconDataUrl getter/setter to ensure custom icons are tracked
     get _iconDataUrl(): string | null {
       // Return the iconUrl if it's a data URL, otherwise null (will be loaded async)
