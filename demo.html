@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ts-diagrams - Examples from Python diagrams</title>
+    <title>diagrams-js Examples</title>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
       rel="stylesheet"
@@ -13,8 +13,8 @@
     <script type="importmap">
       {
         "imports": {
-          "ts-diagrams": "./dist/index.js",
-          "ts-diagrams/": "./dist/providers/"
+          "diagrams-js": "./dist/index.js",
+          "diagrams-js/": "./dist/providers/"
         }
       }
     </script>
@@ -140,9 +140,9 @@
   <body>
     <div class="container">
       <header>
-        <h1>ts-diagrams Examples</h1>
+        <h1>diagrams-js Examples</h1>
         <p class="subtitle">
-          All examples from diagrams-py documentation, rendered in your browser
+          diagrams-js examples, rendered in your browser
         </p>
       </header>
 
@@ -152,10 +152,10 @@
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
-import { EC2 } from "ts-diagrams/aws/compute";
-import { RDS } from "ts-diagrams/aws/database";
-import { ALB } from "ts-diagrams/aws/network";
+            <pre><code class="language-typescript">import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
+import { ALB } from "diagrams-js/aws/network";
 
 const diagram = new Diagram("Grouped Workers", {
   direction: "TB",
@@ -185,10 +185,10 @@ const svg = await diagram.render();</code></pre>
         </div>
       </div>
       <script type="module">
-        import { Diagram } from "ts-diagrams";
-        import { EC2 } from "ts-diagrams/aws/compute.js";
-        import { RDS } from "ts-diagrams/aws/database.js";
-        import { ALB } from "ts-diagrams/aws/network.js";
+        import { Diagram } from "diagrams-js";
+        import { EC2 } from "diagrams-js/aws/compute.js";
+        import { RDS } from "diagrams-js/aws/database.js";
+        import { ALB } from "diagrams-js/aws/network.js";
 
         const diagram = new Diagram("Grouped Workers", {
           direction: "TB",
@@ -223,10 +223,10 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
-import { ECS } from "ts-diagrams/aws/compute";
-import { RDS, ElastiCache } from "ts-diagrams/aws/database";
-import { ALB, Route53 } from "ts-diagrams/aws/network";
+            <pre><code class="language-typescript">import { Diagram } from "diagrams-js";
+import { ECS } from "diagrams-js/aws/compute";
+import { RDS, ElastiCache } from "diagrams-js/aws/database";
+import { ALB, Route53 } from "diagrams-js/aws/network";
 
 const diagram = new Diagram("Clustered Web Services");
 
@@ -263,10 +263,10 @@ const svg = await diagram.render();</code></pre>
         </div>
       </div>
       <script type="module">
-        import { Diagram } from "ts-diagrams";
-        import { ECS } from "ts-diagrams/aws/compute.js";
-        import { RDS, ElastiCache } from "ts-diagrams/aws/database.js";
-        import { ALB, Route53 } from "ts-diagrams/aws/network.js";
+        import { Diagram } from "diagrams-js";
+        import { ECS } from "diagrams-js/aws/compute.js";
+        import { RDS, ElastiCache } from "diagrams-js/aws/database.js";
+        import { ALB, Route53 } from "diagrams-js/aws/network.js";
 
         const diagram = new Diagram("Clustered Web Services");
 
@@ -308,11 +308,11 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
-import { ECS, EKS, Lambda } from "ts-diagrams/aws/compute";
-import { Redshift } from "ts-diagrams/aws/database";
-import { SQS } from "ts-diagrams/aws/integration";
-import { S3 } from "ts-diagrams/aws/storage";
+            <pre><code class="language-typescript">import { Diagram } from "diagrams-js";
+import { ECS, EKS, Lambda } from "diagrams-js/aws/compute";
+import { Redshift } from "diagrams-js/aws/database";
+import { SQS } from "diagrams-js/aws/integration";
+import { S3 } from "diagrams-js/aws/storage";
 
 const diagram = new Diagram("Event Processing");
 
@@ -356,11 +356,11 @@ const svg = await diagram.render();</code></pre>
         </div>
       </div>
       <script type="module">
-        import { Diagram } from "ts-diagrams";
-        import { ECS, EKS, Lambda } from "ts-diagrams/aws/compute.js";
-        import { Redshift } from "ts-diagrams/aws/database.js";
-        import { SQS } from "ts-diagrams/aws/integration.js";
-        import { S3 } from "ts-diagrams/aws/storage.js";
+        import { Diagram } from "diagrams-js";
+        import { ECS, EKS, Lambda } from "diagrams-js/aws/compute.js";
+        import { Redshift } from "diagrams-js/aws/database.js";
+        import { SQS } from "diagrams-js/aws/integration.js";
+        import { S3 } from "diagrams-js/aws/storage.js";
 
         const diagram = new Diagram("Event Processing");
 
@@ -409,12 +409,12 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
-import { BigQuery, Dataflow, PubSub } from "ts-diagrams/gcp/analytics";
-import { AppEngine, Functions } from "ts-diagrams/gcp/compute";
-import { BigTable } from "ts-diagrams/gcp/database";
-import { IotCore } from "ts-diagrams/gcp/iot";
-import { GCS } from "ts-diagrams/gcp/storage";
+            <pre><code class="language-typescript">import { Diagram } from "diagrams-js";
+import { BigQuery, Dataflow, PubSub } from "diagrams-js/gcp/analytics";
+import { AppEngine, Functions } from "diagrams-js/gcp/compute";
+import { BigTable } from "diagrams-js/gcp/database";
+import { IotCore } from "diagrams-js/gcp/iot";
+import { GCS } from "diagrams-js/gcp/storage";
 
 const diagram = new Diagram("Message Collecting");
 
@@ -461,12 +461,12 @@ const svg = await diagram.render();</code></pre>
         </div>
       </div>
       <script type="module">
-        import { Diagram } from "ts-diagrams";
-        import { BigQuery, Dataflow, PubSub } from "ts-diagrams/gcp/analytics.js";
-        import { AppEngine, Functions } from "ts-diagrams/gcp/compute.js";
-        import { BigTable } from "ts-diagrams/gcp/database.js";
-        import { IotCore } from "ts-diagrams/gcp/iot.js";
-        import { GCS } from "ts-diagrams/gcp/storage.js";
+        import { Diagram } from "diagrams-js";
+        import { BigQuery, Dataflow, PubSub } from "diagrams-js/gcp/analytics.js";
+        import { AppEngine, Functions } from "diagrams-js/gcp/compute.js";
+        import { BigTable } from "diagrams-js/gcp/database.js";
+        import { IotCore } from "diagrams-js/gcp/iot.js";
+        import { GCS } from "diagrams-js/gcp/storage.js";
 
         const diagram = new Diagram("Message Collecting");
 
@@ -518,10 +518,10 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
-import { HPA } from "ts-diagrams/k8s/clusterconfig";
-import { Deployment, Pod, ReplicaSet } from "ts-diagrams/k8s/compute";
-import { Ingress, Service } from "ts-diagrams/k8s/network";
+            <pre><code class="language-typescript">import { Diagram } from "diagrams-js";
+import { HPA } from "diagrams-js/k8s/clusterconfig";
+import { Deployment, Pod, ReplicaSet } from "diagrams-js/k8s/compute";
+import { Ingress, Service } from "diagrams-js/k8s/network";
 
 const diagram = new Diagram("Exposed Pod with 3 Replicas");
 
@@ -553,10 +553,10 @@ const svg = await diagram.render();</code></pre>
         </div>
       </div>
       <script type="module">
-        import { Diagram } from "ts-diagrams";
-        import { HPA } from "ts-diagrams/k8s/clusterconfig.js";
-        import { Deployment, Pod, ReplicaSet } from "ts-diagrams/k8s/compute.js";
-        import { Ingress, Service } from "ts-diagrams/k8s/network.js";
+        import { Diagram } from "diagrams-js";
+        import { HPA } from "diagrams-js/k8s/clusterconfig.js";
+        import { Deployment, Pod, ReplicaSet } from "diagrams-js/k8s/compute.js";
+        import { Ingress, Service } from "diagrams-js/k8s/network.js";
 
         const diagram = new Diagram("Exposed Pod with 3 Replicas");
 
@@ -593,10 +593,10 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
-import { Pod, StatefulSet } from "ts-diagrams/k8s/compute";
-import { Service } from "ts-diagrams/k8s/network";
-import { PV, PVC, StorageClass } from "ts-diagrams/k8s/storage";
+            <pre><code class="language-typescript">import { Diagram } from "diagrams-js";
+import { Pod, StatefulSet } from "diagrams-js/k8s/compute";
+import { Service } from "diagrams-js/k8s/network";
+import { PV, PVC, StorageClass } from "diagrams-js/k8s/storage";
 
 const diagram = new Diagram("Stateful Architecture");
 const appsCluster = diagram.cluster("Apps");
@@ -634,10 +634,10 @@ const svg = await diagram.render();</code></pre>
         </div>
       </div>
       <script type="module">
-        import { Diagram } from "ts-diagrams";
-        import { Pod, StatefulSet } from "ts-diagrams/k8s/compute.js";
-        import { Service } from "ts-diagrams/k8s/network.js";
-        import { PV, PVC, StorageClass } from "ts-diagrams/k8s/storage.js";
+        import { Diagram } from "diagrams-js";
+        import { Pod, StatefulSet } from "diagrams-js/k8s/compute.js";
+        import { Service } from "diagrams-js/k8s/network.js";
+        import { PV, PVC, StorageClass } from "diagrams-js/k8s/storage.js";
 
         const diagram = new Diagram("Stateful Architecture");
         const appsCluster = diagram.cluster("Apps");
@@ -680,15 +680,15 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
-            <pre><code class="language-typescript">import { Diagram } from "ts-diagrams";
-import { Spark } from "ts-diagrams/onprem/analytics";
-import { Server } from "ts-diagrams/onprem/compute";
-import { PostgreSQL } from "ts-diagrams/onprem/database";
-import { Redis } from "ts-diagrams/onprem/inmemory";
-import { Fluentd } from "ts-diagrams/onprem/aggregator";
-import { Grafana, Prometheus } from "ts-diagrams/onprem/monitoring";
-import { Nginx } from "ts-diagrams/onprem/network";
-import { Kafka } from "ts-diagrams/onprem/queue";
+            <pre><code class="language-typescript">import { Diagram } from "diagrams-js";
+import { Spark } from "diagrams-js/onprem/analytics";
+import { Server } from "diagrams-js/onprem/compute";
+import { PostgreSQL } from "diagrams-js/onprem/database";
+import { Redis } from "diagrams-js/onprem/inmemory";
+import { Fluentd } from "diagrams-js/onprem/aggregator";
+import { Grafana, Prometheus } from "diagrams-js/onprem/monitoring";
+import { Nginx } from "diagrams-js/onprem/network";
+import { Kafka } from "diagrams-js/onprem/queue";
 
 const diagram = new Diagram("Advanced Web Service with On-Premises");
 
@@ -738,15 +738,15 @@ const svg = await diagram.render();</code></pre>
         </div>
       </div>
       <script type="module">
-        import { Diagram } from "ts-diagrams";
-        import { Spark } from "ts-diagrams/onprem/analytics.js";
-        import { Server } from "ts-diagrams/onprem/compute.js";
-        import { PostgreSQL } from "ts-diagrams/onprem/database.js";
-        import { Redis } from "ts-diagrams/onprem/inmemory.js";
-        import { Fluentd } from "ts-diagrams/onprem/aggregator.js";
-        import { Grafana, Prometheus } from "ts-diagrams/onprem/monitoring.js";
-        import { Nginx } from "ts-diagrams/onprem/network.js";
-        import { Kafka } from "ts-diagrams/onprem/queue.js";
+        import { Diagram } from "diagrams-js";
+        import { Spark } from "diagrams-js/onprem/analytics.js";
+        import { Server } from "diagrams-js/onprem/compute.js";
+        import { PostgreSQL } from "diagrams-js/onprem/database.js";
+        import { Redis } from "diagrams-js/onprem/inmemory.js";
+        import { Fluentd } from "diagrams-js/onprem/aggregator.js";
+        import { Grafana, Prometheus } from "diagrams-js/onprem/monitoring.js";
+        import { Nginx } from "diagrams-js/onprem/network.js";
+        import { Kafka } from "diagrams-js/onprem/queue.js";
 
         const diagram = new Diagram("Advanced Web Service with On-Premises");
 
@@ -801,15 +801,15 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
-            <pre><code class="language-typescript">import { Diagram, Edge } from "ts-diagrams";
-import { Spark } from "ts-diagrams/onprem/analytics";
-import { Server } from "ts-diagrams/onprem/compute";
-import { PostgreSQL } from "ts-diagrams/onprem/database";
-import { Redis } from "ts-diagrams/onprem/inmemory";
-import { Fluentd } from "ts-diagrams/onprem/aggregator";
-import { Grafana, Prometheus } from "ts-diagrams/onprem/monitoring";
-import { Nginx } from "ts-diagrams/onprem/network";
-import { Kafka } from "ts-diagrams/onprem/queue";
+            <pre><code class="language-typescript">import { Diagram, Edge } from "diagrams-js";
+import { Spark } from "diagrams-js/onprem/analytics";
+import { Server } from "diagrams-js/onprem/compute";
+import { PostgreSQL } from "diagrams-js/onprem/database";
+import { Redis } from "diagrams-js/onprem/inmemory";
+import { Fluentd } from "diagrams-js/onprem/aggregator";
+import { Grafana, Prometheus } from "diagrams-js/onprem/monitoring";
+import { Nginx } from "diagrams-js/onprem/network";
+import { Kafka } from "diagrams-js/onprem/queue";
 
 const diagram = new Diagram("Advanced Web Service with On-Premises (colored)");
 
@@ -862,15 +862,15 @@ const svg = await diagram.render();</code></pre>
         </div>
       </div>
       <script type="module">
-        import { Diagram, Edge } from "ts-diagrams";
-        import { Spark } from "ts-diagrams/onprem/analytics.js";
-        import { Server } from "ts-diagrams/onprem/compute.js";
-        import { PostgreSQL } from "ts-diagrams/onprem/database.js";
-        import { Redis } from "ts-diagrams/onprem/inmemory.js";
-        import { Fluentd } from "ts-diagrams/onprem/aggregator.js";
-        import { Grafana, Prometheus } from "ts-diagrams/onprem/monitoring.js";
-        import { Nginx } from "ts-diagrams/onprem/network.js";
-        import { Kafka } from "ts-diagrams/onprem/queue.js";
+        import { Diagram, Edge } from "diagrams-js";
+        import { Spark } from "diagrams-js/onprem/analytics.js";
+        import { Server } from "diagrams-js/onprem/compute.js";
+        import { PostgreSQL } from "diagrams-js/onprem/database.js";
+        import { Redis } from "diagrams-js/onprem/inmemory.js";
+        import { Fluentd } from "diagrams-js/onprem/aggregator.js";
+        import { Grafana, Prometheus } from "diagrams-js/onprem/monitoring.js";
+        import { Nginx } from "diagrams-js/onprem/network.js";
+        import { Kafka } from "diagrams-js/onprem/queue.js";
 
         const diagram = new Diagram("Advanced Web Service with On-Premises (colored)");
 
@@ -928,7 +928,7 @@ const svg = await diagram.render();</code></pre>
         <div class="example-content">
           <div class="code-section">
             <div class="code-header">Code</div>
-            <pre><code class="language-typescript">import { Diagram, Custom } from "ts-diagrams";
+            <pre><code class="language-typescript">import { Diagram, Custom } from "diagrams-js";
 
 const diagram = new Diagram("Custom with remote icons", {
   direction: "LR"
@@ -962,7 +962,7 @@ const svg = await diagram.render();</code></pre>
         </div>
       </div>
       <script type="module">
-        import { Diagram, Custom } from "ts-diagrams";
+        import { Diagram, Custom } from "diagrams-js";
 
         const diagram = new Diagram("Custom with remote icons", {
           direction: "LR",

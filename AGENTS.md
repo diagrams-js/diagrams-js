@@ -1,8 +1,8 @@
-# ts-diagrams - AI Agent Development Guide
+# diagrams-js - AI Agent Development Guide
 
 ## Project Overview
 
-**ts-diagrams** is a TypeScript port of the Python [diagrams](https://github.com/mingrammer/diagrams) library. It allows developers to draw cloud system architecture diagrams as code using TypeScript/JavaScript.
+**diagrams-js** is a TypeScript port of the Python [diagrams](https://github.com/mingrammer/diagrams) library. It allows developers to draw cloud system architecture diagrams as code using TypeScript/JavaScript.
 
 ### Key Features
 
@@ -188,7 +188,7 @@ Icons are inlined during build:
 ### Working with Custom Nodes
 
 ```typescript
-import { Custom } from "ts-diagrams";
+import { Custom } from "diagrams-js";
 
 // Remote URL
 const node = new Custom("Label", "https://example.com/icon.png");
@@ -338,5 +338,5 @@ For issues or questions:
 ---
 
 **Last Updated**: 2025-04-05  
-**Project**: ts-diagrams  
+**Project**: diagrams-js  
 **License**: MIT

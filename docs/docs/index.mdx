@@ -1,9 +1,9 @@
 ---
-title: ts-diagrams
+title: diagrams-js
 description: Draw cloud system architecture diagrams as code in TypeScript
 ---
 
-# ts-diagrams
+# diagrams-js
 
 A TypeScript port of the [diagrams](https://github.com/mingrammer/diagrams) Python library for drawing cloud system architecture diagrams as code.
 
@@ -20,10 +20,10 @@ A TypeScript port of the [diagrams](https://github.com/mingrammer/diagrams) Pyth
 ## Quick Example
 
 ```typescript
-import { Diagram } from "ts-diagrams";
-import { EC2, Lambda } from "ts-diagrams/aws/compute";
-import { RDS } from "ts-diagrams/aws/database";
-import { S3 } from "ts-diagrams/aws/storage";
+import { Diagram } from "diagrams-js";
+import { EC2, Lambda } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
+import { S3 } from "diagrams-js/aws/storage";
 
 const diagram = new Diagram("Web Architecture");
 
@@ -41,12 +41,12 @@ const svg = await diagram.render();
 ## Installation
 
 ```bash
-npm install ts-diagrams
+npm install diagrams-js
 ```
 
 ## Get Started
 
-- [Installation](/getting-started/installation) - Install ts-diagrams in your project
+- [Installation](/getting-started/installation) - Install diagrams-js in your project
 - [Quick Start](/getting-started/quick-start) - Create your first diagram
 - [Basic Diagrams](/guides/basic-diagrams) - Learn the basics
 

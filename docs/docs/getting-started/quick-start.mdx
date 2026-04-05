@@ -10,8 +10,8 @@ Let's create your first diagram!
 ## Basic Diagram
 
 ```typescript
-import { Diagram } from "ts-diagrams";
-import { EC2 } from "ts-diagrams/aws/compute";
+import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
 
 const diagram = new Diagram("My First Diagram");
 const server = diagram.add(new EC2("Web Server"));
@@ -23,9 +23,9 @@ console.log(svg);
 ## Connecting Nodes
 
 ```typescript
-import { Diagram } from "ts-diagrams";
-import { EC2 } from "ts-diagrams/aws/compute";
-import { RDS } from "ts-diagrams/aws/database";
+import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
 
 const diagram = new Diagram("Web Architecture");
 
@@ -41,10 +41,10 @@ const svg = await diagram.render();
 ## Multiple Connections
 
 ```typescript
-import { Diagram } from "ts-diagrams";
-import { EC2 } from "ts-diagrams/aws/compute";
-import { RDS } from "ts-diagrams/aws/database";
-import { S3 } from "ts-diagrams/aws/storage";
+import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
+import { S3 } from "diagrams-js/aws/storage";
 
 const diagram = new Diagram("Full Stack");
 

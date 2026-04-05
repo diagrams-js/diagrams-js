@@ -1,16 +1,16 @@
 {
-  "name": "ts-diagrams",
+  "name": "diagrams-js",
   "version": "0.0.0",
   "description": "A TypeScript port of the diagrams Python library for drawing cloud system architecture diagrams as code",
-  "homepage": "https://github.com/author/ts-diagrams#readme",
+  "homepage": "https://github.com/author/diagrams-js#readme",
   "bugs": {
-    "url": "https://github.com/author/ts-diagrams/issues"
+    "url": "https://github.com/author/diagrams-js/issues"
   },
   "license": "MIT",
   "author": "Author Name <author.name@mail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/author/ts-diagrams.git"
+    "url": "git+https://github.com/author/diagrams-js.git"
   },
   "files": [
     "dist",
