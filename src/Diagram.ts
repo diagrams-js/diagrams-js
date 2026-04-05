@@ -269,6 +269,17 @@ export class Diagram {
       for (const [key, value] of Object.entries(attrs)) {
         dot += `, ${key}="${String(value)}"`;
       }
+      // Add image attribute if node has an icon
+      const nodeIcon = this._nodeIconMap.find((m) => m.node.nodeId === id);
+      if (nodeIcon) {
+        const iconDataUrl = this._iconData[nodeIcon.icon];
+        if (iconDataUrl) {
+          dot += `, image="${iconDataUrl}"`;
+          // Add image dimensions for proper rendering in external Graphviz
+          dot += `, width="1.0", height="1.0"`;
+          dot += `, imagescale=true`;
+        }
+      }
       dot += "];\n";
     }
 
@@ -308,6 +319,17 @@ export class Diagram {
       for (const [key, value] of Object.entries(attrs)) {
         dot += `, ${key}="${String(value)}"`;
       }
+      // Add image attribute if node has an icon
+      const nodeIcon = this._nodeIconMap.find((m) => m.node.nodeId === id);
+      if (nodeIcon) {
+        const iconDataUrl = this._iconData[nodeIcon.icon];
+        if (iconDataUrl) {
+          dot += `, image="${iconDataUrl}"`;
+          // Add image dimensions for proper rendering in external Graphviz
+          dot += `, width="1.0", height="1.0"`;
+          dot += `, imagescale=true`;
+        }
+      }
       dot += "];\n";
     }
 
@@ -344,6 +366,11 @@ export class Diagram {
 
     const dot = this._buildDot();
     const format = options.format ?? "svg";
+
+    // If DOT format was requested, return the raw DOT source
+    if (format === "dot") {
+      return dot;
+    }
 
     // Always render to SVG first - Graphviz WASM doesn't support PNG output
     // We'll convert to PNG after rendering if needed

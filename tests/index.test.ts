@@ -333,6 +333,46 @@ describe("Image Rendering", () => {
     expect(result[1]).toBe(0xd8);
     diagram.destroy();
   });
+
+  it("should render to DOT format", async () => {
+    const diagram = new Diagram("DOT Test", {
+      direction: "LR",
+    });
+    const node1 = diagram.add(new Node("Node A"));
+    const node2 = diagram.add(new Node("Node B"));
+    node1.to(node2);
+
+    const result = await diagram.render({ format: "dot" });
+    expect(typeof result).toBe("string");
+
+    // Check that it's a valid DOT format
+    expect(result).toContain("digraph");
+    expect(result).toContain('label="Node A"');
+    expect(result).toContain('label="Node B"');
+    expect(result).toContain("->");
+    diagram.destroy();
+  });
+
+  it("should include image attribute in DOT format for icons", async () => {
+    const diagram = new Diagram("DOT Icons Test", {
+      direction: "TB",
+    });
+
+    const server = diagram.add(new Node("Server"));
+
+    // Manually track node with icon data
+    const testIconData =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+    diagram.trackNodeWithIcon(server, testIconData);
+
+    const result = await diagram.render({ format: "dot" });
+    expect(typeof result).toBe("string");
+
+    // Check that DOT includes image attribute
+    expect(result).toContain("image=");
+    expect(result).toContain("data:image/png;base64,");
+    diagram.destroy();
+  });
 });
 
 describe("Custom Nodes", () => {
