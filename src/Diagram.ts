@@ -23,8 +23,7 @@ export class Diagram {
     nodesep: "0.15",
     ranksep: "0.20",
     fontname: "Sans-Serif",
-    fontsize: "15",
-    fontcolor: "#2D3436",
+    fontsize: "12",
   };
 
   private static defaultNodeAttrs: Record<string, string> = {
@@ -36,13 +35,11 @@ export class Diagram {
     labelloc: "b",
     imagescale: "true",
     fontname: "Sans-Serif",
-    fontsize: "13",
-    fontcolor: "#2D3436",
+    fontsize: "10",
   };
 
   private static defaultEdgeAttrs: Record<string, string> = {
-    color: "#495057",
-    arrowsize: "0.8",
+    arrowsize: "0.5",
   };
 
   name: string;
