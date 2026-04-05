@@ -151,12 +151,19 @@ export class Node {
   to(target: Node[]): Node[];
   to(edge: Edge, target: Node): Node;
   to(edge: Edge, target: Node[]): Node[];
-  to(targetOrEdge: Node | Node[] | Edge, targetOrUndefined?: Node | Node[]): Node | Node[] {
+  to(edge: Edge): Edge;
+  to(targetOrEdge: Node | Node[] | Edge, targetOrUndefined?: Node | Node[]): Node | Node[] | Edge {
     if (targetOrEdge instanceof Edge) {
-      // Edge provided: node.to(edge, target)
+      // Edge provided: node.to(edge, target?) or node.to(edge)
       targetOrEdge.node = this;
       targetOrEdge.forward = true;
-      const target = targetOrUndefined!;
+
+      // If no target provided, return the edge for chaining
+      if (targetOrUndefined === undefined) {
+        return targetOrEdge;
+      }
+
+      const target = targetOrUndefined;
       if (Array.isArray(target)) {
         for (const t of target) {
           // Create a copy of the edge for each target to avoid shared state
@@ -239,7 +246,7 @@ export class Node {
   }
 
   /**
-   * Bidirectional connection (undirected)
+   * Undirected connection (no arrows)
    * Python: Self - Node
    * TypeScript: node.with(otherNode)
    */
@@ -250,6 +257,7 @@ export class Node {
   with(targetOrEdge: Node | Node[] | Edge, targetOrUndefined?: Node | Node[]): Node | Node[] {
     if (targetOrEdge instanceof Edge) {
       // Edge provided: node.with(edge, target)
+      // For undirected edges, don't set forward or reverse (results in dir="none")
       targetOrEdge.node = this;
       const target = targetOrUndefined!;
       if (Array.isArray(target)) {
@@ -267,6 +275,8 @@ export class Node {
     }
 
     const target = targetOrEdge;
+    // For undirected connections, don't set forward or reverse flags
+    // This results in dir="none" (no arrow heads)
     const edge = new Edge({ node: this });
 
     if (Array.isArray(target)) {

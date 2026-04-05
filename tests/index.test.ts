@@ -193,6 +193,21 @@ describe("Node connections", () => {
     expect(dot).toContain('dir="back"');
     diagram.destroy();
   });
+
+  it("should support to(Edge) chaining", () => {
+    const diagram = new Diagram("Test", {});
+    const node1 = diagram.add(new Node("Node1"));
+    const node2 = diagram.add(new Node("Node2"));
+
+    // Test node.to(edge) returns edge for chaining
+    const edge = node1.to(new Edge({ color: "purple", forward: true, reverse: true }));
+    edge.from(node2);
+
+    const dot = diagram.toString();
+    expect(dot).toContain('color="purple"');
+    expect(dot).toContain('dir="both"');
+    diagram.destroy();
+  });
 });
 
 describe("Cluster", () => {

@@ -15,7 +15,8 @@
         box-sizing: border-box;
       }
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         background: #f5f5f5;
         min-height: 100vh;
         padding: 40px 20px;
@@ -542,8 +543,10 @@ aggregator.to(new Edge({ label: "parse" }), kafka);
 // kafka → spark (kafka >> spark in Python)
 kafka.to(new Edge({ color: "black", style: "bold" }), spark);
 
-// Double-headed arrows: ingress ↔ grpcsvc (bidirectional with styled edge)
-grpcsvc.forEach((svc) => ingress.with(new Edge({ color: "darkgreen" }), svc));
+// Double-headed arrows: ingress ↔ grpcsvc (bidirectional with arrows on both ends)
+grpcsvc.forEach((svc) => {
+  ingress.to(new Edge({ color: "darkgreen", forward: true, reverse: true })).to(svc);
+});
 // grpcsvc → aggregator (grpcsvc >> aggregator in Python)
 grpcsvc.forEach((svc) => svc.to(new Edge({ color: "darkorange" }), aggregator));
 
@@ -606,17 +609,30 @@ const svg = await diagram.render();</code></pre>
     <script type="module">
       import { Diagram, Custom, Edge } from "./dist/index.js";
       import { EC2, ECS, EKS, Lambda } from "./dist/providers/aws/compute.js";
-      import { RDS, ElastiCache, Redshift } from "./dist/providers/aws/database.js";
+      import {
+        RDS,
+        ElastiCache,
+        Redshift,
+      } from "./dist/providers/aws/database.js";
       import { ALB, Route53 } from "./dist/providers/aws/network.js";
       import { SQS } from "./dist/providers/aws/integration.js";
       import { S3 } from "./dist/providers/aws/storage.js";
-      import { PubSub, BigQuery, Dataflow } from "./dist/providers/gcp/analytics.js";
+      import {
+        PubSub,
+        BigQuery,
+        Dataflow,
+      } from "./dist/providers/gcp/analytics.js";
       import { AppEngine, Functions } from "./dist/providers/gcp/compute.js";
       import { BigTable } from "./dist/providers/gcp/database.js";
       import { IotCore } from "./dist/providers/gcp/iot.js";
       import { GCS } from "./dist/providers/gcp/storage.js";
       import { HPA } from "./dist/providers/k8s/clusterconfig.js";
-      import { Deployment, Pod, ReplicaSet, StatefulSet } from "./dist/providers/k8s/compute.js";
+      import {
+        Deployment,
+        Pod,
+        ReplicaSet,
+        StatefulSet,
+      } from "./dist/providers/k8s/compute.js";
       import { Ingress, Service } from "./dist/providers/k8s/network.js";
       import { PV, PVC, StorageClass } from "./dist/providers/k8s/storage.js";
       import { Spark } from "./dist/providers/onprem/analytics.js";
@@ -624,7 +640,10 @@ const svg = await diagram.render();</code></pre>
       import { PostgreSQL } from "./dist/providers/onprem/database.js";
       import { Redis } from "./dist/providers/onprem/inmemory.js";
       import { Fluentd } from "./dist/providers/onprem/aggregator.js";
-      import { Grafana, Prometheus } from "./dist/providers/onprem/monitoring.js";
+      import {
+        Grafana,
+        Prometheus,
+      } from "./dist/providers/onprem/monitoring.js";
       import { Nginx } from "./dist/providers/onprem/network.js";
       import { Kafka } from "./dist/providers/onprem/queue.js";
 
@@ -884,14 +903,19 @@ const svg = await diagram.render();</code></pre>
 
       async function renderDiagram8() {
         try {
-          const diagram = new Diagram("Advanced Web Service with On-Premises (colored)");
+          const diagram = new Diagram(
+            "Advanced Web Service with On-Premises (colored)",
+          );
 
           const ingress = diagram.add(new Nginx("ingress"));
 
           const metrics = diagram.add(new Prometheus("metric"));
           const grafana = diagram.add(new Grafana("monitoring"));
           // Grafana → metrics (metrics << Grafana in Python)
-          grafana.to(new Edge({ color: "firebrick", style: "dashed" }), metrics);
+          grafana.to(
+            new Edge({ color: "firebrick", style: "dashed" }),
+            metrics,
+          );
 
           const serviceCluster = diagram.cluster("Service Cluster");
           const grpcsvc = [
@@ -904,21 +928,31 @@ const svg = await diagram.render();</code></pre>
           const sessionPrimary = sessionsCluster.add(new Redis("session"));
           const sessionReplica = sessionsCluster.add(new Redis("replica"));
           // Bidirectional: sessionPrimary - sessionReplica
-          sessionPrimary.with(new Edge({ color: "brown", style: "dashed" }), sessionReplica);
+          sessionPrimary.with(
+            new Edge({ color: "brown", style: "dashed" }),
+            sessionReplica,
+          );
           // metrics → sessionReplica (sessionReplica << metrics in Python)
           sessionReplica.from(new Edge({ label: "collect" }), metrics);
           // grpcsvc → sessionPrimary (grpcsvc >> sessionPrimary in Python)
-          grpcsvc.forEach((svc) => svc.to(new Edge({ color: "brown" }), sessionPrimary));
+          grpcsvc.forEach((svc) =>
+            svc.to(new Edge({ color: "brown" }), sessionPrimary),
+          );
 
           const dbCluster = diagram.cluster("Database HA");
           const dbPrimary = dbCluster.add(new PostgreSQL("users"));
           const dbReplica = dbCluster.add(new PostgreSQL("replica"));
           // Bidirectional: dbPrimary - dbReplica
-          dbPrimary.with(new Edge({ color: "brown", style: "dotted" }), dbReplica);
+          dbPrimary.with(
+            new Edge({ color: "brown", style: "dotted" }),
+            dbReplica,
+          );
           // metrics → dbReplica (dbReplica << metrics in Python)
           dbReplica.from(new Edge({ label: "collect" }), metrics);
           // grpcsvc → dbPrimary (grpcsvc >> dbPrimary in Python)
-          grpcsvc.forEach((svc) => svc.to(new Edge({ color: "black" }), dbPrimary));
+          grpcsvc.forEach((svc) =>
+            svc.to(new Edge({ color: "black" }), dbPrimary),
+          );
 
           const aggregator = diagram.add(new Fluentd("logging"));
           const kafka = diagram.add(new Kafka("stream"));
@@ -928,10 +962,18 @@ const svg = await diagram.render();</code></pre>
           // kafka → spark (kafka >> spark in Python)
           kafka.to(new Edge({ color: "black", style: "bold" }), spark);
 
-          // Double-headed arrows: ingress ↔ grpcsvc (bidirectional with styled edge)
-          grpcsvc.forEach((svc) => ingress.with(new Edge({ color: "darkgreen" }), svc));
+          // Double-headed arrows: ingress ↔ grpcsvc (bidirectional with arrows on both ends)
+          grpcsvc.forEach((svc) => {
+            ingress
+              .to(
+                new Edge({ color: "darkgreen", forward: true, reverse: true }),
+              )
+              .to(svc);
+          });
           // grpcsvc → aggregator (grpcsvc >> aggregator in Python)
-          grpcsvc.forEach((svc) => svc.to(new Edge({ color: "darkorange" }), aggregator));
+          grpcsvc.forEach((svc) =>
+            svc.to(new Edge({ color: "darkorange" }), aggregator),
+          );
 
           const svg = await diagram.render();
           document.getElementById("diagram8").innerHTML = svg;
