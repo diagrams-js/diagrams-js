@@ -10,11 +10,11 @@ Let's create your first diagram!
 ## Basic Diagram
 
 ```typescript
-import { Diagram } from 'ts-diagrams';
-import { EC2 } from 'ts-diagrams/providers/aws/compute';
+import { Diagram } from "ts-diagrams";
+import { EC2 } from "ts-diagrams/providers/aws/compute";
 
-const diagram = new Diagram('My First Diagram');
-const server = diagram.add(new EC2('Web Server'));
+const diagram = new Diagram("My First Diagram");
+const server = diagram.add(new EC2("Web Server"));
 
 const svg = await diagram.render();
 console.log(svg);
@@ -23,14 +23,14 @@ console.log(svg);
 ## Connecting Nodes
 
 ```typescript
-import { Diagram } from 'ts-diagrams';
-import { EC2 } from 'ts-diagrams/providers/aws/compute';
-import { RDS } from 'ts-diagrams/providers/aws/database';
+import { Diagram } from "ts-diagrams";
+import { EC2 } from "ts-diagrams/providers/aws/compute";
+import { RDS } from "ts-diagrams/providers/aws/database";
 
-const diagram = new Diagram('Web Architecture');
+const diagram = new Diagram("Web Architecture");
 
-const web = diagram.add(new EC2('Web Server'));
-const db = diagram.add(new RDS('Database'));
+const web = diagram.add(new EC2("Web Server"));
+const db = diagram.add(new RDS("Database"));
 
 // Create connection
 web.to(db);
@@ -41,17 +41,17 @@ const svg = await diagram.render();
 ## Multiple Connections
 
 ```typescript
-import { Diagram } from 'ts-diagrams';
-import { EC2 } from 'ts-diagrams/providers/aws/compute';
-import { RDS } from 'ts-diagrams/providers/aws/database';
-import { S3 } from 'ts-diagrams/providers/aws/storage';
+import { Diagram } from "ts-diagrams";
+import { EC2 } from "ts-diagrams/providers/aws/compute";
+import { RDS } from "ts-diagrams/providers/aws/database";
+import { S3 } from "ts-diagrams/providers/aws/storage";
 
-const diagram = new Diagram('Full Stack');
+const diagram = new Diagram("Full Stack");
 
-const web = diagram.add(new EC2('Web'));
-const api = diagram.add(new EC2('API'));
-const db = diagram.add(new RDS('DB'));
-const storage = diagram.add(new S3('Storage'));
+const web = diagram.add(new EC2("Web"));
+const api = diagram.add(new EC2("API"));
+const db = diagram.add(new RDS("DB"));
+const storage = diagram.add(new S3("Storage"));
 
 // Chain connections
 web.to(api).to(db);
@@ -63,10 +63,10 @@ const svg = await diagram.render();
 ## Save to File
 
 ```typescript
-const diagram = new Diagram('My Diagram');
+const diagram = new Diagram("My Diagram");
 // ... add nodes and connections
 
-await diagram.save('my-diagram.svg');
+await diagram.save("my-diagram.svg");
 ```
 
 ## Next Steps

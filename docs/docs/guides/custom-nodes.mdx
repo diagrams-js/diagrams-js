@@ -10,34 +10,28 @@ Use the `Custom` class to create nodes with your own icons from URLs, local file
 ## From Remote URL
 
 ```typescript
-import { Diagram, Custom } from 'ts-diagrams';
+import { Diagram, Custom } from "ts-diagrams";
 
-const diagram = new Diagram('Custom Icons');
+const diagram = new Diagram("Custom Icons");
 
-const service = diagram.add(
-  new Custom('My Service', 'https://example.com/icon.png')
-);
+const service = diagram.add(new Custom("My Service", "https://example.com/icon.png"));
 ```
 
 ## From Data URL
 
 ```typescript
-const iconData = 'data:image/png;base64,iVBORw0KGgo...';
-const node = diagram.add(new Custom('Embedded', iconData));
+const iconData = "data:image/png;base64,iVBORw0KGgo...";
+const node = diagram.add(new Custom("Embedded", iconData));
 ```
 
 ## With Clusters
 
 ```typescript
-const cluster = diagram.cluster('External Services');
+const cluster = diagram.cluster("External Services");
 
-const openstack = cluster.add(
-  new Custom('OpenStack', 'https://example.com/openstack.png')
-);
+const openstack = cluster.add(new Custom("OpenStack", "https://example.com/openstack.png"));
 
-const elastic = cluster.add(
-  new Custom('Elastic', 'https://example.com/elastic.png')
-);
+const elastic = cluster.add(new Custom("Elastic", "https://example.com/elastic.png"));
 
 openstack.to(elastic);
 ```

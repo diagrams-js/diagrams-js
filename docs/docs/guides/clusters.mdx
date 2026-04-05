@@ -10,32 +10,32 @@ Clusters allow you to group related nodes together visually.
 ## Creating a Cluster
 
 ```typescript
-import { Diagram } from 'ts-diagrams';
-import { ECS } from 'ts-diagrams/providers/aws/compute';
+import { Diagram } from "ts-diagrams";
+import { ECS } from "ts-diagrams/providers/aws/compute";
 
-const diagram = new Diagram('Clustered Services');
+const diagram = new Diagram("Clustered Services");
 
-const cluster = diagram.cluster('Services');
-const web1 = cluster.add(new ECS('web1'));
-const web2 = cluster.add(new ECS('web2'));
+const cluster = diagram.cluster("Services");
+const web1 = cluster.add(new ECS("web1"));
+const web2 = cluster.add(new ECS("web2"));
 ```
 
 ## Nested Clusters
 
 ```typescript
-const outer = diagram.cluster('Production');
-const inner = outer.cluster('Services');
-const service = inner.add(new ECS('API'));
+const outer = diagram.cluster("Production");
+const inner = outer.cluster("Services");
+const service = inner.add(new ECS("API"));
 ```
 
 ## Cluster with Connections
 
 ```typescript
-const frontend = diagram.cluster('Frontend');
-const backend = diagram.cluster('Backend');
+const frontend = diagram.cluster("Frontend");
+const backend = diagram.cluster("Backend");
 
-const web = frontend.add(new ECS('Web'));
-const api = backend.add(new ECS('API'));
+const web = frontend.add(new ECS("Web"));
+const api = backend.add(new ECS("API"));
 
 web.to(api);
 ```
@@ -43,22 +43,22 @@ web.to(api);
 ## Full Example
 
 ```typescript
-import { Diagram } from 'ts-diagrams';
-import { ECS } from 'ts-diagrams/providers/aws/compute';
-import { RDS } from 'ts-diagrams/providers/aws/database';
-import { ALB } from 'ts-diagrams/providers/aws/network';
+import { Diagram } from "ts-diagrams";
+import { ECS } from "ts-diagrams/providers/aws/compute";
+import { RDS } from "ts-diagrams/providers/aws/database";
+import { ALB } from "ts-diagrams/providers/aws/network";
 
-const diagram = new Diagram('Full Architecture');
+const diagram = new Diagram("Full Architecture");
 
-const lb = diagram.add(new ALB('Load Balancer'));
+const lb = diagram.add(new ALB("Load Balancer"));
 
-const webCluster = diagram.cluster('Web Tier');
-const web1 = webCluster.add(new ECS('web1'));
-const web2 = webCluster.add(new ECS('web2'));
+const webCluster = diagram.cluster("Web Tier");
+const web1 = webCluster.add(new ECS("web1"));
+const web2 = webCluster.add(new ECS("web2"));
 
-const dbCluster = diagram.cluster('Database Tier');
-const primary = dbCluster.add(new RDS('Primary'));
-const replica = dbCluster.add(new RDS('Replica'));
+const dbCluster = diagram.cluster("Database Tier");
+const primary = dbCluster.add(new RDS("Primary"));
+const replica = dbCluster.add(new RDS("Replica"));
 
 lb.to([web1, web2]);
 web1.to(primary);

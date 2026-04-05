@@ -8,10 +8,10 @@ description: Learn the basics of creating diagrams
 ## Creating a Diagram
 
 ```typescript
-import { Diagram } from 'ts-diagrams';
+import { Diagram } from "ts-diagrams";
 
-const diagram = new Diagram('My Diagram', {
-  direction: 'LR',  // Left to Right (default)
+const diagram = new Diagram("My Diagram", {
+  direction: "LR", // Left to Right (default)
   // direction: 'TB' // Top to Bottom
 });
 ```
@@ -19,9 +19,9 @@ const diagram = new Diagram('My Diagram', {
 ## Adding Nodes
 
 ```typescript
-import { EC2 } from 'ts-diagrams/providers/aws/compute';
+import { EC2 } from "ts-diagrams/providers/aws/compute";
 
-const server = diagram.add(new EC2('Web Server'));
+const server = diagram.add(new EC2("Web Server"));
 ```
 
 ## Connecting Nodes
@@ -58,20 +58,20 @@ database.to(web); // Or use .with()
 const svg = await diagram.render();
 
 // Save to file
-await diagram.save('output.svg');
+await diagram.save("output.svg");
 
 // Render as PNG
-const png = await diagram.render({ format: 'png' });
+const png = await diagram.render({ format: "png" });
 ```
 
 ## Diagram Options
 
 ```typescript
-const diagram = new Diagram('My Diagram', {
-  name: 'my-diagram',
-  direction: 'TB',
-  curvestyle: 'ortho', // ortho, curved, spline, polyline
-  theme: 'neutral',    // neutral, dark, forest, mint, ocean, sky
+const diagram = new Diagram("My Diagram", {
+  name: "my-diagram",
+  direction: "TB",
+  curvestyle: "ortho", // ortho, curved, spline, polyline
+  theme: "neutral", // neutral, dark, forest, mint, ocean, sky
   autolabel: false,
 });
 ```

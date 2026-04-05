@@ -8,7 +8,7 @@ description: Render and export diagrams
 ## Render to SVG
 
 ```typescript
-const diagram = new Diagram('My Diagram');
+const diagram = new Diagram("My Diagram");
 // ... add nodes
 
 const svg = await diagram.render();
@@ -18,7 +18,7 @@ const svg = await diagram.render();
 ## Render to PNG
 
 ```typescript
-const png = await diagram.render({ format: 'png' });
+const png = await diagram.render({ format: "png" });
 // Returns Uint8Array
 ```
 
@@ -26,19 +26,19 @@ const png = await diagram.render({ format: 'png' });
 
 ```typescript
 // Auto-detects format from extension
-await diagram.save('diagram.svg');
-await diagram.save('diagram.png');
+await diagram.save("diagram.svg");
+await diagram.save("diagram.png");
 ```
 
 ## Render Options
 
 ```typescript
 const svg = await diagram.render({
-  format: 'svg',      // 'svg' | 'png' | 'jpg' | 'pdf' | 'dot'
-  width: 800,         // Output width (for PNG)
-  height: 600,        // Output height (for PNG)
-  scale: 2,           // Scale factor (default: 2 for PNG)
-  injectIcons: true,  // Auto-inject icons
+  format: "svg", // 'svg' | 'png' | 'jpg' | 'pdf' | 'dot'
+  width: 800, // Output width (for PNG)
+  height: 600, // Output height (for PNG)
+  scale: 2, // Scale factor (default: 2 for PNG)
+  injectIcons: true, // Auto-inject icons
 });
 ```
 
@@ -49,17 +49,17 @@ const svg = await diagram.render({
 const svg = await diagram.render();
 
 // Insert into DOM
-document.getElementById('diagram').innerHTML = svg;
+document.getElementById("diagram").innerHTML = svg;
 ```
 
 ## Node.js Usage
 
 ```typescript
-import { writeFile } from 'fs/promises';
+import { writeFile } from "fs/promises";
 
 const svg = await diagram.render();
-await writeFile('output.svg', svg);
+await writeFile("output.svg", svg);
 
-const png = await diagram.render({ format: 'png' });
-await writeFile('output.png', Buffer.from(png));
+const png = await diagram.render({ format: "png" });
+await writeFile("output.png", Buffer.from(png));
 ```

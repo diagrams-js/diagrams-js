@@ -20,17 +20,17 @@ A TypeScript port of the [diagrams](https://github.com/mingrammer/diagrams) Pyth
 ## Quick Example
 
 ```typescript
-import { Diagram } from 'ts-diagrams';
-import { EC2, Lambda } from 'ts-diagrams/providers/aws/compute';
-import { RDS } from 'ts-diagrams/providers/aws/database';
-import { S3 } from 'ts-diagrams/providers/aws/storage';
+import { Diagram } from "ts-diagrams";
+import { EC2, Lambda } from "ts-diagrams/providers/aws/compute";
+import { RDS } from "ts-diagrams/providers/aws/database";
+import { S3 } from "ts-diagrams/providers/aws/storage";
 
-const diagram = new Diagram('Web Architecture');
+const diagram = new Diagram("Web Architecture");
 
-const web = diagram.add(new EC2('Web Server'));
-const api = diagram.add(new Lambda('API'));
-const db = diagram.add(new RDS('Database'));
-const storage = diagram.add(new S3('Storage'));
+const web = diagram.add(new EC2("Web Server"));
+const api = diagram.add(new Lambda("API"));
+const db = diagram.add(new RDS("Database"));
+const storage = diagram.add(new S3("Storage"));
 
 web.to(api).to(db);
 api.to(storage);
