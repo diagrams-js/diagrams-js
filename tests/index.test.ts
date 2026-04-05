@@ -142,6 +142,57 @@ describe("Node connections", () => {
     expect(dot).toContain('style="dashed"');
     diagram.destroy();
   });
+
+  it("should support edge customization with forEach", () => {
+    const diagram = new Diagram("Test", {});
+    const cluster = diagram.cluster("Test Cluster");
+    const nodes = [
+      cluster.add(new Node("Node1")),
+      cluster.add(new Node("Node2")),
+      cluster.add(new Node("Node3")),
+    ];
+    const target = diagram.add(new Node("Target"));
+
+    // Test that nodes from cluster work with forEach and styled edges
+    nodes.forEach((node) => {
+      node.to(new Edge({ color: "blue", style: "dotted" }), target);
+    });
+
+    const dot = diagram.toString();
+    expect(dot).toContain('color="blue"');
+    expect(dot).toContain('style="dotted"');
+    // Should have 3 edges
+    const edgeMatches = dot.match(/->/g);
+    expect(edgeMatches?.length).toBe(3);
+    diagram.destroy();
+  });
+
+  it("should support edge customization with with()", () => {
+    const diagram = new Diagram("Test", {});
+    const node1 = diagram.add(new Node("Node1"));
+    const node2 = diagram.add(new Node("Node2"));
+
+    node1.with(new Edge({ color: "purple", style: "dashed" }), node2);
+
+    const dot = diagram.toString();
+    expect(dot).toContain('color="purple"');
+    expect(dot).toContain('style="dashed"');
+    diagram.destroy();
+  });
+
+  it("should support edge customization with from(Edge, Node)", () => {
+    const diagram = new Diagram("Test", {});
+    const node1 = diagram.add(new Node("Node1"));
+    const node2 = diagram.add(new Node("Node2"));
+
+    node1.from(new Edge({ color: "orange", label: "test" }), node2);
+
+    const dot = diagram.toString();
+    expect(dot).toContain('color="orange"');
+    expect(dot).toContain('label="test"');
+    expect(dot).toContain('dir="back"');
+    diagram.destroy();
+  });
 });
 
 describe("Cluster", () => {

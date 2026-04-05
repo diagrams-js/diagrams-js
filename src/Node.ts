@@ -196,23 +196,46 @@ export class Node {
    */
   from(source: Node): Node;
   from(sources: Node[]): Node;
-  from(sources: Node | Node[]): Node {
+  from(edge: Edge, source: Node): Node;
+  from(edge: Edge, sources: Node[]): Node;
+  from(sourceOrEdge: Node | Node[] | Edge, sourceOrUndefined?: Node | Node[]): Node {
+    if (sourceOrEdge instanceof Edge) {
+      // Edge provided: node.from(edge, source)
+      sourceOrEdge.node = this;
+      sourceOrEdge.reverse = true;
+      const source = sourceOrUndefined!;
+      if (Array.isArray(source)) {
+        for (const s of source) {
+          // Create a copy of the edge for each source to avoid shared state
+          const edgeCopy = new Edge({
+            ...sourceOrEdge.attrs,
+            node: this,
+            reverse: true,
+          });
+          this.connect(s, edgeCopy);
+        }
+        return this;
+      }
+      return this.connect(source, sourceOrEdge);
+    }
+
+    const source = sourceOrEdge;
+
     // When we call p.from(rs), we want pod << rs
     // This creates an edge from pod to rs with dir=back
     // Graphviz will place pod to the left of rs, and the arrow points back
-
-    if (Array.isArray(sources)) {
-      for (const source of sources) {
+    if (Array.isArray(source)) {
+      for (const s of source) {
         // Create a new edge for each source to avoid shared state
         // Edge goes from this (target) to source with reverse=true (dir=back)
-        const edge = new Edge({ node: source, reverse: true });
-        this.connect(source, edge);
+        const edge = new Edge({ node: s, reverse: true });
+        this.connect(s, edge);
       }
       return this;
     }
     // Edge goes from this (target) to source with reverse=true (dir=back)
-    const edge = new Edge({ node: sources, reverse: true });
-    return this.connect(sources, edge);
+    const edge = new Edge({ node: source, reverse: true });
+    return this.connect(source, edge);
   }
 
   /**
@@ -222,7 +245,28 @@ export class Node {
    */
   with(target: Node): Node;
   with(targets: Node[]): Node[];
-  with(target: Node | Node[]): Node | Node[] {
+  with(edge: Edge, target: Node): Node;
+  with(edge: Edge, target: Node[]): Node[];
+  with(targetOrEdge: Node | Node[] | Edge, targetOrUndefined?: Node | Node[]): Node | Node[] {
+    if (targetOrEdge instanceof Edge) {
+      // Edge provided: node.with(edge, target)
+      targetOrEdge.node = this;
+      const target = targetOrUndefined!;
+      if (Array.isArray(target)) {
+        for (const t of target) {
+          // Create a copy of the edge for each target to avoid shared state
+          const edgeCopy = new Edge({
+            ...targetOrEdge.attrs,
+            node: this,
+          });
+          this.connect(t, edgeCopy);
+        }
+        return target;
+      }
+      return this.connect(target, targetOrEdge);
+    }
+
+    const target = targetOrEdge;
     const edge = new Edge({ node: this });
 
     if (Array.isArray(target)) {
@@ -238,10 +282,10 @@ export class Node {
    * Internal connect method
    */
   connect(target: Node, edge: Edge): Node {
-    if (!(target instanceof Node)) {
+    if (!target || typeof target !== "object" || !("nodeId" in target)) {
       throw new Error(`${String(target)} is not a valid Node`);
     }
-    if (!(edge instanceof Edge)) {
+    if (!edge || typeof edge !== "object" || !("attrs" in edge)) {
       throw new Error(`${String(edge)} is not a valid Edge`);
     }
     this._diagram.connect(this, target, edge);
