@@ -373,6 +373,91 @@ describe("Image Rendering", () => {
     expect(result).toContain("data:image/png;base64,");
     diagram.destroy();
   });
+
+  it("should not have duplicate attributes in DOT format", async () => {
+    const diagram = new Diagram("DOT No Duplicates Test", {
+      direction: "TB",
+    });
+
+    const server = diagram.add(new Node("Server"));
+
+    // Manually track node with icon data
+    const testIconData =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+    diagram.trackNodeWithIcon(server, testIconData);
+
+    const result = await diagram.render({ format: "dot" });
+    expect(typeof result).toBe("string");
+
+    // Cast to string for regex matching
+    const resultStr = result as string;
+
+    // Count occurrences of width="1.0" - should appear only once
+    const widthMatches = (resultStr.match(/width="1\.0"/g) || []).length;
+    expect(widthMatches).toBe(1);
+
+    // Count occurrences of height="1.0" - should appear only once
+    const heightMatches = (resultStr.match(/height="1\.0"/g) || []).length;
+    expect(heightMatches).toBe(1);
+
+    diagram.destroy();
+  });
+
+  it("should render SVG as data URL", async () => {
+    const diagram = new Diagram("Data URL Test");
+    const node1 = diagram.add(new Node("Node 1"));
+    const node2 = diagram.add(new Node("Node 2"));
+    node1.to(node2);
+
+    const result = await diagram.render({ format: "svg", dataUrl: true });
+    expect(typeof result).toBe("string");
+
+    // Check that it's a data URL
+    expect(result).toMatch(/^data:image\/svg\+xml;base64,/);
+    diagram.destroy();
+  });
+
+  it("should render PNG as data URL", async () => {
+    const diagram = new Diagram("Data URL PNG Test");
+    const node1 = diagram.add(new Node("Node 1"));
+    const node2 = diagram.add(new Node("Node 2"));
+    node1.to(node2);
+
+    const result = await diagram.render({ format: "png", dataUrl: true });
+    expect(typeof result).toBe("string");
+
+    // Check that it's a data URL
+    expect(result).toMatch(/^data:image\/png;base64,/);
+    diagram.destroy();
+  });
+
+  it("should render JPG as data URL", async () => {
+    const diagram = new Diagram("Data URL JPG Test");
+    const node1 = diagram.add(new Node("Node 1"));
+    const node2 = diagram.add(new Node("Node 2"));
+    node1.to(node2);
+
+    const result = await diagram.render({ format: "jpg", dataUrl: true });
+    expect(typeof result).toBe("string");
+
+    // Check that it's a data URL
+    expect(result).toMatch(/^data:image\/jpeg;base64,/);
+    diagram.destroy();
+  });
+
+  it("should render DOT as data URL", async () => {
+    const diagram = new Diagram("Data URL DOT Test");
+    const node1 = diagram.add(new Node("Node 1"));
+    const node2 = diagram.add(new Node("Node 2"));
+    node1.to(node2);
+
+    const result = await diagram.render({ format: "dot", dataUrl: true });
+    expect(typeof result).toBe("string");
+
+    // Check that it's a data URL
+    expect(result).toMatch(/^data:text\/plain;base64,/);
+    diagram.destroy();
+  });
 });
 
 describe("Custom Nodes", () => {

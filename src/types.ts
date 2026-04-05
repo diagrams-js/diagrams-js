@@ -51,6 +51,7 @@ export interface RenderOptions {
   height?: number;
   scale?: number;
   injectIcons?: boolean;
+  dataUrl?: boolean;
 }
 
 export interface EdgeOptions {

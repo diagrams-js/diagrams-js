@@ -276,7 +276,9 @@ export class Diagram {
         if (iconDataUrl) {
           dot += `, image="${iconDataUrl}"`;
           // Add image dimensions for proper rendering in external Graphviz
-          dot += `, width="1.0", height="1.0"`;
+          // Only add if not already present in attrs
+          if (!("width" in attrs)) dot += `, width="1.0"`;
+          if (!("height" in attrs)) dot += `, height="1.0"`;
           dot += `, imagescale=true`;
         }
       }
@@ -326,7 +328,9 @@ export class Diagram {
         if (iconDataUrl) {
           dot += `, image="${iconDataUrl}"`;
           // Add image dimensions for proper rendering in external Graphviz
-          dot += `, width="1.0", height="1.0"`;
+          // Only add if not already present in attrs
+          if (!("width" in attrs)) dot += `, width="1.0"`;
+          if (!("height" in attrs)) dot += `, height="1.0"`;
           dot += `, imagescale=true`;
         }
       }
@@ -369,6 +373,10 @@ export class Diagram {
 
     // If DOT format was requested, return the raw DOT source
     if (format === "dot") {
+      // If dataUrl was requested, convert DOT to data URL
+      if (options.dataUrl) {
+        return this._toDataUrl(dot, "dot");
+      }
       return dot;
     }
 
@@ -407,6 +415,11 @@ export class Diagram {
     // If JPG format was requested, convert SVG to JPG
     if (format === "jpg") {
       output = await this._svgToJpg(output as string, options);
+    }
+
+    // If dataUrl was requested, convert output to data URL
+    if (options.dataUrl) {
+      output = this._toDataUrl(output, format);
     }
 
     return output;
@@ -731,6 +744,45 @@ export class Diagram {
         `Failed to convert SVG to JPG. Make sure 'sharp' is installed: npm install sharp. Error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
+  }
+
+  /**
+   * Convert output to data URL
+   * @param output - The output data (string or Uint8Array)
+   * @param format - The format of the output
+   * @returns Data URL string
+   */
+  private _toDataUrl(output: string | Uint8Array, format: string): string {
+    let mimeType: string;
+    let base64: string;
+
+    switch (format) {
+      case "svg":
+        mimeType = "image/svg+xml";
+        base64 =
+          typeof output === "string"
+            ? btoa(output)
+            : btoa(String.fromCharCode(...(output as Uint8Array)));
+        break;
+      case "png":
+        mimeType = "image/png";
+        base64 = btoa(String.fromCharCode(...(output as Uint8Array)));
+        break;
+      case "jpg":
+      case "jpeg":
+        mimeType = "image/jpeg";
+        base64 = btoa(String.fromCharCode(...(output as Uint8Array)));
+        break;
+      case "dot":
+        mimeType = "text/plain";
+        base64 = typeof output === "string" ? btoa(output) : btoa(String.fromCharCode(...output));
+        break;
+      default:
+        mimeType = "application/octet-stream";
+        base64 = typeof output === "string" ? btoa(output) : btoa(String.fromCharCode(...output));
+    }
+
+    return `data:${mimeType};base64,${base64}`;
   }
 
   /**
