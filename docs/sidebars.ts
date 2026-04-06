@@ -12,6 +12,7 @@ const sidebars: SidebarsConfig = {
         "getting-started/examples",
       ],
     },
+    // "playground",
     {
       type: "category",
       label: "Guides",

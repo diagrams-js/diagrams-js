@@ -9,17 +9,43 @@ Install diagrams-js using your preferred package manager:
 
 ## Node.js
 
-```bash
-npm install diagrams-js
-```
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+
+<Tabs groupId="install">
+  <TabItem value="npm" label="npm" default>
+    <CodeBlock language="bash">{`npm install diagrams-js`}</CodeBlock>
+  </TabItem>
+  <TabItem value="yarn" label="yarn" default>
+    <CodeBlock language="bash">{`yarn add diagrams-js`}</CodeBlock>
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm" default>
+    <CodeBlock language="bash">{`pnpm add diagrams-js`}</CodeBlock>
+  </TabItem>
+  <TabItem value="bun" label="bun" default>
+    <CodeBlock language="bash">{`bun add diagrams-js`}</CodeBlock>
+  </TabItem>
+</Tabs>
 
 ### Optional Dependencies
 
 For PNG [rendering](../guides/rendering.mdx) in Node.js, the package `sharp` is required:
 
-```bash
-npm install sharp
-```
+<Tabs groupId="install">
+  <TabItem value="npm" label="npm" default>
+    <CodeBlock language="bash">{`npm install sharp`}</CodeBlock>
+  </TabItem>
+  <TabItem value="yarn" label="yarn" default>
+    <CodeBlock language="bash">{`yarn add sharp`}</CodeBlock>
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm" default>
+    <CodeBlock language="bash">{`pnpm add sharp`}</CodeBlock>
+  </TabItem>
+  <TabItem value="bun" label="bun" default>
+    <CodeBlock language="bash">{`bun add sharp`}</CodeBlock>
+  </TabItem>
+</Tabs>
 
 ## Browser Usage
 

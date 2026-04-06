@@ -9,7 +9,7 @@ interface DiagramRendererProps {
 export default function DiagramRenderer({
   code,
   height = "400px",
-}: DiagramRendererProps): JSX.Element {
+}: DiagramRendererProps): React.JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>("");
   const [error, setError] = useState<string>("");
