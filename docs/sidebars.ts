@@ -6,7 +6,11 @@ const sidebars: SidebarsConfig = {
       type: "category",
       label: "Getting Started",
       collapsed: false,
-      items: ["getting-started/installation", "getting-started/quickstart"],
+      items: [
+        "getting-started/installation",
+        "getting-started/quickstart",
+        "getting-started/examples",
+      ],
     },
     {
       type: "category",
@@ -33,7 +37,7 @@ const sidebars: SidebarsConfig = {
         },
       ],
     },
-    "examples",
+    "credits",
   ],
 };
 

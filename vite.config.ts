@@ -23,7 +23,7 @@ export default defineConfig({
       typeAware: true,
       typeCheck: true,
     },
-    ignorePatterns: ["**/docs/**"],
+    ignorePatterns: ["**/docs/**", "**/scripts/**"],
   },
   fmt: {},
   resolve: {

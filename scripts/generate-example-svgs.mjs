@@ -3,7 +3,7 @@
  * Generate SVG images for documentation examples
  */
 
-import { Custom, Diagram, Edge } from "../dist/index.js";
+import { Custom, Diagram, Edge, Node } from "../dist/index.js";
 import { EC2, Lambda, ECS, EKS } from "../dist/providers/aws/compute.js";
 import {
   Aurora,
@@ -382,22 +382,44 @@ async function generateExample9() {
   console.log("  ✓ Generated");
 }
 
-async function generateQuickstart() {
+async function generateQuickstartBasic() {
   console.log("Generating quickstart-basic.svg...");
-  const diagram = Diagram("My First Diagram", { direction: "TB" });
+  const diagram = Diagram("My First Diagram", {
+    // Diagram options
+    direction: "TB", // Top to Bottom
+  });
 
+  // Add nodes
+  const web = diagram.add(Node("Web Server"));
+  const app = diagram.add(Node("App Server"));
+  const db = diagram.add(Node("Database"));
+
+  // Connect them
+  web.to(app).to(db);
+
+  const svg = await diagram.render();
+  fs.writeFileSync(path.join(OUTPUT_DIR, "quickstart-basic.svg"), svg);
+  diagram.destroy();
+  console.log("  ✓ Generated");
+}
+
+async function generateQuickstartCloud() {
+  console.log("Generating quickstart-cloud.svg...");
+  const diagram = Diagram("AWS Architecture", { direction: "TB" });
+
+  // Create nodes with icons
   const lb = diagram.add(ALB("Load Balancer"));
   const web = diagram.add(EC2("Web Server"));
   const api = diagram.add(Lambda("API"));
   const db = diagram.add(RDS("Database"));
   const storage = diagram.add(S3("Storage"));
 
+  // Connect them
   lb.to(web).to(api);
-  api.to(db);
-  api.to(storage);
+  api.to([db, storage]);
 
   const svg = await diagram.render();
-  fs.writeFileSync(path.join(OUTPUT_DIR, "quickstart-basic.svg"), svg);
+  fs.writeFileSync(path.join(OUTPUT_DIR, "quickstart-cloud.svg"), svg);
   diagram.destroy();
   console.log("  ✓ Generated");
 }
@@ -414,7 +436,8 @@ async function main() {
   await generateExample7();
   await generateExample8();
   await generateExample9();
-  await generateQuickstart();
+  await generateQuickstartBasic();
+  await generateQuickstartCloud();
 
   console.log("\n✓ All SVGs generated successfully!");
   console.log(`  Output directory: ${OUTPUT_DIR}`);

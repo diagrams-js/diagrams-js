@@ -55,118 +55,118 @@
 <path fill="#ece8f6" stroke="#aeb6be" d="M308,-365.4C308,-365.4 460,-365.4 460,-365.4 466,-365.4 472,-371.4 472,-377.4 472,-377.4 472,-463.4 472,-463.4 472,-469.4 466,-475.4 460,-475.4 460,-475.4 308,-475.4 308,-475.4 302,-475.4 296,-469.4 296,-463.4 296,-463.4 296,-377.4 296,-377.4 296,-371.4 302,-365.4 308,-365.4"/>
 <text xml:space="preserve" text-anchor="middle" x="328.66" y="-460.6" font-family="Sans-Serif" font-size="12.00">Serverless</text>
 </g>
-<!-- mnn4w98o_06sf3gur3 -->
+<!-- mnn7df8k_adfnbtcbn -->
 <g id="node1" class="node">
-<title>mnn4w98o_06sf3gur3</title>
+<title>mnn7df8k_adfnbtcbn</title>
 <text xml:space="preserve" text-anchor="middle" x="140" y="-195.4" font-family="Sans-Serif" font-size="10.00">pubsub</text>
 <use href="#icon-jgpfbt" x="140" y="-237.4"/></g>
-<!-- mnn4w98o_1rwwloehb -->
+<!-- mnn7df8k_0prk24mci -->
 <g id="node5" class="node">
-<title>mnn4w98o_1rwwloehb</title>
+<title>mnn7df8k_0prk24mci</title>
 <text xml:space="preserve" text-anchor="middle" x="236" y="-195.4" font-family="Sans-Serif" font-size="10.00">data flow</text>
 <use href="#icon-lss315" x="236" y="-237.4"/></g>
-<!-- mnn4w98o_06sf3gur3&#45;&gt;mnn4w98o_1rwwloehb -->
+<!-- mnn7df8k_adfnbtcbn&#45;&gt;mnn7df8k_0prk24mci -->
 <g id="edge4" class="edge">
-<title>mnn4w98o_06sf3gur3&#45;&gt;mnn4w98o_1rwwloehb</title>
+<title>mnn7df8k_adfnbtcbn&#45;&gt;mnn7df8k_0prk24mci</title>
 <path fill="none" stroke="#7b8894" d="M175.75,-228.4C175.75,-228.4 193.71,-228.4 193.71,-228.4"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="193.71,-230.15 198.71,-228.4 193.71,-226.65 193.71,-230.15"/>
 </g>
-<!-- mnn4w98o_kbb6cvyw6 -->
+<!-- mnn7df8k_uqg8zn41u -->
 <g id="node2" class="node">
-<title>mnn4w98o_kbb6cvyw6</title>
+<title>mnn7df8k_uqg8zn41u</title>
 <text xml:space="preserve" text-anchor="middle" x="52" y="-112.4" font-family="Sans-Serif" font-size="10.00">core1</text>
 <use href="#icon-lx1axa" x="52" y="-154.4"/></g>
-<!-- mnn4w98o_kbb6cvyw6&#45;&gt;mnn4w98o_06sf3gur3 -->
+<!-- mnn7df8k_uqg8zn41u&#45;&gt;mnn7df8k_adfnbtcbn -->
 <g id="edge1" class="edge">
-<title>mnn4w98o_kbb6cvyw6&#45;&gt;mnn4w98o_06sf3gur3</title>
+<title>mnn7df8k_uqg8zn41u&#45;&gt;mnn7df8k_adfnbtcbn</title>
 <path fill="none" stroke="#7b8894" d="M87.79,-155.4C112.16,-155.4 140,-155.4 140,-155.4 140,-155.4 140,-186.24 140,-186.24"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="138.25,-186.24 140,-191.24 141.75,-186.24 138.25,-186.24"/>
 </g>
-<!-- mnn4w98o_ga4q5413q -->
+<!-- mnn7df8k_etjkah64r -->
 <g id="node3" class="node">
-<title>mnn4w98o_ga4q5413q</title>
+<title>mnn7df8k_etjkah64r</title>
 <text xml:space="preserve" text-anchor="middle" x="52" y="-195.4" font-family="Sans-Serif" font-size="10.00">core2</text>
 <use href="#icon-lx1axa" x="52" y="-237.4"/></g>
-<!-- mnn4w98o_ga4q5413q&#45;&gt;mnn4w98o_06sf3gur3 -->
+<!-- mnn7df8k_etjkah64r&#45;&gt;mnn7df8k_adfnbtcbn -->
 <g id="edge2" class="edge">
-<title>mnn4w98o_ga4q5413q&#45;&gt;mnn4w98o_06sf3gur3</title>
+<title>mnn7df8k_etjkah64r&#45;&gt;mnn7df8k_adfnbtcbn</title>
 <path fill="none" stroke="#7b8894" d="M87.79,-228.4C87.79,-228.4 97.73,-228.4 97.73,-228.4"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="97.73,-230.15 102.73,-228.4 97.73,-226.65 97.73,-230.15"/>
 </g>
-<!-- mnn4w98o_m5qns12gf -->
+<!-- mnn7df8k_kaq8r6rih -->
 <g id="node4" class="node">
-<title>mnn4w98o_m5qns12gf</title>
+<title>mnn7df8k_kaq8r6rih</title>
 <text xml:space="preserve" text-anchor="middle" x="52" y="-278.4" font-family="Sans-Serif" font-size="10.00">core3</text>
 <use href="#icon-lx1axa" x="52" y="-320.4"/></g>
-<!-- mnn4w98o_m5qns12gf&#45;&gt;mnn4w98o_06sf3gur3 -->
+<!-- mnn7df8k_kaq8r6rih&#45;&gt;mnn7df8k_adfnbtcbn -->
 <g id="edge3" class="edge">
-<title>mnn4w98o_m5qns12gf&#45;&gt;mnn4w98o_06sf3gur3</title>
+<title>mnn7df8k_kaq8r6rih&#45;&gt;mnn7df8k_adfnbtcbn</title>
 <path fill="none" stroke="#7b8894" d="M87.79,-301.4C112.16,-301.4 140,-301.4 140,-301.4 140,-301.4 140,-270.56 140,-270.56"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="141.75,-270.56 140,-265.56 138.25,-270.56 141.75,-270.56"/>
 </g>
-<!-- mnn4w98o_7q1xyxvoj -->
+<!-- mnn7df8k_nu0bmfkk3 -->
 <g id="node6" class="node">
-<title>mnn4w98o_7q1xyxvoj</title>
+<title>mnn7df8k_nu0bmfkk3</title>
 <text xml:space="preserve" text-anchor="middle" x="340" y="-49.4" font-family="Sans-Serif" font-size="10.00">bq</text>
 <use href="#icon-gwp3q3" x="340" y="-91.4"/></g>
-<!-- mnn4w98o_1rwwloehb&#45;&gt;mnn4w98o_7q1xyxvoj -->
+<!-- mnn7df8k_0prk24mci&#45;&gt;mnn7df8k_nu0bmfkk3 -->
 <g id="edge5" class="edge">
-<title>mnn4w98o_1rwwloehb&#45;&gt;mnn4w98o_7q1xyxvoj</title>
+<title>mnn7df8k_0prk24mci&#45;&gt;mnn7df8k_nu0bmfkk3</title>
 <path fill="none" stroke="#7b8894" d="M236,-192.49C236,-158.91 236,-113.9 236,-113.9 236,-113.9 297.7,-113.9 297.7,-113.9"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="297.7,-115.65 302.7,-113.9 297.7,-112.15 297.7,-115.65"/>
 </g>
-<!-- mnn4w98o_3qur5964k -->
+<!-- mnn7df8k_bi6ofaqx9 -->
 <g id="node7" class="node">
-<title>mnn4w98o_3qur5964k</title>
+<title>mnn7df8k_bi6ofaqx9</title>
 <text xml:space="preserve" text-anchor="middle" x="340" y="-132.4" font-family="Sans-Serif" font-size="10.00">storage</text>
 <use href="#icon-efw0uu" x="340" y="-174.4"/></g>
-<!-- mnn4w98o_1rwwloehb&#45;&gt;mnn4w98o_3qur5964k -->
+<!-- mnn7df8k_0prk24mci&#45;&gt;mnn7df8k_bi6ofaqx9 -->
 <g id="edge6" class="edge">
-<title>mnn4w98o_1rwwloehb&#45;&gt;mnn4w98o_3qur5964k</title>
+<title>mnn7df8k_0prk24mci&#45;&gt;mnn7df8k_bi6ofaqx9</title>
 <path fill="none" stroke="#7b8894" d="M271.79,-196.9C271.79,-196.9 297.63,-196.9 297.63,-196.9"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="297.63,-198.65 302.63,-196.9 297.63,-195.15 297.63,-198.65"/>
 </g>
-<!-- mnn4w98o_40bo00xw2 -->
+<!-- mnn7df8k_2n6aaw4kk -->
 <g id="node8" class="node">
-<title>mnn4w98o_40bo00xw2</title>
+<title>mnn7df8k_2n6aaw4kk</title>
 <text xml:space="preserve" text-anchor="middle" x="340" y="-258.4" font-family="Sans-Serif" font-size="10.00">engine</text>
 <use href="#icon-jx7qpt" x="340" y="-300.4"/></g>
-<!-- mnn4w98o_1rwwloehb&#45;&gt;mnn4w98o_40bo00xw2 -->
+<!-- mnn7df8k_0prk24mci&#45;&gt;mnn7df8k_2n6aaw4kk -->
 <g id="edge7" class="edge">
-<title>mnn4w98o_1rwwloehb&#45;&gt;mnn4w98o_40bo00xw2</title>
+<title>mnn7df8k_0prk24mci&#45;&gt;mnn7df8k_2n6aaw4kk</title>
 <path fill="none" stroke="#7b8894" d="M271.79,-259.9C271.79,-259.9 297.63,-259.9 297.63,-259.9"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="297.63,-261.65 302.63,-259.9 297.63,-258.15 297.63,-261.65"/>
 </g>
-<!-- mnn4w98o_dhxj9l5wu -->
+<!-- mnn7df8k_m9cjjjajk -->
 <g id="node10" class="node">
-<title>mnn4w98o_dhxj9l5wu</title>
+<title>mnn7df8k_m9cjjjajk</title>
 <text xml:space="preserve" text-anchor="middle" x="340" y="-376.4" font-family="Sans-Serif" font-size="10.00">func</text>
 <use href="#icon-5fn0ff" x="340" y="-418.4"/></g>
-<!-- mnn4w98o_1rwwloehb&#45;&gt;mnn4w98o_dhxj9l5wu -->
+<!-- mnn7df8k_0prk24mci&#45;&gt;mnn7df8k_m9cjjjajk -->
 <g id="edge9" class="edge">
-<title>mnn4w98o_1rwwloehb&#45;&gt;mnn4w98o_dhxj9l5wu</title>
+<title>mnn7df8k_0prk24mci&#45;&gt;mnn7df8k_m9cjjjajk</title>
 <path fill="none" stroke="#7b8894" d="M236,-264.16C236,-316.91 236,-409.4 236,-409.4 236,-409.4 297.7,-409.4 297.7,-409.4"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="297.7,-411.15 302.7,-409.4 297.7,-407.65 297.7,-411.15"/>
 </g>
-<!-- mnn4w98o_l5w8eacuw -->
+<!-- mnn7df8k_hmeakc165 -->
 <g id="node9" class="node">
-<title>mnn4w98o_l5w8eacuw</title>
+<title>mnn7df8k_hmeakc165</title>
 <text xml:space="preserve" text-anchor="middle" x="428" y="-258.4" font-family="Sans-Serif" font-size="10.00">bigtable</text>
 <use href="#icon-9fchbs" x="428" y="-300.4"/></g>
-<!-- mnn4w98o_40bo00xw2&#45;&gt;mnn4w98o_l5w8eacuw -->
+<!-- mnn7df8k_2n6aaw4kk&#45;&gt;mnn7df8k_hmeakc165 -->
 <g id="edge8" class="edge">
-<title>mnn4w98o_40bo00xw2&#45;&gt;mnn4w98o_l5w8eacuw</title>
+<title>mnn7df8k_2n6aaw4kk&#45;&gt;mnn7df8k_hmeakc165</title>
 <path fill="none" stroke="#7b8894" d="M375.79,-291.4C375.79,-291.4 385.73,-291.4 385.73,-291.4"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="385.73,-293.15 390.73,-291.4 385.73,-289.65 385.73,-293.15"/>
 </g>
-<!-- mnn4w98o_8vcs03o3p -->
+<!-- mnn7df8k_hy3rjv89e -->
 <g id="node11" class="node">
-<title>mnn4w98o_8vcs03o3p</title>
+<title>mnn7df8k_hy3rjv89e</title>
 <text xml:space="preserve" text-anchor="middle" x="428" y="-376.4" font-family="Sans-Serif" font-size="10.00">appengine</text>
 <use href="#icon-jx7qpt" x="428" y="-418.4"/></g>
-<!-- mnn4w98o_dhxj9l5wu&#45;&gt;mnn4w98o_8vcs03o3p -->
+<!-- mnn7df8k_m9cjjjajk&#45;&gt;mnn7df8k_hy3rjv89e -->
 <g id="edge10" class="edge">
-<title>mnn4w98o_dhxj9l5wu&#45;&gt;mnn4w98o_8vcs03o3p</title>
+<title>mnn7df8k_m9cjjjajk&#45;&gt;mnn7df8k_hy3rjv89e</title>
 <path fill="none" stroke="#7b8894" d="M375.79,-409.4C375.79,-409.4 385.73,-409.4 385.73,-409.4"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="385.73,-411.15 390.73,-409.4 385.73,-407.65 385.73,-411.15"/>
 </g>

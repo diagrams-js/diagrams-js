@@ -16,6 +16,7 @@ import { Diagram } from "diagrams-js";
 
 // Create a diagram
 const diagram = Diagram("My First Diagram", {
+  // Diagram options
   direction: "TB", // Top to Bottom
 });
 
@@ -33,6 +34,17 @@ const svg = await diagram.render();
 // Clean up
 diagram.destroy();
 ```
+
+<img
+  src="/examples/quickstart-basic.svg"
+  alt="Basic Diagram"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
 ## Using Cloud Providers
 
@@ -56,16 +68,25 @@ const storage = diagram.add(S3("Storage"));
 
 // Connect them
 lb.to(web).to(api);
-api.to(db);
-api.to(storage);
+api.to([db, storage]);
 
+// Render to SVG
 const svg = await diagram.render();
+
+// Clean up
 diagram.destroy();
 ```
 
-**Result:**
-
-<img src="/examples/quickstart-basic.svg" alt="AWS Architecture Example" style={{ maxWidth: '100%', height: 'auto', border: '1px solid #e0e0e0', borderRadius: '8px' }} />
+<img
+  src="/examples/quickstart-cloud.svg"
+  alt="AWS Architecture Example"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
 ## Browser Integration
 
@@ -118,4 +139,4 @@ diagram.destroy();
 - Learn about [Diagrams](/guides/diagram) in detail
 - Explore [Nodes](/guides/node) and connections
 - See [all providers](/nodes/) and their services
-- Check out [complete examples](/examples)
+- Check out [complete examples](/getting-started/examples)

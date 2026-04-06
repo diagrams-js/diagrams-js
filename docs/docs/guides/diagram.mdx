@@ -98,7 +98,7 @@ const diagram = Diagram("My Diagram", {
 });
 ```
 
-See [Graphviz attributes reference](https://graphviz.org/doc/info/attrs.html) for available options.
+See [Graphviz attributes reference](https://graphviz.org/doc/info/attrs.html) for available options including custom attributes for [graphs](https://graphviz.org/docs/graph/), [nodes](https://graphviz.org/docs/nodes/), and [edges](https://graphviz.org/docs/edges/).
 
 ## Methods
 
@@ -192,7 +192,3 @@ In browsers, you can display the diagram directly:
 const svg = await diagram.render();
 document.getElementById("diagram-container").innerHTML = svg;
 ```
-
-## Credits
-
-Uses [Graphviz](https://graphviz.org/) for layout and rendering via [viz-js](https://github.com/mdaines/viz-js).
