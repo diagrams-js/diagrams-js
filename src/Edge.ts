@@ -1,12 +1,6 @@
 import type { Node } from "./Node.js";
 import type { EdgeOptions } from "./types.js";
 
-const defaultEdgeAttrs: Record<string, string> = {
-  fontcolor: "#2D3436",
-  fontname: "Sans-Serif",
-  fontsize: "13",
-};
-
 export interface Edge {
   node: Node | undefined;
   forward: boolean;
@@ -21,9 +15,6 @@ export function Edge(options: EdgeOptions = {}): Edge {
   let forward = options.forward ?? false;
   let reverse = options.reverse ?? false;
   const _attrs: Record<string, string> = {};
-
-  // Set default attributes
-  Object.assign(_attrs, defaultEdgeAttrs);
 
   // Set optional attributes
   if (options.label) {

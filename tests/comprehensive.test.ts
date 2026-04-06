@@ -194,6 +194,130 @@ describe("Edge Behaviors - DOT Output", () => {
     diagram.destroy();
   });
 
+  it("should have default edge label font size of 8", async () => {
+    const diagram = Diagram("Test", {});
+    const node1 = diagram.add(Node("A"));
+    const node2 = diagram.add(Node("B"));
+    node1.to(Edge({ label: "test" }), node2);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('fontsize="8"');
+    diagram.destroy();
+  });
+
+  it("should allow custom edge label font size", async () => {
+    const diagram = Diagram("Test", {});
+    const node1 = diagram.add(Node("A"));
+    const node2 = diagram.add(Node("B"));
+    node1.to(Edge({ label: "test", fontsize: "14" }), node2);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('fontsize="14"');
+    diagram.destroy();
+  });
+
+  it("should respect diagram edgeAttr font size", async () => {
+    const diagram = Diagram("Test", {
+      edgeAttr: {
+        fontsize: "9",
+      },
+    });
+    const node1 = diagram.add(Node("A"));
+    const node2 = diagram.add(Node("B"));
+    node1.to(Edge({ label: "test" }), node2);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('fontsize="9"');
+    diagram.destroy();
+  });
+
+  it("should have default edge font properties", async () => {
+    const diagram = Diagram("Test", {});
+    const node1 = diagram.add(Node("A"));
+    const node2 = diagram.add(Node("B"));
+    node1.to(Edge({ label: "test" }), node2);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('fontsize="8"');
+    expect(dot).toContain('fontcolor="#2D3436"');
+    expect(dot).toContain('fontname="Sans-Serif"');
+    diagram.destroy();
+  });
+
+  it("should allow diagram edgeAttr to customize fontcolor", async () => {
+    const diagram = Diagram("Test", {
+      edgeAttr: {
+        fontcolor: "red",
+      },
+    });
+    const node1 = diagram.add(Node("A"));
+    const node2 = diagram.add(Node("B"));
+    node1.to(Edge({ label: "test" }), node2);
+    const dot = await diagram.render({ format: "dot" });
+    // Check edge block has fontcolor="red"
+    expect(dot).toMatch(/edge \[[^\]]*fontcolor="red"[^\]]*\]/);
+    diagram.destroy();
+  });
+
+  it("should allow diagram edgeAttr to customize fontname", async () => {
+    const diagram = Diagram("Test", {
+      edgeAttr: {
+        fontname: "Arial",
+      },
+    });
+    const node1 = diagram.add(Node("A"));
+    const node2 = diagram.add(Node("B"));
+    node1.to(Edge({ label: "test" }), node2);
+    const dot = await diagram.render({ format: "dot" });
+    // Check edge block has fontname="Arial"
+    expect(dot).toMatch(/edge \[[^\]]*fontname="Arial"[^\]]*\]/);
+    diagram.destroy();
+  });
+
+  it("should allow diagram edgeAttr to customize all font properties", async () => {
+    const diagram = Diagram("Test", {
+      edgeAttr: {
+        fontsize: "12",
+        fontcolor: "blue",
+        fontname: "Helvetica",
+      },
+    });
+    const node1 = diagram.add(Node("A"));
+    const node2 = diagram.add(Node("B"));
+    node1.to(Edge({ label: "test" }), node2);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('fontsize="12"');
+    expect(dot).toContain('fontcolor="blue"');
+    expect(dot).toContain('fontname="Helvetica"');
+    diagram.destroy();
+  });
+
+  it("should allow edge-level override of diagram fontcolor", async () => {
+    const diagram = Diagram("Test", {
+      edgeAttr: {
+        fontcolor: "red",
+      },
+    });
+    const node1 = diagram.add(Node("A"));
+    const node2 = diagram.add(Node("B"));
+    node1.to(Edge({ label: "test", fontcolor: "green" }), node2);
+    const dot = await diagram.render({ format: "dot" });
+    // Edge-level should override diagram-level
+    expect(dot).toContain('fontcolor="green"');
+    diagram.destroy();
+  });
+
+  it("should allow edge-level override of diagram fontname", async () => {
+    const diagram = Diagram("Test", {
+      edgeAttr: {
+        fontname: "Arial",
+      },
+    });
+    const node1 = diagram.add(Node("A"));
+    const node2 = diagram.add(Node("B"));
+    node1.to(Edge({ label: "test", fontname: "Times" }), node2);
+    const dot = await diagram.render({ format: "dot" });
+    // Edge-level should override diagram-level
+    expect(dot).toContain('fontname="Times"');
+    diagram.destroy();
+  });
+
   it("should create edge with color", async () => {
     const diagram = Diagram("Test", {});
     const node1 = diagram.add(Node("A"));
