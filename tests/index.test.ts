@@ -445,12 +445,11 @@ describe("Image Rendering", () => {
       direction: "TB",
     });
 
-    const server = diagram.add(Node("Server"));
-
-    // Manually track node with icon data
-    const testIconData =
+    // Create a node with icon data URL so icon attributes are set
+    const server = Node("Server");
+    (server as unknown as { _iconDataUrl: string })._iconDataUrl =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
-    diagram.trackNodeWithIcon(server, testIconData);
+    diagram.add(server);
 
     const result = await diagram.render({ format: "dot" });
     expect(typeof result).toBe("string");
@@ -458,8 +457,8 @@ describe("Image Rendering", () => {
     // Cast to string for regex matching
     const resultStr = result as string;
 
-    // Count occurrences of width="1.0" - should appear only once
-    const widthMatches = (resultStr.match(/width="1\.0"/g) || []).length;
+    // Count occurrences of width="0.8" - should appear only once
+    const widthMatches = (resultStr.match(/width="0\.8"/g) || []).length;
     expect(widthMatches).toBe(1);
 
     // Count occurrences of height="1.0" - should appear only once

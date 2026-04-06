@@ -337,7 +337,9 @@ async function generateExample9() {
   ];
 
   const queue = diagram.add(
-    Custom("Message queue", "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png"),
+    Custom("Message queue", "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png", {
+      width: "1.0",
+    }),
   );
 
   const database = diagram.add(Aurora("Database"));

@@ -47,12 +47,7 @@ diagram.destroy();
 <img
   src="/examples/example1-grouped-workers.svg"
   alt="Grouped Workers on AWS"
-  style={{
-    maxWidth: "100%",
-    height: "auto",
-    border: "1px solid #e0e0e0",
-    borderRadius: "8px",
-  }}
+  className="example-img"
 />
 
 ## Clustered Web Services
@@ -94,12 +89,7 @@ diagram.destroy();
 <img
   src="/examples/example2-clustered-web-services.svg"
   alt="Clustered Web Services"
-  style={{
-    maxWidth: "100%",
-    height: "auto",
-    border: "1px solid #e0e0e0",
-    borderRadius: "8px",
-  }}
+  className="example-img"
 />
 
 ## Event Processing on AWS
@@ -149,12 +139,7 @@ diagram.destroy();
 <img
   src="/examples/example3-event-processing.svg"
   alt="Event Processing on AWS"
-  style={{
-    maxWidth: "100%",
-    height: "auto",
-    border: "1px solid #e0e0e0",
-    borderRadius: "8px",
-  }}
+  className="example-img"
 />
 
 ## Message Collecting System on GCP
@@ -208,12 +193,7 @@ diagram.destroy();
 <img
   src="/examples/example4-message-collecting.svg"
   alt="Message Collecting System on GCP"
-  style={{
-    maxWidth: "100%",
-    height: "auto",
-    border: "1px solid #e0e0e0",
-    borderRadius: "8px",
-  }}
+  className="example-img"
 />
 
 ## Exposed Pod with 3 Replicas on Kubernetes
@@ -228,7 +208,11 @@ const diagram = Diagram("Exposed Pod with 3 Replicas");
 
 const ingress = diagram.add(Ingress("domain.com"));
 const svc = diagram.add(Service("svc"));
-const pods = [diagram.add(Pod("pod1")), diagram.add(Pod("pod2")), diagram.add(Pod("pod3"))];
+const pods = [
+  diagram.add(Pod("pod1")),
+  diagram.add(Pod("pod2")),
+  diagram.add(Pod("pod3")),
+];
 const rs = diagram.add(ReplicaSet("rs"));
 const dp = diagram.add(Deployment("dp"));
 const hpa = diagram.add(HPA("hpa"));
@@ -246,12 +230,7 @@ diagram.destroy();
 <img
   src="/examples/example5-k8s-exposed-pod.svg"
   alt="Exposed Pod with 3 Replicas"
-  style={{
-    maxWidth: "100%",
-    height: "auto",
-    border: "1px solid #e0e0e0",
-    borderRadius: "8px",
-  }}
+  className="example-img"
 />
 
 ## Stateful Architecture on Kubernetes
@@ -294,12 +273,7 @@ diagram.destroy();
 <img
   src="/examples/example6-k8s-stateful.svg"
   alt="Stateful Architecture"
-  style={{
-    maxWidth: "100%",
-    height: "auto",
-    border: "1px solid #e0e0e0",
-    borderRadius: "8px",
-  }}
+  className="example-img"
 />
 
 ## Advanced Web Service with On-Premises
@@ -359,12 +333,7 @@ diagram.destroy();
 <img
   src="/examples/example7-onprem-advanced.svg"
   alt="Advanced Web Service with On-Premises"
-  style={{
-    maxWidth: "100%",
-    height: "auto",
-    border: "1px solid #e0e0e0",
-    borderRadius: "8px",
-  }}
+  className="example-img"
 />
 
 ## Advanced Web Service with On-Premises (with colors and labels)
@@ -427,12 +396,7 @@ diagram.destroy();
 <img
   src="/examples/example8-onprem-advanced-colors.svg"
   alt="Advanced Web Service with On-Premises (with colors and labels)"
-  style={{
-    maxWidth: "100%",
-    height: "auto",
-    border: "1px solid #e0e0e0",
-    borderRadius: "8px",
-  }}
+  className="example-img"
 />
 
 ## RabbitMQ Consumers with Custom Nodes
@@ -452,7 +416,13 @@ const consumers = [
 ];
 
 const queue = diagram.add(
-  Custom("Message queue", "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png"),
+  Custom(
+    "Message queue",
+    "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png",
+    {
+      width: "1.0",
+    },
+  ),
 );
 
 const database = diagram.add(Aurora("Database"));
@@ -467,12 +437,7 @@ diagram.destroy();
 <img
   src="/examples/example9-custom-nodes.svg"
   alt="RabbitMQ Consumers with Custom Nodes"
-  style={{
-    maxWidth: "100%",
-    height: "auto",
-    border: "1px solid #e0e0e0",
-    borderRadius: "8px",
-  }}
+  className="example-img"
 />
 
 ## Next Steps

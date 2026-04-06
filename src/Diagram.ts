@@ -22,14 +22,14 @@ const defaultGraphAttrs: Record<string, string> = {
   nodesep: "0.15",
   ranksep: "0.20",
   fontname: "Sans-Serif",
-  fontsize: "12",
+  fontsize: "10",
 };
 
 const defaultNodeAttrs: Record<string, string> = {
   shape: "box",
   style: "rounded",
   fontname: "Sans-Serif",
-  fontsize: "10",
+  fontsize: "8",
 };
 
 const defaultEdgeAttrs: Record<string, string> = {
@@ -48,6 +48,16 @@ export interface Diagram {
   graphAttr: Record<string, string>;
   nodeAttr: Record<string, string>;
   edgeAttr: Record<string, string>;
+  // Track if user explicitly set icon-related properties in nodeAttr
+  _userNodeAttr?: {
+    shape?: string;
+    height?: string;
+    width?: string;
+    fixedsize?: string;
+    margin?: string;
+    labelloc?: string;
+    imagescale?: string;
+  };
   registerIcon(node: Node, iconKey: string, iconPath?: string): void;
   setIconData(iconData: IconData): void;
   getNodeIconMap(): NodeIconMap[];
@@ -121,6 +131,18 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
   if (options.graphAttr) {
     Object.assign(graphAttr, options.graphAttr);
   }
+  // Track user-set icon-related properties in nodeAttr (for icon node handling)
+  const userNodeAttr = options.nodeAttr
+    ? {
+        shape: options.nodeAttr.shape,
+        height: options.nodeAttr.height,
+        width: options.nodeAttr.width,
+        fixedsize: options.nodeAttr.fixedsize,
+        margin: options.nodeAttr.margin,
+        labelloc: options.nodeAttr.labelloc,
+        imagescale: options.nodeAttr.imagescale,
+      }
+    : undefined;
   if (options.nodeAttr) {
     Object.assign(nodeAttr, options.nodeAttr);
   }
@@ -141,6 +163,7 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
     graphAttr,
     nodeAttr,
     edgeAttr,
+    _userNodeAttr: userNodeAttr,
 
     /**
      * Register a node with an icon for automatic icon injection

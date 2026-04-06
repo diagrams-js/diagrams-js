@@ -26,19 +26,30 @@ export interface CustomNode {
 export function Custom(
   label: string,
   iconUrl: string,
-  options?: { nodeId?: string },
+  options?: {
+    nodeId?: string;
+    shape?: string;
+    height?: string;
+    width?: string;
+    fixedsize?: string;
+    margin?: string;
+    labelloc?: string;
+    imagescale?: string;
+  },
 ): ReturnType<typeof Node> & CustomNode {
   // Create base node with icon data URL if it's already a data URL
   const isDataUrl = iconUrl.startsWith("data:");
   const baseNode = Node(label, {
-    ...options,
+    // Apply defaults first
     shape: "none",
     height: "1.0",
-    width: "1.0",
+    width: "0.8",
     fixedsize: "true",
     margin: "0,0",
     labelloc: "b",
     imagescale: "true",
+    // Then apply user options (which will override defaults)
+    ...options,
     // If it's a data URL, set it as _iconDataUrl so Node._register tracks it
     ...(isDataUrl ? { _iconDataUrl: iconUrl } : {}),
   });

@@ -592,6 +592,115 @@ describe("Provider Node Behaviors - DOT Output", () => {
     diagram.destroy();
   });
 
+  it("should respect diagram nodeAttr.shape for icon nodes", async () => {
+    const diagram = Diagram("Test", {
+      nodeAttr: {
+        shape: "box",
+      },
+    });
+    const node = Node("EC2");
+    (node as unknown as { _iconDataUrl: string })._iconDataUrl = "data:image/png;base64,test";
+    diagram.add(node);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('image="data:image/png;base64,test"');
+    // When diagram nodeAttr.shape is set, icon nodes should use that shape
+    expect(dot).toContain('shape="box"');
+    expect(dot).not.toContain('shape="none"');
+    diagram.destroy();
+  });
+
+  it("should respect diagram nodeAttr.shape=circle for icon nodes", async () => {
+    const diagram = Diagram("Test", {
+      nodeAttr: {
+        shape: "circle",
+      },
+    });
+    const node = Node("EC2");
+    (node as unknown as { _iconDataUrl: string })._iconDataUrl = "data:image/png;base64,test";
+    diagram.add(node);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('image="data:image/png;base64,test"');
+    expect(dot).toContain('shape="circle"');
+    expect(dot).not.toContain('shape="none"');
+    diagram.destroy();
+  });
+
+  it("should allow node-level shape to override diagram nodeAttr for icon nodes", async () => {
+    const diagram = Diagram("Test", {
+      nodeAttr: {
+        shape: "box",
+      },
+    });
+    const node = Node("EC2", { shape: "ellipse" });
+    (node as unknown as { _iconDataUrl: string })._iconDataUrl = "data:image/png;base64,test";
+    diagram.add(node);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('image="data:image/png;base64,test"');
+    // Node-level shape should take precedence over diagram nodeAttr
+    // Check that the specific node has shape="ellipse"
+    expect(dot).toMatch(/label="EC2"[^\]]*shape="ellipse"[^\]]*\]/);
+    diagram.destroy();
+  });
+
+  it("should respect diagram nodeAttr.height for icon nodes", async () => {
+    const diagram = Diagram("Test", {
+      nodeAttr: {
+        height: "2.0",
+      },
+    });
+    const node = Node("EC2");
+    (node as unknown as { _iconDataUrl: string })._iconDataUrl = "data:image/png;base64,test";
+    diagram.add(node);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('height="2.0"');
+    diagram.destroy();
+  });
+
+  it("should respect diagram nodeAttr.width for icon nodes", async () => {
+    const diagram = Diagram("Test", {
+      nodeAttr: {
+        width: "2.0",
+      },
+    });
+    const node = Node("EC2");
+    (node as unknown as { _iconDataUrl: string })._iconDataUrl = "data:image/png;base64,test";
+    diagram.add(node);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('width="2.0"');
+    diagram.destroy();
+  });
+
+  it("should respect diagram nodeAttr.margin for icon nodes", async () => {
+    const diagram = Diagram("Test", {
+      nodeAttr: {
+        margin: "0.2,0.2",
+      },
+    });
+    const node = Node("EC2");
+    (node as unknown as { _iconDataUrl: string })._iconDataUrl = "data:image/png;base64,test";
+    diagram.add(node);
+    const dot = await diagram.render({ format: "dot" });
+    expect(dot).toContain('margin="0.2,0.2"');
+    diagram.destroy();
+  });
+
+  it("should allow node-level height to override diagram nodeAttr for icon nodes", async () => {
+    const diagram = Diagram("Test", {
+      nodeAttr: {
+        height: "2.0",
+      },
+    });
+    const node = Node("EC2", { height: "1.5" });
+    (node as unknown as { _iconDataUrl: string })._iconDataUrl = "data:image/png;base64,test";
+    diagram.add(node);
+    const dot = await diagram.render({ format: "dot" });
+    // Node-level should take precedence
+    expect(dot).toMatch(/label="EC2"[^\]]*height="1.5"[^\]]*\]/);
+    diagram.destroy();
+  });
+});
+
+describe("Icon Node Attributes - DOT Output", () => {
   it("should create provider node with all icon positioning attributes", async () => {
     const diagram = Diagram("Test", {});
     const node = Node("Service");
@@ -599,7 +708,7 @@ describe("Provider Node Behaviors - DOT Output", () => {
     diagram.add(node);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('height="1.0"');
-    expect(dot).toContain('width="1.0"');
+    expect(dot).toContain('width="0.8"');
     expect(dot).toContain('fixedsize="true"');
     expect(dot).toContain('margin="0,0"');
     expect(dot).toContain('labelloc="b"');

@@ -68,14 +68,22 @@ export function Node(label = "", options: NodeOptions = {}): Node {
     _iconDataUrl = iconDataUrl;
   }
 
-  // Track if user explicitly set shape (to preserve their choice for icon nodes)
-  const userExplicitShape = options.shape !== undefined;
+  // Track which icon-related properties user explicitly set in node options
+  const userExplicitAttrs: Record<string, boolean> = {
+    shape: options.shape !== undefined,
+    height: options.height !== undefined,
+    width: options.width !== undefined,
+    fixedsize: options.fixedsize !== undefined,
+    margin: options.margin !== undefined,
+    labelloc: options.labelloc !== undefined,
+    imagescale: options.imagescale !== undefined,
+  };
 
   // Only set shape at node level when necessary:
   // 1. User explicitly set a shape (always respect it)
   // 2. Node has icon via options and user didn't set shape (set to "none")
   // Otherwise, inherit from global default (which is "box")
-  if (userExplicitShape) {
+  if (userExplicitAttrs.shape) {
     _attrs.shape = String(options.shape);
   } else if (_iconDataUrl) {
     _attrs.shape = "none";
@@ -93,7 +101,7 @@ export function Node(label = "", options: NodeOptions = {}): Node {
   if (_iconDataUrl) {
     Object.assign(_attrs, {
       height: "1.0",
-      width: "1.0",
+      width: "0.8",
       fixedsize: "true",
       margin: "0,0",
       labelloc: "b",
@@ -150,23 +158,78 @@ export function Node(label = "", options: NodeOptions = {}): Node {
         }
       }
 
-      // Check if icon was set after construction (by provider functions)
+      // Check if icon was set (during construction or after by provider functions)
       // and update shape/icon attributes accordingly
       const currentIconDataUrl = node._iconDataUrl;
       if (currentIconDataUrl) {
-        // If user didn't explicitly set shape, change to "none" for icon nodes
-        if (!userExplicitShape) {
+        // Determine each icon-related attribute with priority:
+        // 1. User explicitly set in node options (highest priority)
+        // 2. User explicitly set at diagram level via nodeAttr
+        // 3. Otherwise, use default value
+
+        // Shape: default "none" (no border around icon)
+        if (userExplicitAttrs.shape) {
+          // Keep user-specified shape from node options
+        } else if (_diagram._userNodeAttr?.shape) {
+          _attrs.shape = _diagram._userNodeAttr.shape;
+        } else {
           _attrs.shape = "none";
         }
-        // Set icon-related attributes
-        Object.assign(_attrs, {
-          height: "1.0",
-          width: "1.0",
-          fixedsize: "true",
-          margin: "0,0",
-          labelloc: "b",
-          imagescale: "true",
-        });
+
+        // Height: default "1.0"
+        if (userExplicitAttrs.height) {
+          // Keep user-specified height
+        } else if (_diagram._userNodeAttr?.height) {
+          _attrs.height = _diagram._userNodeAttr.height;
+        } else {
+          _attrs.height = "1.0";
+        }
+
+        // Width: default "0.8"
+        if (userExplicitAttrs.width) {
+          // Keep user-specified width
+        } else if (_diagram._userNodeAttr?.width) {
+          _attrs.width = _diagram._userNodeAttr.width;
+        } else {
+          _attrs.width = "0.8";
+        }
+
+        // Fixedsize: default "true"
+        if (userExplicitAttrs.fixedsize) {
+          // Keep user-specified fixedsize
+        } else if (_diagram._userNodeAttr?.fixedsize) {
+          _attrs.fixedsize = _diagram._userNodeAttr.fixedsize;
+        } else {
+          _attrs.fixedsize = "true";
+        }
+
+        // Margin: default "0,0"
+        if (userExplicitAttrs.margin) {
+          // Keep user-specified margin
+        } else if (_diagram._userNodeAttr?.margin) {
+          _attrs.margin = _diagram._userNodeAttr.margin;
+        } else {
+          _attrs.margin = "0,0";
+        }
+
+        // Labelloc: default "b"
+        if (userExplicitAttrs.labelloc) {
+          // Keep user-specified labelloc
+        } else if (_diagram._userNodeAttr?.labelloc) {
+          _attrs.labelloc = _diagram._userNodeAttr.labelloc;
+        } else {
+          _attrs.labelloc = "b";
+        }
+
+        // Imagescale: default "true"
+        if (userExplicitAttrs.imagescale) {
+          // Keep user-specified imagescale
+        } else if (_diagram._userNodeAttr?.imagescale) {
+          _attrs.imagescale = _diagram._userNodeAttr.imagescale;
+        } else {
+          _attrs.imagescale = "true";
+        }
+
         // Track this node for icon injection
         _diagram.trackNodeWithIcon(node, currentIconDataUrl);
       }
