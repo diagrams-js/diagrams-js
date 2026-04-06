@@ -7,13 +7,15 @@ description: Real-world architecture examples
 
 Here are comprehensive examples demonstrating the capabilities of diagrams-js.
 
+:::info
+These examples are reproduced from the original [Python's Diagrams](https://diagrams.mingrammer.com/docs/getting-started/examples) documentations.
+:::
+
 :::tip Live Demo
-For interactive examples with live rendered diagrams, check out the [live demo](/demo.html).
+For interactive examples with live rendered diagrams, check out the [playground](/playground).
 :::
 
 ## Grouped Workers on AWS
-
-A classic load balancer pattern with multiple worker nodes.
 
 ```typescript
 import { Diagram } from "diagrams-js";
@@ -42,11 +44,18 @@ const svg = await diagram.render();
 diagram.destroy();
 ```
 
-**Result:** A load balancer distributing traffic to 5 EC2 workers that all write to an RDS database.
+<img
+  src="/examples/example1-grouped-workers.svg"
+  alt="Grouped Workers on AWS"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
 ## Clustered Web Services
-
-Web services organized into logical clusters.
 
 ```typescript
 import { Diagram } from "diagrams-js";
@@ -82,11 +91,18 @@ const svg = await diagram.render();
 diagram.destroy();
 ```
 
-**Result:** A clustered architecture with web services, database replication, and caching layer, all grouped visually.
+<img
+  src="/examples/example2-clustered-web-services.svg"
+  alt="Clustered Web Services"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
 ## Event Processing on AWS
-
-Complex event-driven architecture with nested clusters.
 
 ```typescript
 import { Diagram } from "diagrams-js";
@@ -130,11 +146,18 @@ const svg = await diagram.render();
 diagram.destroy();
 ```
 
-**Result:** Multi-level nested clusters showing an event processing pipeline from K8s source through workers, queue, and Lambda processors.
+<img
+  src="/examples/example3-event-processing.svg"
+  alt="Event Processing on AWS"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
 ## Message Collecting System on GCP
-
-IoT data pipeline architecture.
 
 ```typescript
 import { Diagram } from "diagrams-js";
@@ -182,11 +205,18 @@ const svg = await diagram.render();
 diagram.destroy();
 ```
 
-**Result:** Complex GCP architecture with IoT Core sources, Pub/Sub messaging, Dataflow processing, and multiple targets including BigQuery, Bigtable, and App Engine.
+<img
+  src="/examples/example4-message-collecting.svg"
+  alt="Message Collecting System on GCP"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
-## Kubernetes Architecture
-
-### Exposed Pod with 3 Replicas
+## Exposed Pod with 3 Replicas on Kubernetes
 
 ```typescript
 import { Diagram } from "diagrams-js";
@@ -198,7 +228,11 @@ const diagram = Diagram("Exposed Pod with 3 Replicas");
 
 const ingress = diagram.add(Ingress("domain.com"));
 const svc = diagram.add(Service("svc"));
-const pods = [diagram.add(Pod("pod1")), diagram.add(Pod("pod2")), diagram.add(Pod("pod3"))];
+const pods = [
+  diagram.add(Pod("pod1")),
+  diagram.add(Pod("pod2")),
+  diagram.add(Pod("pod3")),
+];
 const rs = diagram.add(ReplicaSet("rs"));
 const dp = diagram.add(Deployment("dp"));
 const hpa = diagram.add(HPA("hpa"));
@@ -213,9 +247,18 @@ const svg = await diagram.render();
 diagram.destroy();
 ```
 
-**Result:** A standard Kubernetes deployment pattern showing the relationship between Ingress, Service, Pods, ReplicaSet, Deployment, and HPA.
+<img
+  src="/examples/example5-k8s-exposed-pod.svg"
+  alt="Exposed Pod with 3 Replicas"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
-### Stateful Architecture
+## Stateful Architecture on Kubernetes
 
 ```typescript
 import { Diagram } from "diagrams-js";
@@ -252,11 +295,18 @@ const svg = await diagram.render();
 diagram.destroy();
 ```
 
-**Result:** A stateful application showing StatefulSet with persistent storage using PVCs and PVs.
+<img
+  src="/examples/example6-k8s-stateful.svg"
+  alt="Stateful Architecture"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
-## On-Premises Architecture
-
-### Advanced Web Service
+## Advanced Web Service with On-Premises
 
 ```typescript
 import { Diagram } from "diagrams-js";
@@ -310,9 +360,18 @@ const svg = await diagram.render();
 diagram.destroy();
 ```
 
-**Result:** A comprehensive on-premises architecture with load balancing, microservices, HA database, caching, monitoring, and log aggregation.
+<img
+  src="/examples/example7-onprem-advanced.svg"
+  alt="Advanced Web Service with On-Premises"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
-### With Colored Edges
+## Advanced Web Service with On-Premises (with colors and labels)
 
 ```typescript
 import { Diagram, Edge } from "diagrams-js";
@@ -369,11 +428,18 @@ const svg = await diagram.render();
 diagram.destroy();
 ```
 
-**Result:** Same architecture with custom colored and styled edges to indicate different types of connections.
+<img
+  src="/examples/example8-onprem-advanced-colors.svg"
+  alt="Advanced Web Service with On-Premises (with colors and labels)"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
-## Custom Node Example
-
-Using external icons with custom nodes:
+## RabbitMQ Consumers with Custom Nodes
 
 ```typescript
 import { Diagram, Custom } from "diagrams-js";
@@ -390,7 +456,10 @@ const consumers = [
 ];
 
 const queue = diagram.add(
-  Custom("Message queue", "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png"),
+  Custom(
+    "Message queue",
+    "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png",
+  ),
 );
 
 const database = diagram.add(Aurora("Database"));
@@ -402,7 +471,16 @@ const svg = await diagram.render();
 diagram.destroy();
 ```
 
-**Result:** A diagram mixing Kubernetes Pods, AWS Aurora database, and a custom node with an external RabbitMQ icon.
+<img
+  src="/examples/example9-custom-nodes.svg"
+  alt="RabbitMQ Consumers with Custom Nodes"
+  style={{
+    maxWidth: "100%",
+    height: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+  }}
+/>
 
 ## Next Steps
 
