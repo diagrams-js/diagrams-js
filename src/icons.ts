@@ -346,10 +346,13 @@ function injectIconsBrowser(svgString: string, nodeMap: NodeIconMap[], iconData:
     }
 
     // Use <use> tag to reference the icon definition
+    // Shift icon down slightly so side arrows point to icon center
+    const iconYOffset = 6;
+
     const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
     use.setAttribute("href", `#${iconRefId}`);
     use.setAttribute("x", String(x));
-    use.setAttribute("y", String(y));
+    use.setAttribute("y", String(y + iconYOffset));
 
     group.appendChild(use);
   });
@@ -402,8 +405,11 @@ function injectIconsNode(svgString: string, nodeMap: NodeIconMap[], iconData: Ic
     const pos = extractPosition(groupHtml);
     if (!pos) continue;
 
+    // Shift icon down slightly so side arrows point to icon center
+    const iconYOffset = 6;
+
     // Create use element referencing the icon
-    const useElement = `<use href="#${iconRefId}" x="${pos.x}" y="${pos.y}"/>`;
+    const useElement = `<use href="#${iconRefId}" x="${pos.x}" y="${pos.y + iconYOffset}"/>`;
 
     // Insert use element before closing </g>
     const newGroupHtml = groupHtml.replace(/<\/g>$/, `${useElement}</g>`);

@@ -100,7 +100,7 @@ export function Node(label = "", options: NodeOptions = {}): Node {
   // Provider nodes (where _iconDataUrl is set after construction) will be handled in _register
   if (_iconDataUrl) {
     Object.assign(_attrs, {
-      height: "1.0",
+      height: "0.9",
       width: "0.8",
       fixedsize: "true",
       margin: "0,0",
@@ -176,13 +176,13 @@ export function Node(label = "", options: NodeOptions = {}): Node {
           _attrs.shape = "none";
         }
 
-        // Height: default "1.0"
+        // Height: default "0.9"
         if (userExplicitAttrs.height) {
           // Keep user-specified height
         } else if (_diagram._userNodeAttr?.height) {
           _attrs.height = _diagram._userNodeAttr.height;
         } else {
-          _attrs.height = "1.0";
+          _attrs.height = "0.9";
         }
 
         // Width: default "0.8"

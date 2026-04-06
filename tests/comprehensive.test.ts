@@ -831,7 +831,7 @@ describe("Icon Node Attributes - DOT Output", () => {
     (node as unknown as { _iconDataUrl: string })._iconDataUrl = "data:image/png;base64,test";
     diagram.add(node);
     const dot = await diagram.render({ format: "dot" });
-    expect(dot).toContain('height="1.0"');
+    expect(dot).toContain('height="0.9"');
     expect(dot).toContain('width="0.8"');
     expect(dot).toContain('fixedsize="true"');
     expect(dot).toContain('margin="0,0"');

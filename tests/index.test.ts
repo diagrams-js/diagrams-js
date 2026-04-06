@@ -461,8 +461,8 @@ describe("Image Rendering", () => {
     const widthMatches = (resultStr.match(/width="0\.8"/g) || []).length;
     expect(widthMatches).toBe(1);
 
-    // Count occurrences of height="1.0" - should appear only once
-    const heightMatches = (resultStr.match(/height="1\.0"/g) || []).length;
+    // Count occurrences of height="0.9" - should appear only once
+    const heightMatches = (resultStr.match(/height="0\.9"/g) || []).length;
     expect(heightMatches).toBe(1);
 
     diagram.destroy();

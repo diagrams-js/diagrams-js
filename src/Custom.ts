@@ -42,7 +42,7 @@ export function Custom(
   const baseNode = Node(label, {
     // Apply defaults first
     shape: "none",
-    height: "1.0",
+    height: "0.9",
     width: "0.8",
     fixedsize: "true",
     margin: "0,0",
