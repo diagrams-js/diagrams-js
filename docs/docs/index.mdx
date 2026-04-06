@@ -11,7 +11,7 @@ A TypeScript port of the [diagrams](https://github.com/mingrammer/diagrams) Pyth
 
 - **Diagram as Code**: Define your architecture diagrams in TypeScript/JavaScript
 - **Cross-Platform**: Works in Node.js, Deno, Bun, browsers, and Cloudflare Workers
-- **Graphviz-Powered**: Uses `@viz-js/viz` (WebAssembly-based Graphviz) for rendering
+- **Graphviz-Powered**: Uses [@viz-js/viz](https://github.com/mdaines/viz-js) (WebAssembly-based Graphviz) for rendering
 - **Type-Safe**: Full TypeScript support with autocompletion
 - **17 Providers**: AWS, Azure, GCP, Kubernetes, and more
 - **Custom Nodes**: Use your own icons and images
@@ -25,17 +25,18 @@ import { EC2, Lambda } from "diagrams-js/aws/compute";
 import { RDS } from "diagrams-js/aws/database";
 import { S3 } from "diagrams-js/aws/storage";
 
-const diagram = new Diagram("Web Architecture");
+const diagram = Diagram("Web Architecture");
 
-const web = diagram.add(new EC2("Web Server"));
-const api = diagram.add(new Lambda("API"));
-const db = diagram.add(new RDS("Database"));
-const storage = diagram.add(new S3("Storage"));
+const web = diagram.add(EC2("Web Server"));
+const api = diagram.add(Lambda("API"));
+const db = diagram.add(RDS("Database"));
+const storage = diagram.add(S3("Storage"));
 
 web.to(api).to(db);
 api.to(storage);
 
 const svg = await diagram.render();
+diagram.destroy();
 ```
 
 ## Installation
@@ -47,17 +48,26 @@ npm install diagrams-js
 ## Get Started
 
 - [Installation](/getting-started/installation) - Install diagrams-js in your project
-- [Quick Start](/getting-started/quick-start) - Create your first diagram
+- [Quick Start](/getting-started/quickstart) - Create your first diagram
 - [Basic Diagrams](/guides/basic-diagrams) - Learn the basics
+- [Examples](/examples) - Real-world architecture examples
 
 ## Providers
 
-- [AWS](/providers/aws) - 500+ services (EC2, S3, Lambda, RDS, etc.)
-- [Azure](/providers/azure) - 400+ services
-- [GCP](/providers/gcp) - 100+ services
-- [Kubernetes](/providers/k8s) - Pods, Deployments, Services
-- [And more...](/providers/) - 17 providers total
+- [AWS](/nodes/aws) - 500+ services (EC2, S3, Lambda, RDS, etc.)
+- [Azure](/nodes/azure) - 400+ services
+- [GCP](/nodes/gcp) - 100+ services
+- [Kubernetes](/nodes/k8s) - Pods, Deployments, Services
+- [And more...](/nodes/) - 17 providers total
+
+## Credits
+
+This project is a TypeScript port of the original [diagrams](https://github.com/mingrammer/diagrams) library by [mingrammer](https://github.com/mingrammer). It uses:
+
+- [Graphviz](https://graphviz.org/) - Graph visualization software
+- [viz-js](https://github.com/mdaines/viz-js) - WebAssembly-based Graphviz for JavaScript
+- The extensive icon sets from the original diagrams library
 
 ## License
 
-MIT
+MIT - Same as the original diagrams library

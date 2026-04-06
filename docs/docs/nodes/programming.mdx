@@ -1,0 +1,46 @@
+---
+title: Programming
+description: Node classes for Programming Languages and Frameworks provider
+---
+
+# Programming
+
+Node classes list for the Programming Languages and Frameworks provider.
+
+## Import
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { NodeJS, Python, Java } from "diagrams-js/programming/language";
+import { React, Angular, Vue } from "diagrams-js/programming/framework";
+import { NodeJSRuntime } from "diagrams-js/programming/runtime";
+```
+
+## Available Categories
+
+:::note
+This provider supports languages, frameworks, and runtimes categories. Please refer to the [Python diagrams Programming documentation](https://diagrams.mingrammer.com/docs/nodes/programming) for the complete list of available nodes.
+:::
+
+## Usage Example
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { NodeJS, Python } from "diagrams-js/programming/language";
+import { React } from "diagrams-js/programming/framework";
+
+const diagram = Diagram("Tech Stack");
+
+const frontend = diagram.add(React("Frontend"));
+const backend = diagram.add(NodeJS("API"));
+const ml = diagram.add(Python("ML Service"));
+
+frontend.to(backend).to(ml);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+:::tip Complete Reference
+For a complete list of all Programming nodes, see the [Python diagrams Programming documentation](https://diagrams.mingrammer.com/docs/nodes/programming). All node classes listed there are available in diagrams-js with the same class names.
+:::

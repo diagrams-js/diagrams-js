@@ -10,7 +10,7 @@ description: Learn the basics of creating diagrams
 ```typescript
 import { Diagram } from "diagrams-js";
 
-const diagram = new Diagram("My Diagram", {
+const diagram = Diagram("My Diagram", {
   direction: "LR", // Left to Right (default)
   // direction: 'TB' // Top to Bottom
 });
@@ -21,7 +21,7 @@ const diagram = new Diagram("My Diagram", {
 ```typescript
 import { EC2 } from "diagrams-js/aws/compute";
 
-const server = diagram.add(new EC2("Web Server"));
+const server = diagram.add(EC2("Web Server"));
 ```
 
 ## Connecting Nodes
@@ -67,7 +67,7 @@ const png = await diagram.render({ format: "png" });
 ## Diagram Options
 
 ```typescript
-const diagram = new Diagram("My Diagram", {
+const diagram = Diagram("My Diagram", {
   name: "my-diagram",
   direction: "TB",
   curvestyle: "ortho", // ortho, curved, spline, polyline

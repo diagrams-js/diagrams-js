@@ -1,0 +1,307 @@
+---
+title: API Reference
+description: Complete API documentation
+---
+
+# API Reference
+
+## Core Functions
+
+### Diagram(name, options?)
+
+Creates a new diagram.
+
+**Parameters:**
+
+- `name` (string): The diagram name (used for labeling and default filename)
+- `options` (DiagramOptions, optional): Configuration options
+
+**Returns:** Diagram instance
+
+```typescript
+const diagram = Diagram("My Diagram", {
+  direction: "LR",
+  theme: "neutral",
+});
+```
+
+**DiagramOptions:**
+
+| Property     | Type                                          | Default             | Description                        |
+| ------------ | --------------------------------------------- | ------------------- | ---------------------------------- |
+| `name`       | string                                        | Same as first param | Diagram display name               |
+| `filename`   | string                                        | Lowercase name      | Output filename                    |
+| `direction`  | "TB" \| "BT" \| "LR" \| "RL"                  | "LR"                | Layout direction                   |
+| `curvestyle` | "ortho" \| "curved" \| "spline" \| "polyline" | "ortho"             | Edge curve style                   |
+| `theme`      | ThemeName                                     | "neutral"           | Color theme                        |
+| `autolabel`  | boolean                                       | false               | Auto-prefix labels with class name |
+| `strict`     | boolean                                       | false               | Use strict graph mode              |
+| `graphAttr`  | Record\<string, string>                       | {}                  | Custom graph attributes            |
+| `nodeAttr`   | Record\<string, string>                       | {}                  | Custom node attributes             |
+| `edgeAttr`   | Record\<string, string>                       | {}                  | Custom edge attributes             |
+
+**Methods:**
+
+#### diagram.add(node)
+
+Add a node to the diagram.
+
+```typescript
+const server = diagram.add(EC2("Web Server"));
+```
+
+#### diagram.cluster(label)
+
+Create a cluster (subgraph) for grouping nodes.
+
+```typescript
+const cluster = diagram.cluster("Services");
+const node = cluster.add(EC2("web"));
+```
+
+#### diagram.render(options?)
+
+Render the diagram to a string or binary format.
+
+```typescript
+// SVG (default)
+const svg = await diagram.render();
+
+// PNG
+const png = await diagram.render({ format: "png" });
+
+// DOT
+const dot = await diagram.render({ format: "dot" });
+
+// As data URL (for direct use in browsers)
+const dataUrl = await diagram.render({ dataUrl: true });
+// Returns: data:image/svg+xml;base64,PHN2Zy4uLg==
+
+// PNG as data URL
+const pngDataUrl = await diagram.render({ format: "png", dataUrl: true });
+// Returns: data:image/png;base64,iVBORw0KGgo...
+```
+
+**RenderOptions:**
+
+| Property      | Type                             | Default | Description             |
+| ------------- | -------------------------------- | ------- | ----------------------- |
+| `format`      | "svg" \| "png" \| "jpg" \| "dot" | "svg"   | Output format           |
+| `width`       | number                           | Auto    | Output width (PNG/JPG)  |
+| `height`      | number                           | Auto    | Output height (PNG/JPG) |
+| `scale`       | number                           | 2       | Scale factor (PNG/JPG)  |
+| `injectIcons` | boolean                          | true    | Auto-inject node icons  |
+| `dataUrl`     | boolean                          | false   | Return as data URL      |
+
+#### diagram.save(filepath?)
+
+Save the diagram to a file.
+
+```typescript
+await diagram.save("diagram.svg");
+await diagram.save("diagram.png");
+```
+
+#### diagram.destroy()
+
+Clean up resources.
+
+```typescript
+diagram.destroy();
+```
+
+### Node(label, options?)
+
+Creates a generic node. Usually you use provider-specific node functions instead.
+
+```typescript
+import { Node } from "diagrams-js";
+
+const node = diagram.add(Node("My Node"));
+```
+
+**Node Methods:**
+
+#### node.to(target)
+
+Create a forward connection (left to right).
+
+```typescript
+web.to(api);
+web.to([api1, api2]); // Multiple targets
+```
+
+#### node.from(source)
+
+Create a reverse connection (right to left).
+
+```typescript
+db.from(api);
+db.from([api1, api2]); // Multiple sources
+```
+
+#### node.with(target)
+
+Create an undirected connection (no arrows).
+
+```typescript
+primary.with(replica);
+```
+
+### Edge(options?)
+
+Creates an edge with custom properties.
+
+```typescript
+import { Edge } from "diagrams-js";
+
+// Simple edge
+web.to(Edge({ color: "red" }), db);
+
+// With multiple properties
+web.to(
+  Edge({
+    label: "data",
+    color: "blue",
+    style: "dashed",
+  }),
+  db,
+);
+```
+
+**EdgeOptions:**
+
+| Property        | Type    | Description                              |
+| --------------- | ------- | ---------------------------------------- |
+| `label`         | string  | Edge label text                          |
+| `color`         | string  | Edge color                               |
+| `style`         | string  | Line style (solid, dashed, dotted, bold) |
+| `forward`       | boolean | Show forward arrow                       |
+| `reverse`       | boolean | Show reverse arrow                       |
+| `[key: string]` | any     | Any Graphviz edge attribute              |
+
+### Custom(label, iconUrl, options?)
+
+Creates a node with a custom icon.
+
+```typescript
+import { Custom } from "diagrams-js";
+
+// From URL
+const node = diagram.add(Custom("Service", "https://example.com/icon.png"));
+
+// From data URL
+const node2 = diagram.add(Custom("Local", "data:image/png;base64,..."));
+```
+
+**Parameters:**
+
+- `label` (string): Node label
+- `iconUrl` (string): Icon URL or data URL
+- `options` (object, optional): Additional node options
+
+## Provider Imports
+
+### AWS
+
+```typescript
+import { EC2, Lambda, ECS } from "diagrams-js/aws/compute";
+import { RDS, DynamoDB } from "diagrams-js/aws/database";
+import { S3 } from "diagrams-js/aws/storage";
+import { ALB, Route53 } from "diagrams-js/aws/network";
+```
+
+### Azure
+
+```typescript
+import { VM } from "diagrams-js/azure/compute";
+import { SQLDatabase } from "diagrams-js/azure/databases";
+```
+
+### GCP
+
+```typescript
+import { GCE, GKE } from "diagrams-js/gcp/compute";
+import { CloudSQL } from "diagrams-js/gcp/database";
+import { CloudStorage } from "diagrams-js/gcp/storage";
+```
+
+### Kubernetes
+
+```typescript
+import { Pod, Deployment } from "diagrams-js/k8s/compute";
+import { Service, Ingress } from "diagrams-js/k8s/network";
+```
+
+See [Providers](/providers/) for complete list.
+
+## Utility Functions
+
+### setIconBaseDir(dir)
+
+Set the base directory for loading icons in Node.js.
+
+```typescript
+import { setIconBaseDir } from "diagrams-js";
+
+setIconBaseDir("./icons");
+```
+
+### getIconBaseDir()
+
+Get the current icon base directory.
+
+```typescript
+import { getIconBaseDir } from "diagrams-js";
+
+const dir = getIconBaseDir();
+```
+
+## Type Exports
+
+```typescript
+import type { DiagramOptions, EdgeOptions, NodeOptions, ThemeName, ThemeConfig } from "diagrams-js";
+```
+
+## Complete Example
+
+```typescript
+import { Diagram, Edge, Custom, type DiagramOptions } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
+
+const options: DiagramOptions = {
+  direction: "TB",
+  theme: "pastel",
+  graphAttr: {
+    fontsize: "20",
+  },
+};
+
+const diagram = Diagram("Architecture", options);
+
+const web = diagram.add(EC2("Web"));
+const db = diagram.add(RDS("DB"));
+const cache = diagram.add(Custom("Cache", "https://example.com/redis.png"));
+
+web.to(Edge({ color: "blue" }), db);
+web.to(Edge({ style: "dashed" }), cache);
+
+// Render as SVG string
+const svg = await diagram.render();
+
+// Or render as data URL for direct use
+const dataUrl = await diagram.render({ dataUrl: true });
+
+// Display in browser
+const img = document.createElement("img");
+img.src = dataUrl;
+document.body.appendChild(img);
+
+await diagram.save("architecture.svg");
+diagram.destroy();
+```
+
+## Credits
+
+API design based on the original [diagrams](https://github.com/mingrammer/diagrams) Python library by [mingrammer](https://github.com/mingrammer), adapted for TypeScript/JavaScript with factory functions.

@@ -1,0 +1,49 @@
+---
+title: Azure
+description: Node classes for Microsoft Azure provider
+---
+
+# Azure
+
+Node classes list for the Azure provider.
+
+## Import
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { VirtualMachines, ContainerRegistries } from "diagrams-js/azure/compute";
+import { SQLDatabases, CosmosDb } from "diagrams-js/azure/databases";
+import { StorageAccounts } from "diagrams-js/azure/storage";
+```
+
+## Available Categories
+
+:::note
+This provider supports multiple service categories. Please refer to the [Python diagrams Azure documentation](https://diagrams.mingrammer.com/docs/nodes/azure) for the complete list of available nodes.
+:::
+
+## Usage Example
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { VirtualMachines, AppServices } from "diagrams-js/azure/compute";
+import { SQLDatabases } from "diagrams-js/azure/databases";
+import { StorageAccounts } from "diagrams-js/azure/storage";
+
+const diagram = Diagram("Azure Architecture");
+
+const web = diagram.add(AppServices("Web App"));
+const vm = diagram.add(VirtualMachines("VM"));
+const db = diagram.add(SQLDatabases("SQL"));
+const storage = diagram.add(StorageAccounts("Storage"));
+
+web.to(db);
+vm.to(storage);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+:::tip Complete Reference
+For a complete list of all Azure nodes, see the [Python diagrams Azure documentation](https://diagrams.mingrammer.com/docs/nodes/azure). All node classes listed there are available in diagrams-js with the same class names.
+:::

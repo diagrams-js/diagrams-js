@@ -1,0 +1,412 @@
+---
+title: Examples
+description: Real-world architecture examples
+---
+
+# Examples
+
+Here are comprehensive examples demonstrating the capabilities of diagrams-js.
+
+:::tip Live Demo
+For interactive examples with live rendered diagrams, check out the [live demo](/demo.html).
+:::
+
+## Grouped Workers on AWS
+
+A classic load balancer pattern with multiple worker nodes.
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
+import { ELB } from "diagrams-js/aws/network";
+
+const diagram = Diagram("Grouped Workers", {
+  direction: "TB",
+});
+
+const lb = diagram.add(ELB("lb"));
+const workers = [
+  diagram.add(EC2("worker1")),
+  diagram.add(EC2("worker2")),
+  diagram.add(EC2("worker3")),
+  diagram.add(EC2("worker4")),
+  diagram.add(EC2("worker5")),
+];
+const events = diagram.add(RDS("events"));
+
+lb.to(workers);
+workers.forEach((w) => w.to(events));
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+**Result:** A load balancer distributing traffic to 5 EC2 workers that all write to an RDS database.
+
+## Clustered Web Services
+
+Web services organized into logical clusters.
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { ECS } from "diagrams-js/aws/compute";
+import { RDS, Elasticache } from "diagrams-js/aws/database";
+import { ELB, Route53 } from "diagrams-js/aws/network";
+
+const diagram = Diagram("Clustered Web Services");
+
+const dns = diagram.add(Route53("dns"));
+const lb = diagram.add(ELB("lb"));
+
+const svcCluster = diagram.cluster("Services");
+const svcGroup = [
+  svcCluster.add(ECS("web1")),
+  svcCluster.add(ECS("web2")),
+  svcCluster.add(ECS("web3")),
+];
+lb.to(svcGroup);
+
+const dbCluster = diagram.cluster("DB Cluster");
+const dbPrimary = dbCluster.add(RDS("userdb"));
+const dbReplica = dbCluster.add(RDS("userdb ro"));
+dbPrimary.with(dbReplica);
+svcGroup.forEach((s) => s.to(dbPrimary));
+
+const memcached = diagram.add(Elasticache("memcached"));
+svcGroup.forEach((s) => s.to(memcached));
+
+dns.to(lb);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+**Result:** A clustered architecture with web services, database replication, and caching layer, all grouped visually.
+
+## Event Processing on AWS
+
+Complex event-driven architecture with nested clusters.
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { ECS, EKS, Lambda } from "diagrams-js/aws/compute";
+import { Redshift } from "diagrams-js/aws/database";
+import { SQS } from "diagrams-js/aws/integration";
+import { S3 } from "diagrams-js/aws/storage";
+
+const diagram = Diagram("Event Processing");
+
+const source = diagram.add(EKS("k8s source"));
+const store = diagram.add(S3("events store"));
+const dw = diagram.add(Redshift("analytics"));
+
+const flowsCluster = diagram.cluster("Event Flows");
+
+const workersCluster = flowsCluster.cluster("Event Workers");
+const workerNodes = [
+  workersCluster.add(ECS("worker1")),
+  workersCluster.add(ECS("worker2")),
+  workersCluster.add(ECS("worker3")),
+];
+source.to(workerNodes);
+
+const queue = flowsCluster.add(SQS("event queue"));
+workerNodes.forEach((w) => w.to(queue));
+
+const procCluster = flowsCluster.cluster("Processing");
+const handlers = [
+  procCluster.add(Lambda("proc1")),
+  procCluster.add(Lambda("proc2")),
+  procCluster.add(Lambda("proc3")),
+];
+queue.to(handlers);
+handlers.forEach((h) => {
+  h.to(store);
+  h.to(dw);
+});
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+**Result:** Multi-level nested clusters showing an event processing pipeline from K8s source through workers, queue, and Lambda processors.
+
+## Message Collecting System on GCP
+
+IoT data pipeline architecture.
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { BigQuery, Dataflow, PubSub } from "diagrams-js/gcp/analytics";
+import { AppEngine, Functions } from "diagrams-js/gcp/compute";
+import { Bigtable } from "diagrams-js/gcp/database";
+import { IotCore } from "diagrams-js/gcp/iot";
+import { Storage } from "diagrams-js/gcp/storage";
+
+const diagram = Diagram("Message Collecting");
+
+const pubsub = diagram.add(PubSub("pubsub"));
+
+const sourceCluster = diagram.cluster("Source of Data");
+const sources = [
+  sourceCluster.add(IotCore("core1")),
+  sourceCluster.add(IotCore("core2")),
+  sourceCluster.add(IotCore("core3")),
+];
+sources.forEach((s) => s.to(pubsub));
+
+const targetsCluster = diagram.cluster("Targets");
+const flowCluster = targetsCluster.cluster("Data Flow");
+const dataflow = flowCluster.add(Dataflow("data flow"));
+pubsub.to(dataflow);
+
+const lakeCluster = targetsCluster.cluster("Data Lake");
+const bq = lakeCluster.add(BigQuery("bq"));
+const gcs = lakeCluster.add(Storage("storage"));
+dataflow.to([bq, gcs]);
+
+const eventCluster = targetsCluster.cluster("Event Driven");
+
+const procCluster = eventCluster.cluster("Processing");
+const engine = procCluster.add(AppEngine("engine"));
+const bigtable = procCluster.add(Bigtable("bigtable"));
+dataflow.to(engine).to(bigtable);
+
+const serverlessCluster = eventCluster.cluster("Serverless");
+const func = serverlessCluster.add(Functions("func"));
+const appengine = serverlessCluster.add(AppEngine("appengine"));
+dataflow.to(func).to(appengine);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+**Result:** Complex GCP architecture with IoT Core sources, Pub/Sub messaging, Dataflow processing, and multiple targets including BigQuery, Bigtable, and App Engine.
+
+## Kubernetes Architecture
+
+### Exposed Pod with 3 Replicas
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { HPA } from "diagrams-js/k8s/clusterconfig";
+import { Deployment, Pod, ReplicaSet } from "diagrams-js/k8s/compute";
+import { Ingress, Service } from "diagrams-js/k8s/network";
+
+const diagram = Diagram("Exposed Pod with 3 Replicas");
+
+const ingress = diagram.add(Ingress("domain.com"));
+const svc = diagram.add(Service("svc"));
+const pods = [diagram.add(Pod("pod1")), diagram.add(Pod("pod2")), diagram.add(Pod("pod3"))];
+const rs = diagram.add(ReplicaSet("rs"));
+const dp = diagram.add(Deployment("dp"));
+const hpa = diagram.add(HPA("hpa"));
+
+ingress.to(svc);
+svc.to(pods);
+pods.forEach((p) => p.from(rs));
+rs.from(dp);
+dp.from(hpa);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+**Result:** A standard Kubernetes deployment pattern showing the relationship between Ingress, Service, Pods, ReplicaSet, Deployment, and HPA.
+
+### Stateful Architecture
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { Pod, StatefulSet } from "diagrams-js/k8s/compute";
+import { Service } from "diagrams-js/k8s/network";
+import { PV, PVC } from "diagrams-js/k8s/storage";
+
+const diagram = Diagram("Stateful Architecture");
+const appsCluster = diagram.cluster("Apps");
+const svc = appsCluster.add(Service("svc"));
+const sts = appsCluster.add(StatefulSet("sts"));
+const pods = [];
+const pvcs = [];
+for (let i = 0; i < 3; i++) {
+  const pod = appsCluster.add(Pod("pod"));
+  const pvc = appsCluster.add(PVC("pvc"));
+
+  pod.with(sts).with(pvc);
+  svc.to(pod).to(pvc);
+
+  pods.push(pod);
+  pvcs.push(pvc);
+}
+
+const pv = diagram.add(PV("pv"));
+const sc = diagram.add(StorageClass("sc"));
+
+pvcs.forEach((pvc) => {
+  pvc.from(pv);
+});
+pv.from(sc);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+**Result:** A stateful application showing StatefulSet with persistent storage using PVCs and PVs.
+
+## On-Premises Architecture
+
+### Advanced Web Service
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { Spark } from "diagrams-js/onprem/analytics";
+import { Server } from "diagrams-js/onprem/compute";
+import { PostgreSQL } from "diagrams-js/onprem/database";
+import { Redis } from "diagrams-js/onprem/inmemory";
+import { Fluentd } from "diagrams-js/onprem/aggregator";
+import { Grafana, Prometheus } from "diagrams-js/onprem/monitoring";
+import { Nginx } from "diagrams-js/onprem/network";
+import { Kafka } from "diagrams-js/onprem/queue";
+
+const diagram = Diagram("Advanced Web Service with On-Premises");
+
+const ingress = diagram.add(Nginx("ingress"));
+
+const metrics = diagram.add(Prometheus("metric"));
+const grafana = diagram.add(Grafana("monitoring"));
+metrics.from(grafana);
+
+const serviceCluster = diagram.cluster("Service Cluster");
+const grpcsvc = [
+  serviceCluster.add(Server("grpc1")),
+  serviceCluster.add(Server("grpc2")),
+  serviceCluster.add(Server("grpc3")),
+];
+
+const sessionsCluster = diagram.cluster("Sessions HA");
+const sessionPrimary = sessionsCluster.add(Redis("session"));
+const sessionReplica = sessionsCluster.add(Redis("replica"));
+sessionPrimary.with(sessionReplica);
+sessionReplica.from(metrics);
+grpcsvc.forEach((svc) => svc.to(sessionPrimary));
+
+const dbCluster = diagram.cluster("Database HA");
+const dbPrimary = dbCluster.add(PostgreSQL("users"));
+const dbReplica = dbCluster.add(PostgreSQL("replica"));
+dbPrimary.with(dbReplica);
+dbReplica.from(metrics);
+grpcsvc.forEach((svc) => svc.to(dbPrimary));
+
+const aggregator = diagram.add(Fluentd("logging"));
+const kafka = diagram.add(Kafka("stream"));
+const spark = diagram.add(Spark("analytics"));
+aggregator.to(kafka).to(spark);
+
+ingress.to(grpcsvc);
+grpcsvc.forEach((svc) => svc.to(aggregator));
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+**Result:** A comprehensive on-premises architecture with load balancing, microservices, HA database, caching, monitoring, and log aggregation.
+
+### With Colored Edges
+
+```typescript
+import { Diagram, Edge } from "diagrams-js";
+import { Spark } from "diagrams-js/onprem/analytics";
+import { Server } from "diagrams-js/onprem/compute";
+import { PostgreSQL } from "diagrams-js/onprem/database";
+import { Redis } from "diagrams-js/onprem/inmemory";
+import { Fluentd } from "diagrams-js/onprem/aggregator";
+import { Grafana, Prometheus } from "diagrams-js/onprem/monitoring";
+import { Nginx } from "diagrams-js/onprem/network";
+import { Kafka } from "diagrams-js/onprem/queue";
+
+const diagram = Diagram("Advanced Web Service with On-Premises (colored)");
+
+const ingress = diagram.add(Nginx("ingress"));
+
+const metrics = diagram.add(Prometheus("metric"));
+const grafana = diagram.add(Grafana("monitoring"));
+grafana.to(Edge({ color: "firebrick", style: "dashed" }), metrics);
+
+const serviceCluster = diagram.cluster("Service Cluster");
+const grpcsvc = [
+  serviceCluster.add(Server("grpc1")),
+  serviceCluster.add(Server("grpc2")),
+  serviceCluster.add(Server("grpc3")),
+];
+
+const sessionsCluster = diagram.cluster("Sessions HA");
+const sessionPrimary = sessionsCluster.add(Redis("session"));
+const sessionReplica = sessionsCluster.add(Redis("replica"));
+sessionPrimary.with(Edge({ color: "brown", style: "dashed" }), sessionReplica);
+sessionReplica.from(Edge({ label: "collect" }), metrics);
+grpcsvc.forEach((svc) => svc.to(Edge({ color: "brown" }), sessionPrimary));
+
+const dbCluster = diagram.cluster("Database HA");
+const dbPrimary = dbCluster.add(PostgreSQL("users"));
+const dbReplica = dbCluster.add(PostgreSQL("replica"));
+dbPrimary.with(Edge({ color: "brown", style: "dotted" }), dbReplica);
+dbReplica.from(Edge({ label: "collect" }), metrics);
+grpcsvc.forEach((svc) => svc.to(Edge({ color: "black" }), dbPrimary));
+
+const aggregator = diagram.add(Fluentd("logging"));
+const kafka = diagram.add(Kafka("stream"));
+const spark = diagram.add(Spark("analytics"));
+aggregator.to(Edge({ label: "parse" }), kafka);
+kafka.to(Edge({ color: "black", style: "bold" }), spark);
+
+grpcsvc.forEach((svc) => {
+  ingress.to(Edge({ color: "darkgreen", forward: true, reverse: true }), svc);
+});
+grpcsvc.forEach((svc) => svc.to(Edge({ color: "darkorange" }), aggregator));
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+**Result:** Same architecture with custom colored and styled edges to indicate different types of connections.
+
+## Custom Node Example
+
+Using external icons with custom nodes:
+
+```typescript
+import { Diagram, Custom } from "diagrams-js";
+import { Pod } from "diagrams-js/k8s/compute";
+import { Aurora } from "diagrams-js/aws/database";
+
+const diagram = Diagram("Broker Consumers");
+
+const consumersCluster = diagram.cluster("Consumers");
+const consumers = [
+  consumersCluster.add(Pod("worker")),
+  consumersCluster.add(Pod("worker")),
+  consumersCluster.add(Pod("worker")),
+];
+
+const queue = diagram.add(
+  Custom("Message queue", "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png"),
+);
+
+const database = diagram.add(Aurora("Database"));
+
+queue.to(consumers);
+consumers.forEach((consumer) => consumer.to(database));
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+**Result:** A diagram mixing Kubernetes Pods, AWS Aurora database, and a custom node with an external RabbitMQ icon.
+
+## Next Steps
+
+- Explore [all providers](/nodes/) and their available nodes
+- Learn about [custom nodes](/guides/custom-nodes) for external icons
+- Read the [complete API reference](/guides/diagram)
+- Try the [live demo](/demo.html) for interactive examples

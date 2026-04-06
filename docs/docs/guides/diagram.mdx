@@ -1,0 +1,198 @@
+---
+title: Diagrams
+description: Understanding the Diagram class
+---
+
+# Diagrams
+
+`Diagram` is the primary object representing a diagram.
+
+## Basic Usage
+
+`Diagram` represents a global diagram context. You create a diagram by calling the `Diagram` function. The first parameter will be used to generate the output filename.
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+
+const diagram = Diagram("Simple Diagram");
+diagram.add(EC2("web"));
+
+const svg = await diagram.render();
+```
+
+This generates an SVG diagram with a single `EC2` node.
+
+## Options
+
+### Direction
+
+Control the layout direction of the diagram:
+
+```typescript
+const diagram = Diagram("My Diagram", {
+  direction: "LR", // Left to Right (default)
+  // direction: "TB" // Top to Bottom
+  // direction: "BT" // Bottom to Top
+  // direction: "RL" // Right to Left
+});
+```
+
+### Curve Style
+
+Control how edges are drawn:
+
+```typescript
+const diagram = Diagram("My Diagram", {
+  curvestyle: "ortho", // Orthogonal lines (default)
+  // curvestyle: "curved"  // Curved lines
+  // curvestyle: "spline"  // Spline curves
+  // curvestyle: "polyline" // Polyline
+});
+```
+
+See [Graphviz splines documentation](https://graphviz.org/docs/attrs/splines/) for more details.
+
+### Theme
+
+Choose a color theme for clusters:
+
+```typescript
+const diagram = Diagram("My Diagram", {
+  theme: "neutral", // Default
+  // theme: "pastel"
+  // theme: "blues"
+  // theme: "greens"
+  // theme: "orange"
+});
+```
+
+### Filename
+
+Specify a custom filename for saving:
+
+```typescript
+const diagram = Diagram("My Diagram", {
+  filename: "my_custom_name", // Will save as my_custom_name.svg
+});
+```
+
+### Custom Attributes
+
+Pass custom Graphviz attributes:
+
+```typescript
+const diagram = Diagram("My Diagram", {
+  graphAttr: {
+    fontsize: "45",
+    bgcolor: "transparent",
+  },
+  nodeAttr: {
+    shape: "box",
+    style: "filled",
+  },
+  edgeAttr: {
+    color: "red",
+    style: "dashed",
+  },
+});
+```
+
+See [Graphviz attributes reference](https://graphviz.org/doc/info/attrs.html) for available options.
+
+## Methods
+
+### add(node)
+
+Add a node to the diagram:
+
+```typescript
+const server = diagram.add(EC2("Web Server"));
+```
+
+### cluster(label)
+
+Create a cluster (group) of nodes:
+
+```typescript
+const cluster = diagram.cluster("Services");
+const web = cluster.add(EC2("Web"));
+```
+
+### render(options?)
+
+Render the diagram to SVG or other formats:
+
+```typescript
+// Render as SVG (default)
+const svg = await diagram.render();
+
+// Render as PNG
+const png = await diagram.render({ format: "png" });
+
+// Render as DOT
+const dot = await diagram.render({ format: "dot" });
+```
+
+### save(filepath?)
+
+Save the diagram to a file:
+
+```typescript
+// Auto-detect format from extension
+await diagram.save("diagram.svg");
+await diagram.save("diagram.png");
+
+// Or use the default filename
+await diagram.save();
+```
+
+### destroy()
+
+Clean up resources when done:
+
+```typescript
+diagram.destroy();
+```
+
+## Complete Example
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { EC2, Lambda } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
+import { S3 } from "diagrams-js/aws/storage";
+
+const diagram = Diagram("Web Architecture", {
+  direction: "TB",
+  theme: "pastel",
+  graphAttr: {
+    fontsize: "20",
+  },
+});
+
+const web = diagram.add(EC2("Web Server"));
+const api = diagram.add(Lambda("API"));
+const db = diagram.add(RDS("Database"));
+const storage = diagram.add(S3("Storage"));
+
+web.to(api).to(db);
+api.to(storage);
+
+const svg = await diagram.render();
+await diagram.save("web-architecture.svg");
+diagram.destroy();
+```
+
+## Browser Integration
+
+In browsers, you can display the diagram directly:
+
+```typescript
+const svg = await diagram.render();
+document.getElementById("diagram-container").innerHTML = svg;
+```
+
+## Credits
+
+Uses [Graphviz](https://graphviz.org/) for layout and rendering via [viz-js](https://github.com/mdaines/viz-js).

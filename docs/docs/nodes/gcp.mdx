@@ -1,0 +1,166 @@
+---
+title: GCP
+description: Node classes for Google Cloud Platform provider
+---
+
+# GCP
+
+Node classes list for the GCP (Google Cloud Platform) provider.
+
+## Import
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { ComputeEngine, AppEngine, Functions } from "diagrams-js/gcp/compute";
+import { CloudSQL, Bigtable } from "diagrams-js/gcp/database";
+import { Storage } from "diagrams-js/gcp/storage";
+```
+
+## gcp.analytics
+
+<img src="/img/resources/gcp/analytics/bigquery.png" width="30" alt="Bigquery" /> **Bigquery**
+(alias: BigQuery) `import {Bigquery} from "diagrams-js/gcp/analytics"`
+
+<img src="/img/resources/gcp/analytics/pubsub.png" width="30" alt="Pubsub" /> **Pubsub** (alias:
+PubSub) `import {Pubsub} from "diagrams-js/gcp/analytics"`
+
+<img src="/img/resources/gcp/analytics/dataflow.png" width="30" alt="Dataflow" /> **Dataflow**
+`import {Dataflow} from "diagrams-js/gcp/analytics"`
+
+<img src="/img/resources/gcp/analytics/dataproc.png" width="30" alt="Dataproc" /> **Dataproc**
+`import {Dataproc} from "diagrams-js/gcp/analytics"`
+
+## gcp.compute
+
+<img src="/img/resources/gcp/compute/compute-engine.png" width="30" alt="ComputeEngine" />
+**ComputeEngine** (alias: GCE) `import {ComputeEngine} from "diagrams-js/gcp/compute"`
+
+<img src="/img/resources/gcp/compute/app-engine.png" width="30" alt="AppEngine" /> **AppEngine**
+(alias: GAE) `import {AppEngine} from "diagrams-js/gcp/compute"`
+
+<img src="/img/resources/gcp/compute/functions.png" width="30" alt="Functions" /> **Functions**
+(alias: GCF) `import {Functions} from "diagrams-js/gcp/compute"`
+
+<img src="/img/resources/gcp/compute/kubernetes-engine.png" width="30" alt="KubernetesEngine" />
+**KubernetesEngine** (alias: GKE) `import {KubernetesEngine} from "diagrams-js/gcp/compute"`
+
+<img src="/img/resources/gcp/compute/run.png" width="30" alt="Run" /> **Run** (alias: CloudRun)
+`import {Run} from "diagrams-js/gcp/compute"`
+
+<img src="/img/resources/gcp/compute/gpu.png" width="30" alt="GPU" /> **GPU** `import {GPU} from
+"diagrams-js/gcp/compute"`
+
+## gcp.database
+
+<img src="/img/resources/gcp/database/cloud-sql.png" width="30" alt="CloudSQL" /> **CloudSQL**
+`import {CloudSQL} from "diagrams-js/gcp/database"`
+
+<img src="/img/resources/gcp/database/bigtable.png" width="30" alt="Bigtable" /> **Bigtable**
+(alias: BigTable) `import {Bigtable} from "diagrams-js/gcp/database"`
+
+<img src="/img/resources/gcp/database/datastore.png" width="30" alt="Datastore" /> **Datastore**
+`import {Datastore} from "diagrams-js/gcp/database"`
+
+<img src="/img/resources/gcp/database/firestore.png" width="30" alt="Firestore" /> **Firestore**
+`import {Firestore} from "diagrams-js/gcp/database"`
+
+<img src="/img/resources/gcp/database/memorystore.png" width="30" alt="Memorystore" />
+**Memorystore** `import {Memorystore} from "diagrams-js/gcp/database"`
+
+<img src="/img/resources/gcp/database/spanner.png" width="30" alt="Spanner" /> **Spanner** `import
+{Spanner} from "diagrams-js/gcp/database"`
+
+## gcp.network
+
+<img
+  src="/img/resources/gcp/network/virtual-private-cloud.png"
+  width="30"
+  alt="VirtualPrivateCloud"
+/>
+**VirtualPrivateCloud** (alias: VPC) `import {VirtualPrivateCloud} from "diagrams-js/gcp/network"`
+
+<img
+  src="/img/resources/gcp/network/cloud-load-balancing.png"
+  width="30"
+  alt="CloudLoadBalancing"
+/>
+**CloudLoadBalancing** `import {CloudLoadBalancing} from "diagrams-js/gcp/network"`
+
+<img src="/img/resources/gcp/network/cloud-cdn.png" width="30" alt="CloudCDN" /> **CloudCDN**
+`import {CloudCDN} from "diagrams-js/gcp/network"`
+
+<img src="/img/resources/gcp/network/cloud-dns.png" width="30" alt="CloudDNS" /> **CloudDNS**
+`import {CloudDNS} from "diagrams-js/gcp/network"`
+
+<img src="/img/resources/gcp/network/cloud-nat.png" width="30" alt="CloudNAT" /> **CloudNAT**
+`import {CloudNAT} from "diagrams-js/gcp/network"`
+
+<img src="/img/resources/gcp/network/cloud-vpn.png" width="30" alt="CloudVPN" /> **CloudVPN**
+`import {CloudVPN} from "diagrams-js/gcp/network"`
+
+## gcp.storage
+
+<img src="/img/resources/gcp/storage/storage.png" width="30" alt="Storage" /> **Storage** (alias:
+GCS) `import {Storage} from "diagrams-js/gcp/storage"`
+
+<img src="/img/resources/gcp/storage/filestore.png" width="30" alt="Filestore" /> **Filestore**
+`import {Filestore} from "diagrams-js/gcp/storage"`
+
+<img src="/img/resources/gcp/storage/local-ssd.png" width="30" alt="LocalSSD" /> **LocalSSD**
+(alias: SSD) `import {LocalSSD} from "diagrams-js/gcp/storage"`
+
+<img src="/img/resources/gcp/storage/persistent-disk.png" width="30" alt="PersistentDisk" />
+**PersistentDisk** `import {PersistentDisk} from "diagrams-js/gcp/storage"`
+
+## gcp.ml
+
+<img src="/img/resources/gcp/ml/automl.png" width="30" alt="Automl" /> **Automl** (alias: AutoML)
+`import {Automl} from "diagrams-js/gcp/ml"`
+
+<img src="/img/resources/gcp/ml/ai-platform.png" width="30" alt="AIPlatform" /> **AIPlatform**
+`import {AIPlatform} from "diagrams-js/gcp/ml"`
+
+<img src="/img/resources/gcp/ml/vertex-ai.png" width="30" alt="VertexAI" /> **VertexAI** `import
+{VertexAI} from "diagrams-js/gcp/ml"`
+
+<img src="/img/resources/gcp/ml/natural-language-api.png" width="30" alt="NaturalLanguageAPI" />
+**NaturalLanguageAPI** (alias: NLAPI) `import {NaturalLanguageAPI} from "diagrams-js/gcp/ml"`
+
+<img src="/img/resources/gcp/ml/speech-to-text.png" width="30" alt="SpeechToText" />
+**SpeechToText** (alias: STT) `import {SpeechToText} from "diagrams-js/gcp/ml"`
+
+<img src="/img/resources/gcp/ml/text-to-speech.png" width="30" alt="TextToSpeech" />
+**TextToSpeech** (alias: TTS) `import {TextToSpeech} from "diagrams-js/gcp/ml"`
+
+## Usage Example
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { ComputeEngine, AppEngine, Functions, GKE } from "diagrams-js/gcp/compute";
+import { CloudSQL, Bigtable } from "diagrams-js/gcp/database";
+import { Storage } from "diagrams-js/gcp/storage";
+import { VirtualPrivateCloud, CloudLoadBalancing } from "diagrams-js/gcp/network";
+
+const diagram = Diagram("GCP Architecture", { direction: "TB" });
+
+const vpc = diagram.add(VirtualPrivateCloud("VPC"));
+const lb = diagram.add(CloudLoadBalancing("Load Balancer"));
+const gke = diagram.add(GKE("Kubernetes Cluster"));
+const app = diagram.add(AppEngine("App Engine"));
+const api = diagram.add(Functions("Cloud Functions"));
+const sql = diagram.add(CloudSQL("Cloud SQL"));
+const nosql = diagram.add(Bigtable("Bigtable"));
+const storage = diagram.add(Storage("Cloud Storage"));
+
+lb.to([gke, app]);
+gke.to(api);
+api.to([sql, nosql]);
+api.to(storage);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+:::note
+For a complete list of all GCP nodes, see the [Python diagrams GCP documentation](https://diagrams.mingrammer.com/docs/nodes/gcp). All node classes listed there are available in diagrams-js with the same class names.
+:::

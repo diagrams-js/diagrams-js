@@ -1,0 +1,209 @@
+---
+title: Edges
+description: Connecting nodes with customized edges
+---
+
+# Edges
+
+`Edge` represents a connection between nodes with additional properties.
+
+## Basic Usage
+
+An edge object contains attributes like **label**, **color**, and **style**. These mirror the corresponding [Graphviz edge attributes](https://graphviz.org/doc/info/attrs.html).
+
+```typescript
+import { Diagram, Edge } from "diagrams-js";
+import { Nginx } from "diagrams-js/onprem/network";
+import { Grafana, Prometheus } from "diagrams-js/onprem/monitoring";
+
+const diagram = Diagram("Monitoring");
+
+const metrics = diagram.add(Prometheus("metric"));
+const grafana = diagram.add(Grafana("monitoring"));
+
+// Create a colored, dashed edge
+grafana.to(Edge({ color: "firebrick", style: "dashed" }), metrics);
+```
+
+## Edge Properties
+
+### Label
+
+Add text labels to edges:
+
+```typescript
+aggregator.to(Edge({ label: "parse" }), kafka);
+```
+
+### Color
+
+Set edge colors:
+
+```typescript
+web.to(Edge({ color: "blue" }), api);
+api.to(Edge({ color: "green" }), db);
+```
+
+### Style
+
+Choose from various styles:
+
+```typescript
+// Dashed line
+primary.with(Edge({ style: "dashed" }), replica);
+
+// Dotted line
+primary.with(Edge({ style: "dotted" }), replica);
+
+// Bold line
+primary.with(Edge({ style: "bold" }), replica);
+
+// Solid line (default)
+primary.with(Edge({ style: "solid" }), replica);
+```
+
+See [Graphviz style attribute](https://graphviz.org/docs/attrs/style/) for more options.
+
+### Direction
+
+Control arrow direction:
+
+```typescript
+// Forward arrow (default)
+Edge({ forward: true });
+
+// Reverse arrow
+Edge({ reverse: true });
+
+// Bidirectional
+Edge({ forward: true, reverse: true });
+
+// No arrows
+Edge({}); // Neither forward nor reverse
+```
+
+## Combining Properties
+
+Combine multiple properties:
+
+```typescript
+import { Redis } from "diagrams-js/onprem/inmemory";
+
+const diagram = Diagram("Database Cluster");
+
+const primary = diagram.add(Redis("session"));
+const replica = diagram.add(Redis("replica"));
+
+// Colored, dashed connection
+primary.with(Edge({ color: "brown", style: "dashed" }), replica);
+
+// With label
+replica.from(Edge({ label: "collect", color: "blue" }), metrics);
+```
+
+## Edge Chaining
+
+Edges can be chained for complex connections:
+
+```typescript
+aggregator.to(Edge({ label: "parse" }), kafka).to(Edge({ color: "black", style: "bold" }), spark);
+```
+
+## Multiple Targets with Edges
+
+Apply the same edge style to multiple connections:
+
+```typescript
+const grpcsvc = [
+  diagram.add(Server("grpc1")),
+  diagram.add(Server("grpc2")),
+  diagram.add(Server("grpc3")),
+];
+
+// All connections use brown color
+grpcsvc.forEach((svc) => svc.to(Edge({ color: "brown" }), sessionPrimary));
+```
+
+## Advanced Example
+
+```typescript
+import { Diagram, Edge } from "diagrams-js";
+import { Server } from "diagrams-js/onprem/compute";
+import { PostgreSQL } from "diagrams-js/onprem/database";
+import { Redis } from "diagrams-js/onprem/inmemory";
+import { Fluentd } from "diagrams-js/onprem/aggregator";
+import { Grafana, Prometheus } from "diagrams-js/onprem/monitoring";
+import { Nginx } from "diagrams-js/onprem/network";
+import { Kafka } from "diagrams-js/onprem/queue";
+import { Spark } from "diagrams-js/onprem/analytics";
+
+const diagram = Diagram("Advanced Web Service", { direction: "TB" });
+
+const ingress = diagram.add(Nginx("ingress"));
+const metrics = diagram.add(Prometheus("metric"));
+const grafana = diagram.add(Grafana("monitoring"));
+
+// Red dashed line from Grafana to Prometheus
+grafana.to(Edge({ color: "firebrick", style: "dashed" }), metrics);
+
+const serviceCluster = diagram.cluster("Service Cluster");
+const grpcsvc = [
+  serviceCluster.add(Server("grpc1")),
+  serviceCluster.add(Server("grpc2")),
+  serviceCluster.add(Server("grpc3")),
+];
+
+const sessionsCluster = diagram.cluster("Sessions HA");
+const sessionPrimary = sessionsCluster.add(Redis("session"));
+const sessionReplica = sessionsCluster.add(Redis("replica"));
+
+// Brown dashed line for session replication
+sessionPrimary.with(Edge({ color: "brown", style: "dashed" }), sessionReplica);
+
+// Labelled edge from replica to metrics
+sessionReplica.from(Edge({ label: "collect" }), metrics);
+
+const dbCluster = diagram.cluster("Database HA");
+const dbPrimary = dbCluster.add(PostgreSQL("users"));
+const dbReplica = dbCluster.add(PostgreSQL("replica"));
+
+// Brown dotted line for DB replication
+dbPrimary.with(Edge({ color: "brown", style: "dotted" }), dbReplica);
+
+const aggregator = diagram.add(Fluentd("logging"));
+const kafka = diagram.add(Kafka("stream"));
+const spark = diagram.add(Spark("analytics"));
+
+// Labelled and styled edges
+aggregator.to(Edge({ label: "parse" }), kafka);
+kafka.to(Edge({ color: "black", style: "bold" }), spark);
+
+// Bidirectional edges with color
+grpcsvc.forEach((svc) => {
+  ingress.to(Edge({ color: "darkgreen", forward: true, reverse: true })).to(svc);
+});
+
+const svg = await diagram.render();
+```
+
+## Custom Attributes
+
+You can pass any Graphviz edge attribute:
+
+```typescript
+Edge({
+  label: "data",
+  color: "red",
+  style: "dashed",
+  penwidth: "2", // Line thickness
+  arrowhead: "vee", // Arrowhead style
+  arrowsize: "1.5", // Arrow size
+  minlen: "2", // Minimum edge length
+});
+```
+
+See [Graphviz edge attributes](https://graphviz.org/doc/info/attrs.html) for the complete list.
+
+## Credits
+
+Edge styling based on [Graphviz](https://graphviz.org/) attributes and the original [diagrams](https://github.com/mingrammer/diagrams) library.

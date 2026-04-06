@@ -1,0 +1,155 @@
+---
+title: Nodes
+description: Working with nodes and data flow
+---
+
+# Nodes
+
+`Node` is an object representing a node or system component.
+
+## Basic Usage
+
+A node object consists of three parts: **provider**, **resource type**, and **name**. You create nodes by calling provider functions:
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+
+const diagram = Diagram("Simple Diagram");
+const server = diagram.add(EC2("web"));
+```
+
+In this example, `EC2` is a node of resource type `compute` provided by `aws`.
+
+## Available Providers
+
+You can use nodes from any supported provider:
+
+```typescript
+// AWS resources
+import { ECS, Lambda } from "diagrams-js/aws/compute";
+import { RDS, ElastiCache } from "diagrams-js/aws/database";
+import { ELB, Route53, VPC } from "diagrams-js/aws/network";
+
+// Azure resources
+import { FunctionApps } from "diagrams-js/azure/compute";
+import { BlobStorage } from "diagrams-js/azure/storage";
+
+// GCP resources
+import { AppEngine, GKE } from "diagrams-js/gcp/compute";
+import { AutoML } from "diagrams-js/gcp/ml";
+
+// Kubernetes resources
+import { Pod, StatefulSet } from "diagrams-js/k8s/compute";
+import { Service } from "diagrams-js/k8s/network";
+import { PV, PVC, StorageClass } from "diagrams-js/k8s/storage";
+```
+
+See the [Providers](/providers/) section for a complete list.
+
+## Data Flow
+
+You can represent data flow by connecting nodes with the methods `to()`, `from()`, and `with()`.
+
+### Forward Direction (to)
+
+Connect nodes from left to right:
+
+```typescript
+web.to(api).to(database);
+```
+
+This creates a chain: web → api → database
+
+### Reverse Direction (from)
+
+Connect nodes from right to left:
+
+```typescript
+database.from(api); // Creates: api → database with reverse arrow
+database.from([backup1, backup2]); // Multiple sources
+```
+
+### Undirected (with)
+
+Connect nodes with no direction:
+
+```typescript
+primary.with(replica);
+```
+
+This creates a connection without arrowheads.
+
+## Multiple Connections
+
+Connect one node to multiple targets:
+
+```typescript
+loadBalancer.to([server1, server2, server3]);
+```
+
+## Chaining
+
+Chain multiple connections together:
+
+```typescript
+client
+  .to(loadBalancer)
+  .to([web1, web2])
+  .forEach((web) => web.to(api));
+```
+
+## Direction Control
+
+Change the overall diagram direction:
+
+```typescript
+const diagram = Diagram("Workers", {
+  direction: "TB", // Top to Bottom
+});
+
+const lb = diagram.add(ELB("lb"));
+const db = diagram.add(RDS("events"));
+
+lb.to(EC2("worker1")).to(db);
+lb.to(EC2("worker2")).to(db);
+```
+
+## Complete Example
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
+import { ELB } from "diagrams-js/aws/network";
+import { S3 } from "diagrams-js/aws/storage";
+
+const diagram = Diagram("Web Services", { direction: "LR" });
+
+const lb = diagram.add(ELB("lb"));
+const web = diagram.add(EC2("web"));
+const db = diagram.add(RDS("userdb"));
+const storage = diagram.add(S3("store"));
+
+// Forward flow
+lb.to(web).to(db).to(storage);
+
+// Multiple paths
+const stats = diagram.add(EC2("stat"));
+web.to(db).from(stats); // stats also connects to db
+
+// Bidirectional
+web.with(db); // Undirected connection
+
+const svg = await diagram.render();
+```
+
+## Notes
+
+- The order of rendered diagrams is the reverse of the declaration order (controlled by Graphviz)
+- Use `direction` option to control the overall layout
+- Node connections create directed graph edges
+
+## Credits
+
+Node icons and design patterns based on the original [diagrams](https://github.com/mingrammer/diagrams) library by [mingrammer](https://github.com/mingrammer).

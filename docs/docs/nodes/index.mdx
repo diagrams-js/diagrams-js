@@ -1,0 +1,63 @@
+---
+title: Nodes
+description: All available node classes organized by provider
+---
+
+# Nodes Reference
+
+Browse all available node classes organized by cloud provider and service category.
+
+## Available Providers
+
+| Provider                            | Description                              |
+| ----------------------------------- | ---------------------------------------- |
+| [AWS](/nodes/aws)                   | Amazon Web Services nodes                |
+| [Azure](/nodes/azure)               | Microsoft Azure nodes                    |
+| [GCP](/nodes/gcp)                   | Google Cloud Platform nodes              |
+| [Kubernetes](/nodes/k8s)            | Kubernetes nodes                         |
+| [OnPrem](/nodes/onprem)             | On-premises infrastructure nodes         |
+| [AlibabaCloud](/nodes/alibabacloud) | Alibaba Cloud nodes                      |
+| [DigitalOcean](/nodes/digitalocean) | DigitalOcean nodes                       |
+| [Elastic](/nodes/elastic)           | Elastic Stack nodes                      |
+| [Firebase](/nodes/firebase)         | Firebase nodes                           |
+| [Generic](/nodes/generic)           | Generic computing nodes                  |
+| [GIS](/nodes/gis)                   | GIS nodes                                |
+| [IBM](/nodes/ibm)                   | IBM Cloud nodes                          |
+| [OCI](/nodes/oci)                   | Oracle Cloud Infrastructure nodes        |
+| [OpenStack](/nodes/openstack)       | OpenStack nodes                          |
+| [Outscale](/nodes/outscale)         | Outscale nodes                           |
+| [Programming](/nodes/programming)   | Programming language and framework nodes |
+| [SaaS](/nodes/saas)                 | SaaS application nodes                   |
+
+## Quick Reference
+
+Each provider page lists all available node classes with:
+
+- **Icon**: Visual representation of the service
+- **Class Name**: The exported class name
+- **Alias**: Short name alias (if available)
+- **Import Path**: Full import path
+
+## Usage Pattern
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { EC2, Lambda } from "diagrams-js/aws/compute";
+import { S3 } from "diagrams-js/aws/storage";
+
+const diagram = Diagram("My Architecture");
+const server = diagram.add(EC2("Web Server"));
+const storage = diagram.add(S3("Storage"));
+```
+
+## Finding Nodes
+
+Each provider is organized by service category. For example, AWS nodes are organized into:
+
+- `aws/compute` - EC2, Lambda, ECS, EKS, etc.
+- `aws/database` - RDS, DynamoDB, ElastiCache, etc.
+- `aws/storage` - S3, EBS, EFS, etc.
+- `aws/network` - VPC, ALB, Route53, etc.
+- And many more categories...
+
+Navigate to a provider page to see all available nodes with their icons and import paths.

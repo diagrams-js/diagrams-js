@@ -1,14 +1,11 @@
 ---
 title: Installation
-description: Install diagrams-js in your project
+description: Installing diagrams-js in your project
 ---
 
 # Installation
 
-## Prerequisites
-
-- Node.js 18+ (for Node.js environments)
-- TypeScript 5.0+ (recommended)
+Install diagrams-js using your preferred package manager:
 
 ## npm
 
@@ -28,23 +25,26 @@ yarn add diagrams-js
 pnpm add diagrams-js
 ```
 
+## Requirements
+
+- **Node.js**: 18.0.0 or higher
+- **TypeScript**: 5.0 or higher (for TypeScript projects)
+
 ## Browser Usage
 
-For browser usage, you can import directly from a CDN:
+For browser usage, install via npm and import:
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+```
+
+Or use a CDN:
 
 ```html
 <script type="module">
-  import { Diagram } from "https://esm.sh/diagrams-js";
-  // ... your code
+  import { Diagram } from "https://cdn.jsdelivr.net/npm/diagrams-js@latest/dist/index.js";
 </script>
-```
-
-## Optional Dependencies
-
-For PNG rendering in Node.js, install `sharp`:
-
-```bash
-npm install sharp
 ```
 
 ## TypeScript Configuration
@@ -61,6 +61,16 @@ Make sure your `tsconfig.json` includes:
 }
 ```
 
+## Optional Dependencies
+
+For PNG rendering in Node.js, you may optionally install `sharp`:
+
+```bash
+npm install sharp
+```
+
 ## Next Steps
 
-- [Quick Start](/getting-started/quick-start) - Create your first diagram
+- Follow the [Quick Start guide](/getting-started/quickstart) to create your first diagram
+- Explore the [Examples](/examples) for real-world use cases
+- Check out the [Node Reference](/nodes/) for all available providers and services

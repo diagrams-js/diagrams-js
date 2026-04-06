@@ -1,0 +1,51 @@
+---
+title: OnPrem
+description: Node classes for On-Premises infrastructure provider
+---
+
+# OnPrem
+
+Node classes list for the On-Premises infrastructure provider.
+
+## Import
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { Server } from "diagrams-js/onprem/compute";
+import { PostgreSQL, MySQL } from "diagrams-js/onprem/database";
+import { Nginx, Apache } from "diagrams-js/onprem/network";
+import { Docker } from "diagrams-js/onprem/container";
+```
+
+## Available Categories
+
+:::note
+This provider supports multiple service categories including compute, database, networking, monitoring, and more. Please refer to the [Python diagrams OnPrem documentation](https://diagrams.mingrammer.com/docs/nodes/onprem) for the complete list of available nodes.
+:::
+
+## Usage Example
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { Server } from "diagrams-js/onprem/compute";
+import { PostgreSQL } from "diagrams-js/onprem/database";
+import { Nginx } from "diagrams-js/onprem/network";
+import { Docker } from "diagrams-js/onprem/container";
+
+const diagram = Diagram("On-Premises Stack");
+
+const lb = diagram.add(Nginx("Load Balancer"));
+const app = diagram.add(Server("App Server"));
+const db = diagram.add(PostgreSQL("Database"));
+const container = diagram.add(Docker("Container"));
+
+lb.to(app).to(db);
+app.to(container);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+:::tip Complete Reference
+For a complete list of all OnPrem nodes, see the [Python diagrams OnPrem documentation](https://diagrams.mingrammer.com/docs/nodes/onprem). All node classes listed there are available in diagrams-js with the same class names.
+:::

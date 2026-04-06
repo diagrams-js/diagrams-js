@@ -8,7 +8,7 @@ description: Render and export diagrams
 ## Render to SVG
 
 ```typescript
-const diagram = new Diagram("My Diagram");
+const diagram = Diagram("My Diagram");
 // ... add nodes
 
 const svg = await diagram.render();
@@ -20,6 +20,43 @@ const svg = await diagram.render();
 ```typescript
 const png = await diagram.render({ format: "png" });
 // Returns Uint8Array
+```
+
+## Render as Data URL
+
+Get the diagram as a base64 data URL for direct use in HTML:
+
+```typescript
+// SVG as data URL
+const svgDataUrl = await diagram.render({ dataUrl: true });
+// Returns: data:image/svg+xml;base64,...
+
+// PNG as data URL
+const pngDataUrl = await diagram.render({ format: "png", dataUrl: true });
+// Returns: data:image/png;base64,...
+
+// JPG as data URL
+const jpgDataUrl = await diagram.render({ format: "jpg", dataUrl: true });
+// Returns: data:image/jpeg;base64,...
+```
+
+### Browser Usage with Data URLs
+
+Use data URLs to display diagrams in `<img>` tags or download them:
+
+```typescript
+const dataUrl = await diagram.render({ dataUrl: true });
+
+// Display in an image element
+const img = document.createElement("img");
+img.src = dataUrl;
+document.body.appendChild(img);
+
+// Or create a download link
+const link = document.createElement("a");
+link.href = dataUrl;
+link.download = "diagram.svg";
+link.click();
 ```
 
 ## Save to File
@@ -39,6 +76,7 @@ const svg = await diagram.render({
   height: 600, // Output height (for PNG/JPG)
   scale: 2, // Scale factor (default: 2 for PNG/JPG)
   injectIcons: true, // Auto-inject icons
+  dataUrl: true, // Return as base64 data URL
 });
 ```
 
