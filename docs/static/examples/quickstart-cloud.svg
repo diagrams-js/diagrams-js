@@ -17,52 +17,52 @@
 <title>AWS Architecture</title>
 <polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-353.6 130.2,-353.6 130.2,3.6 -3.6,3.6"/>
 <text xml:space="preserve" text-anchor="middle" x="63.3" y="-7" font-family="Sans-Serif" font-size="10.00">AWS Architecture</text>
-<!-- mnnkix07_d1v53iakd -->
+<!-- mnnlgnqq_rw3b4378h -->
 <g id="node1" class="node">
-<title>mnnkix07_d1v53iakd</title>
+<title>mnnlgnqq_rw3b4378h</title>
 <text xml:space="preserve" text-anchor="middle" x="62.8" y="-280.4" font-family="Sans-Serif" font-size="8.00">Load Balancer</text>
 <use href="#icon-gusrhq" x="62.8" y="-320.4"/></g>
-<!-- mnnkix07_b8gnzrgke -->
+<!-- mnnlgnqq_3wajr9yky -->
 <g id="node2" class="node">
-<title>mnnkix07_b8gnzrgke</title>
+<title>mnnlgnqq_3wajr9yky</title>
 <text xml:space="preserve" text-anchor="middle" x="62.8" y="-194.4" font-family="Sans-Serif" font-size="8.00">Web Server</text>
 <use href="#icon-h0qvqq" x="62.8" y="-234.4"/></g>
-<!-- mnnkix07_d1v53iakd&#45;&gt;mnnkix07_b8gnzrgke -->
+<!-- mnnlgnqq_rw3b4378h&#45;&gt;mnnlgnqq_3wajr9yky -->
 <g id="edge1" class="edge">
-<title>mnnkix07_d1v53iakd&#45;&gt;mnnkix07_b8gnzrgke</title>
+<title>mnnlgnqq_rw3b4378h&#45;&gt;mnnlgnqq_3wajr9yky</title>
 <path fill="none" stroke="#7b8894" d="M62.8,-278.03C62.8,-278.03 62.8,-270.34 62.8,-270.34"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="64.55,-270.34 62.8,-265.34 61.05,-270.34 64.55,-270.34"/>
 </g>
-<!-- mnnkix07_xbmmqbh00 -->
+<!-- mnnlgnqq_hi2sj0y5f -->
 <g id="node3" class="node">
-<title>mnnkix07_xbmmqbh00</title>
+<title>mnnlgnqq_hi2sj0y5f</title>
 <text xml:space="preserve" text-anchor="middle" x="62.8" y="-108.4" font-family="Sans-Serif" font-size="8.00">API</text>
 <use href="#icon-vwsjzw" x="62.8" y="-148.4"/></g>
-<!-- mnnkix07_b8gnzrgke&#45;&gt;mnnkix07_xbmmqbh00 -->
+<!-- mnnlgnqq_3wajr9yky&#45;&gt;mnnlgnqq_hi2sj0y5f -->
 <g id="edge2" class="edge">
-<title>mnnkix07_b8gnzrgke&#45;&gt;mnnkix07_xbmmqbh00</title>
+<title>mnnlgnqq_3wajr9yky&#45;&gt;mnnlgnqq_hi2sj0y5f</title>
 <path fill="none" stroke="#7b8894" d="M62.8,-192.03C62.8,-192.03 62.8,-184.34 62.8,-184.34"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="64.55,-184.34 62.8,-179.34 61.05,-184.34 64.55,-184.34"/>
 </g>
-<!-- mnnkix07_lfny7m5rf -->
+<!-- mnnlgnqq_ipptyw8np -->
 <g id="node4" class="node">
-<title>mnnkix07_lfny7m5rf</title>
+<title>mnnlgnqq_ipptyw8np</title>
 <text xml:space="preserve" text-anchor="middle" x="28.8" y="-22.4" font-family="Sans-Serif" font-size="8.00">Database</text>
 <use href="#icon-diqtdm" x="28.8" y="-62.4"/></g>
-<!-- mnnkix07_xbmmqbh00&#45;&gt;mnnkix07_lfny7m5rf -->
+<!-- mnnlgnqq_hi2sj0y5f&#45;&gt;mnnlgnqq_ipptyw8np -->
 <g id="edge3" class="edge">
-<title>mnnkix07_xbmmqbh00&#45;&gt;mnnkix07_lfny7m5rf</title>
+<title>mnnlgnqq_hi2sj0y5f&#45;&gt;mnnlgnqq_ipptyw8np</title>
 <path fill="none" stroke="#7b8894" d="M45.8,-106.03C45.8,-106.03 45.8,-98.34 45.8,-98.34"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="47.55,-98.34 45.8,-93.34 44.05,-98.34 47.55,-98.34"/>
 </g>
-<!-- mnnkix07_hqrrbgdnf -->
+<!-- mnnlgnqq_sz6kaj4a9 -->
 <g id="node5" class="node">
-<title>mnnkix07_hqrrbgdnf</title>
+<title>mnnlgnqq_sz6kaj4a9</title>
 <text xml:space="preserve" text-anchor="middle" x="97.8" y="-22.4" font-family="Sans-Serif" font-size="8.00">Storage</text>
 <use href="#icon-1ob05f" x="97.8" y="-62.4"/></g>
-<!-- mnnkix07_xbmmqbh00&#45;&gt;mnnkix07_hqrrbgdnf -->
+<!-- mnnlgnqq_hi2sj0y5f&#45;&gt;mnnlgnqq_sz6kaj4a9 -->
 <g id="edge4" class="edge">
-<title>mnnkix07_xbmmqbh00&#45;&gt;mnnkix07_hqrrbgdnf</title>
+<title>mnnlgnqq_hi2sj0y5f&#45;&gt;mnnlgnqq_sz6kaj4a9</title>
 <path fill="none" stroke="#7b8894" d="M80.3,-106.03C80.3,-106.03 80.3,-98.34 80.3,-98.34"/>
 <polygon fill="#7b8894" stroke="#7b8894" points="82.05,-98.34 80.3,-93.34 78.55,-98.34 82.05,-98.34"/>
 </g>

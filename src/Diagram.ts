@@ -49,7 +49,7 @@ export interface Diagram {
   nodeAttr: Record<string, string>;
   edgeAttr: Record<string, string>;
   // Track if user explicitly set icon-related properties in nodeAttr
-  _userNodeAttr?: {
+  userNodeAttr?: {
     shape?: string;
     height?: string;
     width?: string;
@@ -70,14 +70,20 @@ export interface Diagram {
   subgraph(cluster: Cluster): void;
   cluster(label: string): Cluster;
   render(options?: RenderOptions): Promise<Uint8Array | string>;
-  renderWithIcons(iconData?: IconData, nodeMap?: NodeIconMap[]): Promise<string>;
+  renderWithIcons(
+    iconData?: IconData,
+    nodeMap?: NodeIconMap[],
+  ): Promise<string>;
   save(filepath?: string, options?: RenderOptions): Promise<void>;
   toString(): string;
   destroy(): void;
 }
 
 export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
-  const _nodes = new Map<string, { label: string; attrs: Record<string, unknown> }>();
+  const _nodes = new Map<
+    string,
+    { label: string; attrs: Record<string, unknown> }
+  >();
   const _edges: Array<{
     from: string;
     to: string;
@@ -91,7 +97,8 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
 
   const diagramName = options.name ?? name;
   const filename =
-    options.filename ?? (diagramName ? diagramName.toLowerCase().replace(/\s+/g, "_") : "diagram");
+    options.filename ??
+    (diagramName ? diagramName.toLowerCase().replace(/\s+/g, "_") : "diagram");
 
   const direction = options.direction ?? "LR";
   if (!directions.includes(direction as (typeof directions)[number])) {
@@ -821,12 +828,16 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
           case "dot":
             mimeType = "text/plain";
             base64 =
-              typeof output === "string" ? btoa(output) : btoa(String.fromCharCode(...output));
+              typeof output === "string"
+                ? btoa(output)
+                : btoa(String.fromCharCode(...output));
             break;
           default:
             mimeType = "application/octet-stream";
             base64 =
-              typeof output === "string" ? btoa(output) : btoa(String.fromCharCode(...output));
+              typeof output === "string"
+                ? btoa(output)
+                : btoa(String.fromCharCode(...output));
         }
 
         return `data:${mimeType};base64,${base64}`;
@@ -839,7 +850,10 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
      * @param nodeMap - Optional node-to-icon mapping (defaults to diagram's registered icons)
      * @returns Promise resolving to the rendered diagram with icons injected
      */
-    async renderWithIcons(iconData?: IconData, nodeMap?: NodeIconMap[]): Promise<string> {
+    async renderWithIcons(
+      iconData?: IconData,
+      nodeMap?: NodeIconMap[],
+    ): Promise<string> {
       // Use provided icon data or stored icon data
       const data = iconData ?? _iconData;
       const map = nodeMap ?? _nodeIconMap;
@@ -861,7 +875,8 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
         format: "svg",
         injectIcons: false,
       });
-      const svgString = typeof output === "string" ? output : new TextDecoder().decode(output);
+      const svgString =
+        typeof output === "string" ? output : new TextDecoder().decode(output);
 
       return injectIcons(svgString, map, data);
     },
