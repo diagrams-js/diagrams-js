@@ -470,7 +470,6 @@ export default function Playground(): React.JSX.Element {
     ...defaultConfig,
     theme: colorMode,
   });
-  const [isReady, setIsReady] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
 
   // Update playground theme when color mode changes
@@ -570,7 +569,9 @@ export default function Playground(): React.JSX.Element {
         <div className={styles.buttons}>
           <button
             onClick={handleShare}
-            className={shareCopied ? styles.buttonCopied : styles.button}
+            className={
+              "button " + styles.button + (shareCopied ? " button--success" : " button--primary")
+            }
             disabled={shareCopied}
           >
             {shareCopied ? "Copied!" : "Share"}
@@ -579,14 +580,7 @@ export default function Playground(): React.JSX.Element {
       </div>
 
       <div className={styles.livecodesWrapper}>
-        <LiveCodes
-          config={currentConfig}
-          sdkReady={(sdk: any) => {
-            setPlayground(sdk);
-            setIsReady(true);
-          }}
-          height="80vh"
-        />
+        <LiveCodes config={currentConfig} sdkReady={setPlayground} height="80vh" />
       </div>
     </div>
   );

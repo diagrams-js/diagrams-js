@@ -53,6 +53,10 @@
   flex-wrap: wrap;
 }
 
+.button--primary {
+  background: var(--ifm-color-info);
+}
+
 .diagramPreview {
   background: white;
   border-radius: 12px;
@@ -160,9 +164,17 @@
   background: linear-gradient(
     135deg,
     var(--ifm-color-primary) 0%,
-    var(--ifm-color-primary-dark) 100%
+    var(--ifm-color-primary-lighter) 100%
   );
   text-align: center;
+}
+
+[data-theme="dark"] .ctaSection {
+  background: linear-gradient(
+    135deg,
+    var(--ifm-color-primary-darkest) 0%,
+    var(--ifm-color-primary) 100%
+  );
 }
 
 .ctaContent {

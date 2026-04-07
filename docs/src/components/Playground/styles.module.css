@@ -52,55 +52,11 @@
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: white;
-  background: #495057;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s ease;
   min-width: 100px;
-}
-
-.button:hover {
-  background: #343a40;
-}
-
-[data-theme="dark"] .button {
-  background: #adb5bd;
-  color: #212529;
-}
-
-[data-theme="dark"] .button:hover {
-  background: #ced4da;
-}
-
-.buttonCopied {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: white;
-  background: var(--ifm-color-primary);
-  border: none;
-  border-radius: 6px;
-  cursor: default;
-  transition: background 0.2s ease;
-  min-width: 100px;
-}
-
-.buttonSecondary {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--ifm-font-color-base);
-  background: var(--ifm-background-color);
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.buttonSecondary:hover {
-  background: var(--ifm-color-emphasis-200);
 }
 
 .livecodesWrapper {
@@ -122,13 +78,8 @@
   border-color: var(--ifm-color-emphasis-400);
 }
 
-[data-theme="dark"] .buttonSecondary {
-  background: var(--ifm-background-surface-color);
-  border-color: var(--ifm-color-emphasis-400);
-}
-
-[data-theme="dark"] .buttonSecondary:hover {
-  background: var(--ifm-color-emphasis-300);
+[data-theme="dark"] .button {
+  color: var(--ifm-color-primary-contrast);
 }
 
 /* Responsive */
