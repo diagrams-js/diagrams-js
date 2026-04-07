@@ -73,7 +73,7 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: pnpm install
+        run: vp install
 
       - name: Build documentation
-        run: pnpm run build
+        run: vp run build
