@@ -30,6 +30,9 @@
   --ifm-color-secondary-lighter: #eee081;
   --ifm-color-secondary-lightest: #f3e9a6;
 
+  /* Contrast color for text on primary backgrounds */
+  --ifm-color-primary-contrast: #29313f;
+
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
@@ -51,6 +54,9 @@
   --ifm-color-secondary-light: #f5edb5;
   --ifm-color-secondary-lighter: #f7f1c4;
   --ifm-color-secondary-lightest: #faf6d9;
+
+  /* Contrast color for text on primary backgrounds in dark mode */
+  --ifm-color-primary-contrast: #f5efef;
 
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
