@@ -34,6 +34,35 @@ const providerMeta = {
   saas: { title: 'SaaS', description: 'Node classes for Software as a Service providers' },
 };
 
+// hardcoded mappings for irreversible naming conversions
+// These are cases where filename -> class name loses information
+// e.g., appstream-2-0.png -> Appstream20 (can't distinguish 2-0 from 20)
+const IRREVERSIBLE_MAPPINGS = {
+  'Appstream20': 'appstream_2_0',
+  'Cloud9': 'cloud9',
+  'Cloud9Resource': 'cloud9_resource',
+  'CloudFront': 'cloudfront',
+  'CloudFrontDownloadDistribution': 'cloudfront_download_distribution',
+  'CloudFrontEdgeLocation': 'cloudfront_edge_location',
+  'CloudFrontStreamingDistribution': 'cloudfront_streaming_distribution',
+  'Route53': 'route_53',
+  'Route53HostedZone': 'route_53_hosted_zone',
+  'SAPHANAOnAzure': 'sap_hana_on_azure',
+  'Workspaces2': 'workspaces_2',
+  'SQLVM': 'sql_vm',
+  'AzureSQLVM': 'azure_sql_vm',
+  'AzureOperator5gCore': 'azure_operator_5g_core',
+  'ADB2C': 'ad_b2c',
+  'AzureADB2C': 'azure_ad_b2c',
+  'Windows10IotCoreServices': 'windows_10_iot_core_services',
+  'ArcPostgresql': 'arc_postgresql_',
+  'CCM': 'ccm',
+  'CM': 'cm',
+  'Bind9': 'bind9',
+  'EC2API': 'ec2api',
+  'Iot1Click': 'iot_1_click',
+};
+
 // Parse a provider file and extract exports
 function parseProviderFile(filePath, provider, moduleName) {
   const content = readFileSync(filePath, 'utf-8');
@@ -50,11 +79,17 @@ function parseProviderFile(filePath, provider, moduleName) {
     // Convert CamelCase to snake_case: AmazonOpensearchService -> amazon_opensearch_service
     // Handle consecutive capitals like EMRCluster -> emr_cluster
     // Handle numbers like EC2Ami -> ec2_ami (numbers stay attached to preceding capitals)
-    const iconVarName = nodeName
-      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')  // ABCd -> ABC_d (consecutive capitals before word)
-      .replace(/([a-z])([A-Z])/g, '$1_$2')         // aB -> a_B (camelCase)
-      .replace(/([0-9])([A-Z])/g, '$1_$2')         // 1A -> 1_A (number before capital)
-      .toLowerCase() + 'Icon';
+    // Use hardcoded mappings for irreversible cases first
+    let iconVarName;
+    if (IRREVERSIBLE_MAPPINGS[nodeName]) {
+      iconVarName = IRREVERSIBLE_MAPPINGS[nodeName] + 'Icon';
+    } else {
+      iconVarName = nodeName
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')  // ABCd -> ABC_d (consecutive capitals before word)
+        .replace(/([a-z])([A-Z])/g, '$1_$2')         // aB -> a_B (camelCase)
+        .replace(/([0-9])([A-Z])/g, '$1_$2')         // 1A -> 1_A (number before capital)
+        .toLowerCase() + 'Icon';
+    }
     const iconImportRegex = new RegExp(`import ${iconVarName} from "([^"]+)"`);
     const iconMatch = content.match(iconImportRegex);
     
