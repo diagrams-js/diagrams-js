@@ -4,6 +4,9 @@ export default defineConfig({
   // staged: {
   //   "*": "vp check --fix",
   // },
+  run: {
+    enablePrePostScripts: false, // Disables automatic pre/post hooks
+  },
   pack: {
     entry: "src/index.ts",
     outExtensions: () => ({
