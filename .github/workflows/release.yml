@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -121,6 +121,16 @@ jobs:
           cat ./CHANGELOG.md | head -50 >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
+      - name: Build library
+        run: vp run build
+
+      - name: Create release archive
+        run: |
+          cd dist
+          zip -r ../diagrams-js-v${{ env.NEW_VERSION }}.zip .
+          cd ..
+          tar -czf diagrams-js-v${{ env.NEW_VERSION }}.tar.gz -C dist .
+
       - name: Commit version bump and changelog
         if: github.event.inputs.version != ''
         run: |
@@ -140,6 +150,9 @@ jobs:
           draft: false
           prerelease: false
           generate_release_notes: true
+          files: |
+            diagrams-js-v${{ env.NEW_VERSION }}.zip
+            diagrams-js-v${{ env.NEW_VERSION }}.tar.gz
 
       - name: Create Pull Request for version bump
         if: github.event.inputs.version != ''
