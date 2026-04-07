@@ -12,8 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release of diagrams-js
 - TypeScript port of the Python diagrams library
 - Support for 17+ cloud providers (AWS, Azure, GCP, Kubernetes, etc.)
-- 1000+ node classes for cloud services
-- Cross-platform support (Node.js, browsers, Deno, Bun, Cloudflare Workers)
+- 2000+ node classes for cloud services
+- Cross-platform support (browsers, Node.js, Deno and Bun)
 - WebAssembly-powered Graphviz rendering
 - Custom node support with external icons
 - Full TypeScript type definitions
@@ -56,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial project setup
 - Repository structure
 - Build system with Vite+
-- Testing infrastructure with Vitest
+- Testing infrastructure with Vite+
 - Documentation site with Docusaurus
 - CI/CD workflows for GitHub Actions
 - Automated resource synchronization from Python diagrams repo

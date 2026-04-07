@@ -2,7 +2,7 @@
 
 # diagrams-js
 
-> A TypeScript/JavaScript port of the popular Python [diagrams](https://github.com/mingrammer/diagrams) library for drawing cloud system architecture diagrams as code.
+> A (vibe-coded) TypeScript/JavaScript port of the popular Python [diagrams](https://github.com/mingrammer/diagrams) library for drawing cloud system architecture diagrams as code.
 
 [![npm version](https://badge.fury.io/js/diagrams-js.svg)](https://www.npmjs.com/package/diagrams-js)
 [![CI](https://github.com/hatemhosny/diagrams-js/actions/workflows/ci.yml/badge.svg)](https://github.com/hatemhosny/diagrams-js/actions/workflows/ci.yml)
@@ -12,13 +12,23 @@
 
 - **Diagram as Code**: Define your architecture diagrams in TypeScript
 - **17+ Cloud Providers**: AWS, Azure, GCP, Kubernetes, Alibaba Cloud, Oracle Cloud, IBM Cloud, and more
-- **1000+ Node Classes**: Comprehensive coverage of cloud services and infrastructure components
+- **2000+ Node Classes**: Comprehensive coverage of cloud services and infrastructure components
 - **Cross-Platform**: Works in browsers, Node.js, Deno and Bun
 - **Multiple Output Formats**: SVG, PNG, JPG, and DOT
 - **Type-Safe**: Full TypeScript support with comprehensive type definitions
 - **WebAssembly Powered**: Uses a WebAssembly build of [Graphviz](https://graphviz.org) ([viz](https://github.com/mdaines/viz-js)) for fast, client-side rendering
 - **Custom Nodes**: Support for external icons and images
 - **Tree-Shakable**: Import only what you need
+
+## Examples
+
+[![Web Architecture](./docs/static/examples/example3-event-processing.svg)](./docs/static/examples/example3-event-processing.svg)
+
+Check the [examples page](https://diagrams-js.hatemhosny.dev/getting-started/examples) for a full list of examples.
+
+## Interactive Playground
+
+Check out the [playground](https://diagrams-js.hatemhosny.dev/playground) for a live demo of diagrams-js in your browser.
 
 ## Installation
 
@@ -81,48 +91,51 @@ diagram.destroy();
 
 📚 **Full documentation**: [https://diagrams-js.hatemhosny.dev](https://diagrams-js.hatemhosny.dev)
 
-- [Getting Started](https://diagrams-js.hatemhosny.dev/docs/getting-started)
+- [Getting Started](https://diagrams-js.hatemhosny.dev/docs/getting-started/installation)
 - [API Reference](https://diagrams-js.hatemhosny.dev/docs/api)
-- [Examples](https://diagrams-js.hatemhosny.dev/docs/examples)
-- [Providers](https://diagrams-js.hatemhosny.dev/docs/providers)
+- [Examples](https://diagrams-js.hatemhosny.dev/getting-started/examples)
+- [Guides](https://diagrams-js.hatemhosny.dev/docs/guides/diagram)
+- [Providers](https://diagrams-js.hatemhosny.dev/docs/guides/providers)
+- [Playground](https://diagrams-js.hatemhosny.dev/playground)
 
 ## Supported Providers
 
-| Provider      | Import Path                | Services                 |
-| ------------- | -------------------------- | ------------------------ |
-| AWS           | `diagrams-js/aws`          | 200+ services            |
-| Azure         | `diagrams-js/azure`        | 100+ services            |
-| GCP           | `diagrams-js/gcp`          | 80+ services             |
-| Kubernetes    | `diagrams-js/k8s`          | 60+ resources            |
-| Alibaba Cloud | `diagrams-js/alibabacloud` | 50+ services             |
-| Oracle Cloud  | `diagrams-js/oci`          | 40+ services             |
-| DigitalOcean  | `diagrams-js/digitalocean` | 20+ services             |
-| IBM Cloud     | `diagrams-js/ibm`          | 30+ services             |
-| Firebase      | `diagrams-js/firebase`     | 15+ services             |
-| Elastic       | `diagrams-js/elastic`      | 10+ services             |
-| On-Premises   | `diagrams-js/onprem`       | 80+ components           |
-| Generic       | `diagrams-js/generic`      | 20+ icons                |
-| SaaS          | `diagrams-js/saas`         | 30+ services             |
-| OpenStack     | `diagrams-js/openstack`    | 40+ services             |
-| Outscale      | `diagrams-js/outscale`     | 15+ services             |
-| Programming   | `diagrams-js/programming`  | 30+ languages/frameworks |
-| GIS           | `diagrams-js/gis`          | 20+ components           |
+| Provider                                                                  | Description                              |
+| ------------------------------------------------------------------------- | ---------------------------------------- |
+| [AWS](https://diagrams-js.hatemhosny.dev/doc/nodes/aws)                   | Amazon Web Services nodes                |
+| [Azure](https://diagrams-js.hatemhosny.dev/doc/nodes/azure)               | Microsoft Azure nodes                    |
+| [GCP](https://diagrams-js.hatemhosny.dev/doc/nodes/gcp)                   | Google Cloud Platform nodes              |
+| [Kubernetes](https://diagrams-js.hatemhosny.dev/doc/nodes/k8s)            | Kubernetes nodes                         |
+| [OnPrem](https://diagrams-js.hatemhosny.dev/doc/nodes/onprem)             | On-premises infrastructure nodes         |
+| [AlibabaCloud](https://diagrams-js.hatemhosny.dev/doc/nodes/alibabacloud) | Alibaba Cloud nodes                      |
+| [DigitalOcean](https://diagrams-js.hatemhosny.dev/doc/nodes/digitalocean) | DigitalOcean nodes                       |
+| [Elastic](https://diagrams-js.hatemhosny.dev/doc/nodes/elastic)           | Elastic Stack nodes                      |
+| [Firebase](https://diagrams-js.hatemhosny.dev/doc/nodes/firebase)         | Firebase nodes                           |
+| [Generic](https://diagrams-js.hatemhosny.dev/doc/nodes/generic)           | Generic computing nodes                  |
+| [GIS](https://diagrams-js.hatemhosny.dev/doc/nodes/gis)                   | GIS nodes                                |
+| [IBM](https://diagrams-js.hatemhosny.dev/doc/nodes/ibm)                   | IBM Cloud nodes                          |
+| [OCI](https://diagrams-js.hatemhosny.dev/doc/nodes/oci)                   | Oracle Cloud Infrastructure nodes        |
+| [OpenStack](https://diagrams-js.hatemhosny.dev/doc/nodes/openstack)       | OpenStack nodes                          |
+| [Outscale](https://diagrams-js.hatemhosny.dev/doc/nodes/outscale)         | Outscale nodes                           |
+| [Programming](https://diagrams-js.hatemhosny.dev/doc/nodes/programming)   | Programming language and framework nodes |
+| [SaaS](https://diagrams-js.hatemhosny.dev/doc/nodes/saas)                 | SaaS application nodes                   |
 
-View the [full list](https://diagrams-js.hatemhosny.dev/docs/providers)
+View the [full list](https://diagrams-js.hatemhosny.dev/docs/guides/providers)
 
 ## Development
 
 ### Prerequisites
 
 - Node.js 18+
-- pnpm (preferred package manager)
+- pnpm
+- Vite+
 
 ### Setup
 
 ```bash
 # Clone the repository
 git clone https://github.com/hatemhosny/diagrams-js.git
-cd diagrams-js/diagrams-js
+cd diagrams-js
 
 # Install dependencies
 vp install
@@ -158,15 +171,9 @@ diagrams-js/
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Acknowledgments
 
 This project is a TypeScript port of the excellent Python [diagrams](https://github.com/mingrammer/diagrams) library by [mingrammer](https://github.com/mingrammer).
-
-Icon resources are sourced from the Python diagrams repository and various cloud provider icon sets.
 
 ## Support
 
@@ -176,4 +183,10 @@ Icon resources are sourced from the Python diagrams repository and various cloud
 
 ---
 
-Made with ❤️ by the diagrams-js community
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Sponsor 💚
+
+Please consider [sponsoring the project](https://github.com/sponsors/hatemhosny), to support its ongoing development and maintenance, as well as help to ensure that it remains a valuable resource for the developer community.

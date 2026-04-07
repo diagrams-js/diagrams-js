@@ -6,9 +6,9 @@
 
 ### Key Features
 
-- **Cross-platform**: Works in Node.js, browsers, Deno, Bun, and Cloudflare Workers
+- **Cross-platform**: Works in browsers, Node.js, Deno and Bun
 - **Graphviz-powered**: Uses WebAssembly-based Graphviz for rendering
-- **17 Providers**: 1000+ node classes for AWS, Azure, GCP, Kubernetes, and more
+- **17 Providers**: 2000+ node classes for AWS, Azure, GCP, Kubernetes, and more
 - **Custom Nodes**: Support for external icons and images
 - **Type-safe**: Full TypeScript support
 - **Tree-shakable**: Import only what you need

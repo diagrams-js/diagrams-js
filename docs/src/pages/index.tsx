@@ -64,9 +64,8 @@ function FeaturesSection() {
       title: "🌐 Runs Everywhere",
       description: (
         <>
-          Works in <strong>Node.js</strong>, <strong>browsers</strong>, <strong>Deno</strong>,{" "}
-          <strong>Bun</strong>, and even <strong>Cloudflare Workers</strong>. No server required for
-          browser usage.
+          Works in <strong>browsers</strong>, <strong>Node.js</strong>, <strong>Deno</strong>, and{" "}
+          <strong>Bun</strong>. No server required for browser usage.
         </>
       ),
     },
