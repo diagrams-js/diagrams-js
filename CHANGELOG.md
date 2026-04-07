@@ -1,9 +1,11 @@
 ## [0.0.1] - 2026-04-07
 
 ### Features
+
 - No new features
 
 ### Bug Fixes
+
 - fix (54a30d6)
 - fix (b93de8a)
 - fix (1840c1d)
@@ -32,6 +34,7 @@
 - fix icons (9f42952)
 
 ### Other Changes
+
 - disable vite hooks (07c3e4e)
 - add .nvmrc (1f8bc1e)
 - debug (7d74a0f)
@@ -48,7 +51,7 @@
 - resolve imports to correct paths (3f32109)
 - rename private fields to start with ~ (de827d3)
 - format (2f694d3)
-- rename _userNodeAttr to ~userNodeAttr (9900d32)
+- rename \_userNodeAttr to ~userNodeAttr (9900d32)
 - edit docs (f66252c)
 - improve docs generation (847ea68)
 - auto-generate nodes reference docs (6c1d2ae)

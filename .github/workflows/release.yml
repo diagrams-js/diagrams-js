@@ -134,6 +134,7 @@ jobs:
       - name: Commit version bump and changelog
         if: github.event.inputs.version != ''
         run: |
+          vp check --fix
           git add package.json
           git add ./CHANGELOG.md
           git commit -m "chore(release): bump version to ${{ env.NEW_VERSION }}"
