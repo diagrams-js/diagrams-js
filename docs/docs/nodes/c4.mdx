@@ -1,0 +1,220 @@
+---
+title: C4 Model
+description: Visualize software architecture using the C4 model
+---
+
+# C4 Model
+
+The C4 model is a simple way to visualize software architecture at different levels of detail. diagrams-js provides support for creating C4 diagrams including Context, Container, Component, and Code diagrams.
+
+## Example Usage
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { Person, Container, Database, System, Relationship, SystemBoundary } from "diagrams-js/c4";
+
+const diagram = Diagram("Container Diagram", { direction: "TB" });
+
+// External user
+const user = diagram.add(Person("User", "System user", true));
+
+// System boundary containing internal containers
+const system = SystemBoundary("My Application", diagram);
+const webApp = system.add(Container("Web App", "React", "User interface"));
+const api = system.add(Container("API", "Node.js", "Business logic"));
+const db = system.add(Database("Database", "PostgreSQL", "Data storage"));
+
+// Relationships
+user.to(Relationship("Uses"), webApp);
+webApp.to(Relationship("Calls"), api);
+api.to(Relationship("Reads/Writes"), db);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+## Node Reference
+
+### Person
+
+Represents a person (user, actor, role, or persona).
+
+```typescript
+import { Person } from "diagrams-js/c4";
+
+// Internal person (blue)
+const user = diagram.add(Person("User", "Description"));
+
+// External person (gray)
+const externalUser = diagram.add(Person("External User", "Description", true));
+```
+
+**Parameters:**
+- `name` - The name of the person
+- `description` - Optional description text
+- `external` - Whether this is an external person (default: false)
+- `options` - Additional Graphviz node attributes
+
+### Container
+
+Represents a software container (applications, web apps, microservices, etc.).
+
+```typescript
+import { Container } from "diagrams-js/c4";
+
+const webApp = diagram.add(Container("Web App", "React", "User interface"));
+const api = diagram.add(Container("API", "Node.js"));
+```
+
+**Parameters:**
+- `name` - The name of the container
+- `technology` - Optional technology (e.g., "Java", "Node.js", "React")
+- `description` - Optional description text
+- `options` - Additional Graphviz node attributes
+
+### Database
+
+Represents a data storage container (databases, file systems, etc.).
+
+```typescript
+import { Database } from "diagrams-js/c4";
+
+const db = diagram.add(Database("Main DB", "PostgreSQL", "Primary data store"));
+```
+
+**Parameters:**
+- `name` - The name of the database
+- `technology` - Optional technology (e.g., "PostgreSQL", "MongoDB")
+- `description` - Optional description text
+- `options` - Additional Graphviz node attributes
+
+### System
+
+Represents a software system.
+
+```typescript
+import { System } from "diagrams-js/c4";
+
+// Internal system (blue)
+const core = diagram.add(System("Core System", "Main business logic"));
+
+// External system (gray)
+const external = diagram.add(System("Payment Gateway", "External service", true));
+```
+
+**Parameters:**
+- `name` - The name of the system
+- `description` - Optional description text
+- `external` - Whether this is an external system (default: false)
+- `options` - Additional Graphviz node attributes
+
+### SystemBoundary
+
+Creates a boundary (cluster) to group related containers or components.
+
+```typescript
+import { SystemBoundary, Container } from "diagrams-js/c4";
+
+const boundary = SystemBoundary("My System", diagram);
+const container = boundary.add(Container("Web App"));
+```
+
+**Parameters:**
+- `label` - The name/label of the boundary
+- `diagram` - The diagram instance
+- `options` - Additional Graphviz graph attributes
+
+### Relationship
+
+Creates a relationship (edge) between C4 elements.
+
+```typescript
+import { Relationship } from "diagrams-js/c4";
+
+node1.to(Relationship("Uses"), node2);
+node1.to(Relationship(), node3); // Unlabeled relationship
+```
+
+**Parameters:**
+- `label` - Optional relationship label/description
+- `options` - Additional Graphviz edge attributes
+
+## Styling
+
+C4 nodes use the following default styling:
+
+- **Internal elements** (Person, System, Container): Dodger blue (`dodgerblue4` for Person/System, `dodgerblue3` for Container)
+- **External elements**: Gray (`gray60`)
+- **Database**: Cylinder shape with bottom-aligned label
+- **Person**: Rounded rectangle
+- **Relationships**: Dashed lines in gray (`gray60`)
+- **System Boundaries**: Dashed borders with white background
+
+All elements support custom Graphviz attributes through the `options` parameter.
+
+## Complete Example
+
+Here's a complete C4 Container diagram example:
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { Person, Container, Database, System, Relationship, SystemBoundary } from "diagrams-js/c4";
+
+const diagram = Diagram("Container diagram for Internet Banking System", {
+  direction: "TB",
+  curvestyle: "spline",
+});
+
+const customer = diagram.add(Person("Personal Banking Customer", "A customer of the bank, with personal bank accounts."));
+
+const bankingSystem = SystemBoundary("Internet Banking System", diagram);
+const webApp = bankingSystem.add(Container(
+  "Web Application",
+  "Java and Spring MVC",
+  "Delivers the static content and the Internet banking single page application."
+));
+const spa = bankingSystem.add(Container(
+  "Single-Page Application",
+  "Javascript and Angular",
+  "Provides all of the Internet banking functionality to customers via their web browser."
+));
+const mobile = bankingSystem.add(Container(
+  "Mobile App",
+  "Xamarin",
+  "Provides a limited subset of the Internet banking functionality to customers via their mobile device."
+));
+const api = bankingSystem.add(Container(
+  "API Application",
+  "Java and Spring MVC",
+  "Provides Internet banking functionality via a JSON/HTTPS API."
+));
+const db = bankingSystem.add(Database(
+  "Database",
+  "Oracle Database Schema",
+  "Stores user registration information, hashed authentication credentials, access logs, etc."
+));
+
+const email = diagram.add(System(
+  "E-mail System",
+  "The internal Microsoft Exchange e-mail system.",
+  true
+));
+const mainframe = diagram.add(System(
+  "Mainframe Banking System",
+  "Stores all of the core banking information about customers, accounts, transactions, etc.",
+  true
+));
+
+customer.to(Relationship("Visits bigbank.com/ib using [HTTPS]"), webApp);
+customer.to(Relationship("Views account balances, and makes payments using"), [spa, mobile]);
+webApp.to(Relationship("Delivers to the customer's web browser"), spa);
+spa.to(Relationship("Make API calls to [JSON/HTTPS]"), api);
+mobile.to(Relationship("Make API calls to [JSON/HTTPS]"), api);
+api.to(Relationship("reads from and writes to"), db);
+api.to(Relationship("Sends email using [SMTP]"), email);
+api.to(Relationship("Makes API calls to [XML/HTTPS]"), mainframe);
+customer.from(Relationship("Sends e-mails to"), email);
+
+const svg = await diagram.render();
+diagram.destroy();
+```

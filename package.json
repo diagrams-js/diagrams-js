@@ -327,6 +327,10 @@
       "import": "./dist/providers/azure/web.js",
       "types": "./dist/providers/azure/web.d.ts"
     },
+    "./c4": {
+      "import": "./dist/providers/c4/index.js",
+      "types": "./dist/providers/c4/index.d.ts"
+    },
     "./digitalocean": {
       "import": "./dist/providers/digitalocean/index.js",
       "types": "./dist/providers/digitalocean/index.d.ts"

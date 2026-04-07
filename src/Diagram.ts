@@ -387,7 +387,13 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
 
         // Nodes
         for (const [id, { label, attrs }] of _nodes) {
-          dot += `  "${id}" [label="${label}"`;
+          // Check if this is an HTML-like label (starts with < and ends with >)
+          const isHtmlLabel = label.startsWith("<") && label.endsWith(">");
+          if (isHtmlLabel) {
+            dot += `  "${id}" [label=${label}`;
+          } else {
+            dot += `  "${id}" [label="${label}"`;
+          }
           for (const [key, value] of Object.entries(attrs)) {
             dot += `, ${key}="${String(value)}"`;
           }
@@ -413,7 +419,20 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
           const attrEntries = Object.entries(attrs);
           if (attrEntries.length > 0) {
             dot += " [";
-            dot += attrEntries.map(([k, v]) => `${k}="${v}"`).join(", ");
+            dot += attrEntries
+              .map(([k, v]) => {
+                // Check if this is an HTML-like label (starts with < and ends with >)
+                if (
+                  k === "label" &&
+                  typeof v === "string" &&
+                  v.startsWith("<") &&
+                  v.endsWith(">")
+                ) {
+                  return `${k}=${v}`;
+                }
+                return `${k}="${v}"`;
+              })
+              .join(", ");
             dot += "]";
           }
           dot += ";\n";
@@ -439,7 +458,13 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
 
         // Cluster nodes
         for (const [id, { label, attrs }] of cluster.getNodes()) {
-          dot += `${spaces}  "${id}" [label="${label}"`;
+          // Check if this is an HTML-like label (starts with < and ends with >)
+          const isHtmlLabel = label.startsWith("<") && label.endsWith(">");
+          if (isHtmlLabel) {
+            dot += `${spaces}  "${id}" [label=${label}`;
+          } else {
+            dot += `${spaces}  "${id}" [label="${label}"`;
+          }
           for (const [key, value] of Object.entries(attrs)) {
             dot += `, ${key}="${String(value)}"`;
           }
