@@ -139,6 +139,12 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: ./pnpm-lock.yaml
 
+      - name: Install Vite+
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: "24.4.1"
+          cache: true
+
       - name: Sync resources
         if: steps.compare.outputs.has_changes == 'true'
         run: |
@@ -146,21 +152,21 @@ jobs:
           cp -r ./diagrams-py/resources/* ./resources/ 2>/dev/null || true
 
           # Install dependencies for generation
-          pnpm install --no-frozen-lockfile
+          vp install
 
           # Run generate script to create TypeScript providers
           npx tsx scripts/generate.ts
 
           # Build providers
-          npx vp run build:providers
+          vp run build:providers
 
       - name: Run tests
         if: steps.compare.outputs.has_changes == 'true'
-        run: npx vp run test
+        run: vp run test
 
       - name: Run checks
         if: steps.compare.outputs.has_changes == 'true'
-        run: npx vp run check
+        run: vp run check
 
       - name: Create Pull Request
         if: steps.compare.outputs.has_changes == 'true'

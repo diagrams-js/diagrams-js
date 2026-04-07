@@ -40,17 +40,23 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: ./pnpm-lock.yaml
 
+      - name: Install Vite+
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: "24.4.1"
+          cache: true
+
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: vp install
 
       - name: Run tests
-        run: npx vp run test
+        run: vp run test
 
       - name: Run checks
-        run: npx vp run check
+        run: vp run check
 
       - name: Build package
-        run: npx vp run build
+        run: vp run build
 
       - name: Update version (if specified)
         if: github.event.inputs.version != ''
