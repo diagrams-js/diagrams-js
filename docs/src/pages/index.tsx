@@ -28,8 +28,8 @@ function HeroSection() {
               >
                 diagrams
               </a>{" "}
-              library. Generate beautiful architecture diagrams programmatically
-              with full type safety and autocompletion.
+              library. Generate beautiful architecture diagrams programmatically with full type
+              safety and autocompletion.
             </p>
             <div className={styles.buttons}>
               <Link
@@ -38,10 +38,7 @@ function HeroSection() {
               >
                 Get Started
               </Link>
-              <Link
-                className="button button--secondary button--lg"
-                to="/playground"
-              >
+              <Link className="button button--secondary button--lg" to="/playground">
                 Try Online
               </Link>
             </div>
@@ -67,10 +64,9 @@ function FeaturesSection() {
       title: "🌐 Runs Everywhere",
       description: (
         <>
-          Works in <strong>Node.js</strong>, <strong>browsers</strong>,{" "}
-          <strong>Deno</strong>, <strong>Bun</strong>, and even{" "}
-          <strong>Cloudflare Workers</strong>. No server required for browser
-          usage.
+          Works in <strong>Node.js</strong>, <strong>browsers</strong>, <strong>Deno</strong>,{" "}
+          <strong>Bun</strong>, and even <strong>Cloudflare Workers</strong>. No server required for
+          browser usage.
         </>
       ),
     },
@@ -78,8 +74,8 @@ function FeaturesSection() {
       title: "📦 Zero Dependencies",
       description: (
         <>
-          The core library has <strong>zero runtime dependencies</strong>. Uses
-          WebAssembly-based Graphviz for rendering, bundled with the package.
+          The core library has <strong>zero runtime dependencies</strong>. Uses WebAssembly-based
+          Graphviz for rendering, bundled with the package.
         </>
       ),
     },
@@ -87,9 +83,8 @@ function FeaturesSection() {
       title: "🔷 Full TypeScript Support",
       description: (
         <>
-          Written in TypeScript with complete type definitions. Get{" "}
-          <strong>autocompletion</strong> and <strong>type checking</strong> for
-          all 1000+ node classes.
+          Written in TypeScript with complete type definitions. Get <strong>autocompletion</strong>{" "}
+          and <strong>type checking</strong> for all 2000+ node classes.
         </>
       ),
     },
@@ -97,9 +92,8 @@ function FeaturesSection() {
       title: "☁️ 17 Cloud Providers",
       description: (
         <>
-          Support for <strong>AWS</strong>, <strong>Azure</strong>,{" "}
-          <strong>GCP</strong>, <strong>Kubernetes</strong>, and 13 more
-          providers with 1000+ pre-built node classes.
+          Support for <strong>AWS</strong>, <strong>Azure</strong>, <strong>GCP</strong>,{" "}
+          <strong>Kubernetes</strong>, and 13 more providers with 2000+ pre-built node classes.
         </>
       ),
     },
@@ -107,18 +101,15 @@ function FeaturesSection() {
       title: "🎨 Custom Nodes",
       description: (
         <>
-          Use your own icons from URLs, local files, or data URLs. Mix custom
-          nodes with built-in provider nodes seamlessly.
+          Use your own icons from URLs, local files, or data URLs. Mix custom nodes with built-in
+          provider nodes seamlessly.
         </>
       ),
     },
     {
       title: "🚀 Tree-Shakeable",
       description: (
-        <>
-          Import only what you need. Each provider is a separate module for
-          optimal bundle size.
-        </>
+        <>Import only what you need. Each provider is a separate module for optimal bundle size.</>
       ),
     },
   ];
@@ -136,9 +127,7 @@ function FeaturesSection() {
                 <Heading as="h3" className={styles.featureTitle}>
                   {feature.title}
                 </Heading>
-                <p className={styles.featureDescription}>
-                  {feature.description}
-                </p>
+                <p className={styles.featureDescription}>{feature.description}</p>
               </div>
             </div>
           ))}
@@ -158,8 +147,8 @@ function CodeExampleSection() {
               Simple & Intuitive API
             </Heading>
             <p className={styles.sectionDescription}>
-              Define your architecture with a clean, chainable API. Create
-              diagrams in just a few lines of code.
+              Define your architecture with a clean, chainable API. Create diagrams in just a few
+              lines of code.
             </p>
             <ul className={styles.benefitsList}>
               <li>Factory functions for easy diagram creation</li>
@@ -168,10 +157,7 @@ function CodeExampleSection() {
               <li>Custom styling for edges and nodes</li>
             </ul>
             <div className={styles.buttons}>
-              <Link
-                className="button button--primary"
-                to="/docs/getting-started/examples"
-              >
+              <Link className="button button--primary" to="/docs/getting-started/examples">
                 View Examples
               </Link>
             </div>
@@ -210,8 +196,7 @@ function CTASection() {
             Ready to get started?
           </Heading>
           <p className={styles.ctaDescription}>
-            Check out the documentation, try the interactive playground, or
-            browse the examples.
+            Check out the documentation, try the interactive playground, or browse the examples.
           </p>
           <div className={styles.ctaButtons}>
             <Link
@@ -220,16 +205,10 @@ function CTASection() {
             >
               Get Started
             </Link>
-            <Link
-              className="button button--primary button--lg"
-              to="/docs/guides/diagram"
-            >
+            <Link className="button button--primary button--lg" to="/docs/guides/diagram">
               API Reference
             </Link>
-            <Link
-              className="button button--primary button--lg"
-              to="/docs/nodes"
-            >
+            <Link className="button button--primary button--lg" to="/docs/nodes">
               Browse Nodes
             </Link>
           </div>
