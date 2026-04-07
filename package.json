@@ -2,15 +2,33 @@
   "name": "diagrams-js",
   "version": "0.0.0",
   "description": "A TypeScript port of the diagrams Python library for drawing cloud system architecture diagrams as code",
-  "homepage": "https://github.com/author/diagrams-js#readme",
+  "keywords": [
+    "diagrams",
+    "architecture",
+    "cloud",
+    "aws",
+    "azure",
+    "gcp",
+    "kubernetes",
+    "diagram-as-code",
+    "svg",
+    "visualization",
+    "infrastructure",
+    "typescript"
+  ],
+  "homepage": "https://diagrams-js.hatemhosny.dev",
   "bugs": {
-    "url": "https://github.com/author/diagrams-js/issues"
+    "url": "https://github.com/hatemhosny/diagrams-js/issues"
   },
   "license": "MIT",
-  "author": "Author Name <author.name@mail.com>",
+  "author": "Hatem Hosny <hatemhosny@example.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/author/diagrams-js.git"
+    "url": "git+https://github.com/hatemhosny/diagrams-js.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/hatemhosny"
   },
   "files": [
     "dist",
@@ -1022,7 +1040,12 @@
     "check": "vp check",
     "fix": "vp check --fix",
     "prepublishOnly": "vp run build",
-    "prepare": "vp config"
+    "prepare": "vp config",
+    "generate": "npx tsx scripts/generate.ts",
+    "version:patch": "npm version patch --no-git-tag-version",
+    "version:minor": "npm version minor --no-git-tag-version",
+    "version:major": "npm version major --no-git-tag-version",
+    "changelog": "conventional-changelog -p angular -i ../CHANGELOG.md -s"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

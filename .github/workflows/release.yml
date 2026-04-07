@@ -1,0 +1,160 @@
+name: Changelog & Release
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'diagrams-js/package.json'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version bump type (patch, minor, major)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    defaults:
+      run:
+        working-directory: ./diagrams-js
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: ./diagrams-js/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Bump version
+        if: github.event.inputs.version != ''
+        run: |
+          npm version ${{ github.event.inputs.version }} --no-git-tag-version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Get version from package.json
+        if: github.event.inputs.version == ''
+        run: |
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          # Get the previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          
+          if [ -z "$PREV_TAG" ]; then
+            # No previous tag, get all commits
+            COMMITS=$(git log --pretty=format:"- %s (%h)" --no-merges)
+          else
+            # Get commits since last tag
+            COMMITS=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          fi
+          
+          # Create changelog entry
+          echo "## [${{ env.NEW_VERSION }}] - $(date +%Y-%m-%d)" > CHANGELOG_NEW.md
+          echo "" >> CHANGELOG_NEW.md
+          
+          # Categorize commits
+          echo "### Features" >> CHANGELOG_NEW.md
+          echo "$COMMITS" | grep -i "^\- feat" >> CHANGELOG_NEW.md || echo "- No new features" >> CHANGELOG_NEW.md
+          echo "" >> CHANGELOG_NEW.md
+          
+          echo "### Bug Fixes" >> CHANGELOG_NEW.md
+          echo "$COMMITS" | grep -i "^\- fix" >> CHANGELOG_NEW.md || echo "- No bug fixes" >> CHANGELOG_NEW.md
+          echo "" >> CHANGELOG_NEW.md
+          
+          echo "### Other Changes" >> CHANGELOG_NEW.md
+          echo "$COMMITS" | grep -iv "^\- feat\|^\- fix\|^\- chore(release)" >> CHANGELOG_NEW.md || echo "- No other changes" >> CHANGELOG_NEW.md
+          echo "" >> CHANGELOG_NEW.md
+          
+          # Prepend to existing CHANGELOG.md or create new one
+          if [ -f ../CHANGELOG.md ]; then
+            cat CHANGELOG_NEW.md ../CHANGELOG.md > CHANGELOG_TEMP.md
+            mv CHANGELOG_TEMP.md ../CHANGELOG.md
+          else
+            cat CHANGELOG_NEW.md > ../CHANGELOG.md
+          fi
+          
+          rm CHANGELOG_NEW.md
+          
+          # Set output for release notes
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          cat ../CHANGELOG.md | head -50 >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Commit version bump and changelog
+        if: github.event.inputs.version != ''
+        run: |
+          git add package.json
+          git add ../CHANGELOG.md
+          git commit -m "chore(release): bump version to ${{ env.NEW_VERSION }}"
+          git tag -a "v${{ env.NEW_VERSION }}" -m "Release v${{ env.NEW_VERSION }}"
+          git push origin HEAD --follow-tags
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.event.inputs.version != ''
+        with:
+          tag_name: v${{ env.NEW_VERSION }}
+          name: Release v${{ env.NEW_VERSION }}
+          body: ${{ steps.changelog.outputs.notes }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+
+      - name: Create Pull Request for version bump
+        if: github.event.inputs.version != ''
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(release): bump version to ${{ env.NEW_VERSION }}"
+          title: "chore(release): bump version to ${{ env.NEW_VERSION }}"
+          body: |
+            ## Version Bump
+            
+            This PR bumps the version to **${{ env.NEW_VERSION }}**.
+            
+            ### Changes
+            - Updated package.json version
+            - Updated CHANGELOG.md
+            
+            ### Checklist
+            - [ ] Tests pass
+            - [ ] Documentation updated (if needed)
+            - [ ] CHANGELOG.md updated
+          branch: release/v${{ env.NEW_VERSION }}
+          base: main
+          delete-branch: true

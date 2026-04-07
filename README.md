@@ -1,331 +1,179 @@
+[![diagrams-js](./assets/logo.svg)](https://diagrams-js.hatemhosny.dev)
+
 # diagrams-js
 
-A TypeScript port of the [diagrams](https://github.com/mingrammer/diagrams) Python library for drawing cloud system architecture diagrams as code.
+> A TypeScript/JavaScript port of the popular Python [diagrams](https://github.com/mingrammer/diagrams) library for drawing cloud system architecture diagrams as code.
+
+[![npm version](https://badge.fury.io/js/diagrams-js.svg)](https://www.npmjs.com/package/diagrams-js)
+[![CI](https://github.com/author/diagrams-js/actions/workflows/ci.yml/badge.svg)](https://github.com/author/diagrams-js/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
 
-- **Diagram as Code**: Define your architecture diagrams in TypeScript/JavaScript
-- **Cross-Platform**: Works in Node.js, Deno, Bun, browsers, and Cloudflare Workers
-- **Graphviz-Powered**: Uses `@viz-js/viz` (WebAssembly-based Graphviz) for rendering
-- **Type-Safe**: Full TypeScript support with autocompletion
-- **Provider Support**: 17 cloud providers with 1000+ node classes and embedded icons
-- **Zero Configuration**: Icons work automatically, no setup needed
+- **Diagram as Code**: Define your architecture diagrams in TypeScript
+- **17+ Cloud Providers**: AWS, Azure, GCP, Kubernetes, Alibaba Cloud, Oracle Cloud, IBM Cloud, and more
+- **1000+ Node Classes**: Comprehensive coverage of cloud services and infrastructure components
+- **Cross-Platform**: Works in browsers, Node.js, Deno and Bun
+- **Multiple Output Formats**: SVG, PNG, JPG, and DOT
+- **Type-Safe**: Full TypeScript support with comprehensive type definitions
+- **WebAssembly Powered**: Uses a WebAssembly build of [Graphviz](https://graphviz.org) ([viz](https://github.com/mdaines/viz-js)) for fast, client-side rendering
+- **Custom Nodes**: Support for external icons and images
+- **Tree-Shakable**: Import only what you need
 
 ## Installation
 
 ```bash
+# npm
 npm install diagrams-js
-# or
-yarn add diagrams-js
-# or
-pnpm add diagrams-js
 ```
 
 ## Quick Start
 
-### Basic Usage
-
-```typescript
-import { Diagram, Node, Edge } from "diagrams-js";
-
-// Create a diagram
-const diagram = new Diagram("Web Service", {
-  direction: "TB", // Top to Bottom
-  outformat: "svg", // Output format
-});
-
-// Create nodes
-const web = diagram.add(new Node("Web Server"));
-const app = diagram.add(new Node("App Server"));
-const db = diagram.add(new Node("Database"));
-
-// Connect them: web -> app -> db
-web.to(app).to(db);
-
-// Render
-const svg = await diagram.render();
-diagram.destroy();
-```
-
-### Using Cloud Providers (with Icons!)
+### Node.js / TypeScript
 
 ```typescript
 import { Diagram } from "diagrams-js";
-import { EC2, Lambda, RDS } from "diagrams-js/aws/compute";
+import { EC2, Lambda } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
 import { S3 } from "diagrams-js/aws/storage";
 import { ALB } from "diagrams-js/aws/network";
 
-const diagram = new Diagram("AWS Architecture", { direction: "TB" });
+const diagram = Diagram("AWS Architecture", { direction: "TB" });
 
-// Create nodes with automatic icons
-const lb = diagram.add(new ALB("Load Balancer"));
-const web = diagram.add(new EC2("Web Server"));
-const api = diagram.add(new Lambda("API"));
-const db = diagram.add(new RDS("Database"));
-const storage = diagram.add(new S3("Storage"));
+// Create nodes with icons
+const lb = diagram.add(ALB("Load Balancer"));
+const web = diagram.add(EC2("Web Server"));
+const api = diagram.add(Lambda("API"));
+const db = diagram.add(RDS("Database"));
+const storage = diagram.add(S3("Storage"));
 
 // Connect them
-lb.to(web);
-web.to(api);
-api.to(db);
-api.to(storage);
+lb.to(web).to(api);
+api.to([db, storage]);
 
+// Render to SVG
 const svg = await diagram.render();
+
+// Clean up
 diagram.destroy();
 ```
 
-## Providers
+### Browser
 
-17 cloud providers available, each with multiple service categories:
+```html
+<script type="module">
+  import { Diagram } from "https://cdn.jsdelivr.net/npm/diagrams-js";
+  import { EC2 } from "https://cdn.jsdelivr.net/npm/diagrams-js/providers/aws/compute";
+  import { RDS } from "https://cdn.jsdelivr.net/npm/diagrams-js/providers/aws/database";
 
-| Provider          | Import Path                  | Services                                                                       |
-| ----------------- | ---------------------------- | ------------------------------------------------------------------------------ |
-| **AWS**           | `diagrams-js/aws/*`          | compute, database, storage, network, analytics, ML, IoT, security, and 18 more |
-| **Azure**         | `diagrams-js/azure/*`        | compute, databases, networking, storage, AI/ML, containers, and 24 more        |
-| **GCP**           | `diagrams-js/gcp/*`          | compute, database, storage, network, analytics, ML, operations, and 10 more    |
-| **Kubernetes**    | `diagrams-js/k8s/*`          | compute, network, storage, control plane, RBAC, and 10 more                    |
-| **Alibaba Cloud** | `diagrams-js/alibabacloud/*` | compute, database, storage, network, security, and 9 more                      |
-| **DigitalOcean**  | `diagrams-js/digitalocean/*` | compute, database, network, storage                                            |
-| **Elastic**       | `diagrams-js/elastic/*`      | Elasticsearch, Beats, Kibana, and 7 more                                       |
-| **Firebase**      | `diagrams-js/firebase/*`     | develop, grow, quality, base, and 4 more                                       |
-| **Generic**       | `diagrams-js/generic/*`      | compute, database, network, OS, storage                                        |
-| **GIS**           | `diagrams-js/gis/*`          | data, desktop, mobile, server, and 11 more                                     |
-| **IBM**           | `diagrams-js/ibm/*`          | compute, data, network, security, and 13 more                                  |
-| **OCI**           | `diagrams-js/oci/*`          | compute, database, network, storage, and 7 more                                |
-| **On-Prem**       | `diagrams-js/onprem/*`       | compute, database, networking, monitoring, and 30 more                         |
-| **OpenStack**     | `diagrams-js/openstack/*`    | compute, networking, storage, and 18 more                                      |
-| **Outscale**      | `diagrams-js/outscale/*`     | compute, network, security, storage                                            |
-| **Programming**   | `diagrams-js/programming/*`  | languages, frameworks, runtimes                                                |
-| **SaaS**          | `diagrams-js/saas/*`         | alerting, analytics, CDN, chat, and 14 more                                    |
+  const diagram = Diagram("My Diagram");
+  const web = diagram.add(EC2("Web Server"));
+  const db = diagram.add(RDS("Database"));
 
-### Example: AWS Architecture
+  web.to(db);
 
-```typescript
-import { Diagram } from "diagrams-js";
-import { EC2, Lambda, AutoScaling } from "diagrams-js/aws/compute";
-import { RDS, Dynamodb } from "diagrams-js/aws/database";
-import { S3 } from "diagrams-js/aws/storage";
-import { Cloudfront, ALB } from "diagrams-js/aws/network";
-
-const diagram = new Diagram("E-Commerce Platform", { direction: "TB" });
-
-const cdn = diagram.add(new Cloudfront("CDN"));
-const lb = diagram.add(new ALB("ALB"));
-const asg = diagram.add(new AutoScaling("Auto Scaling"));
-const web = diagram.add(new EC2("Web Tier"));
-const api = diagram.add(new Lambda("API Gateway"));
-const rds = diagram.add(new RDS("Primary DB"));
-const dynamo = diagram.add(new Dynamodb("Cache"));
-const s3 = diagram.add(new S3("Static Assets"));
-
-cdn.to(lb);
-lb.to(asg);
-asg.to(web);
-web.to(api);
-api.to([rds, dynamo]);
-web.to(s3);
-
-const svg = await diagram.render();
+  const svg = await diagram.render();
+  document.body.innerHTML = svg;
+</script>
 ```
 
-### Icons Are Automatic
+## Documentation
 
-All provider classes come with embedded icons. Just import and use:
+📚 **Full documentation**: [https://diagrams-js.hatemhosny.dev](https://diagrams-js.hatemhosny.dev)
 
-```typescript
-import { EC2 } from "diagrams-js/aws/compute";
+- [Getting Started](https://diagrams-js.hatemhosny.dev/docs/getting-started)
+- [API Reference](https://diagrams-js.hatemhosny.dev/docs/api)
+- [Examples](https://diagrams-js.hatemhosny.dev/docs/examples)
+- [Providers](https://diagrams-js.hatemhosny.dev/docs/providers)
 
-// The EC2 icon is embedded and will appear automatically
-const server = diagram.add(new EC2("My Server"));
-```
+## Supported Providers
 
-No configuration needed. Icons are embedded as base64 data URLs at build time.
+| Provider      | Import Path                | Services                 |
+| ------------- | -------------------------- | ------------------------ |
+| AWS           | `diagrams-js/aws`          | 200+ services            |
+| Azure         | `diagrams-js/azure`        | 100+ services            |
+| GCP           | `diagrams-js/gcp`          | 80+ services             |
+| Kubernetes    | `diagrams-js/k8s`          | 60+ resources            |
+| Alibaba Cloud | `diagrams-js/alibabacloud` | 50+ services             |
+| Oracle Cloud  | `diagrams-js/oci`          | 40+ services             |
+| DigitalOcean  | `diagrams-js/digitalocean` | 20+ services             |
+| IBM Cloud     | `diagrams-js/ibm`          | 30+ services             |
+| Firebase      | `diagrams-js/firebase`     | 15+ services             |
+| Elastic       | `diagrams-js/elastic`      | 10+ services             |
+| On-Premises   | `diagrams-js/onprem`       | 80+ components           |
+| Generic       | `diagrams-js/generic`      | 20+ icons                |
+| SaaS          | `diagrams-js/saas`         | 30+ services             |
+| OpenStack     | `diagrams-js/openstack`    | 40+ services             |
+| Outscale      | `diagrams-js/outscale`     | 15+ services             |
+| Programming   | `diagrams-js/programming`  | 30+ languages/frameworks |
+| GIS           | `diagrams-js/gis`          | 20+ components           |
 
-## Python to TypeScript Migration Guide
-
-| Python                    | TypeScript                                      |
-| ------------------------- | ----------------------------------------------- |
-| `with Diagram("Name"):`   | `const diagram = new Diagram("Name");`          |
-| `Node("label")`           | `new Node("label")`                             |
-| `node1 >> node2`          | `node1.to(node2)`                               |
-| `node1 << node2`          | `node1.from(node2)`                             |
-| `node1 - node2`           | `node1.with(node2)`                             |
-| `node1 >> [node2, node3]` | `node1.to([node2, node3])`                      |
-| `Edge(color="red")`       | `new Edge({ color: "red" })`                    |
-| `with Cluster("Name"):`   | `diagram.cluster("Name", (cluster) => { ... })` |
-
-## API Reference
-
-### Diagram
-
-```typescript
-const diagram = new Diagram(name: string, options?: DiagramOptions)
-```
-
-**Options:**
-
-- `direction`: `"TB" | "BT" | "LR" | "RL"` - Layout direction
-- `curvestyle`: `"ortho" | "curved" | "spline" | "polyline"` - Edge curve style
-- `outformat`: `"png" | "jpg" | "svg" | "dot"` - Output format(s)
-- `theme`: `"neutral" | "pastel" | "blues" | "greens" | "orange"` - Color theme
-- `show`: `boolean` - Open rendered image after generation
-- `autolabel`: `boolean` - Auto-prefix node labels with class name
-
-**Methods:**
-
-- `add(node: Node): Node` - Add a node to the diagram
-- `cluster(name: string, callback: (cluster: Cluster) => void): void` - Create a cluster
-- `render(): Promise<string>` - Render diagram to SVG string
-- `renderTo(format: "svg" | "png"): Promise<string | Buffer>` - Render to specific format
-- `save(filepath: string): Promise<void>` - Save diagram to file
-- `destroy(): void` - Clean up resources
-
-### Node
-
-```typescript
-const node = new Node(label: string, options?: NodeOptions)
-```
-
-**Methods:**
-
-- `to(target: Node | Node[] | Edge, target?: Node)` - Forward connection (>>)
-- `from(source: Node | Node[])` - Reverse connection (<<)
-- `with(target: Node | Node[])` - Bidirectional connection (-)
-
-### Edge
-
-```typescript
-const edge = new Edge(options?: EdgeOptions)
-```
-
-**Options:**
-
-- `label`: `string` - Edge label
-- `color`: `string` - Edge color
-- `style`: `string` - Edge style (solid, dashed, dotted, bold)
-- `forward`: `boolean` - Forward direction arrow
-- `reverse`: `boolean` - Reverse direction arrow
-
-**Static factories:**
-
-- `Edge.label(text)` - Create edge with label
-- `Edge.color(color)` - Create edge with color
-- `Edge.style(style)` - Create edge with style
-
-### Cluster
-
-```typescript
-diagram.cluster("Name", (cluster) => {
-  const node = cluster.add(new Node("label"));
-});
-```
-
-## Clusters
-
-```typescript
-const diagram = new Diagram("Clustered Example", { direction: "LR" });
-
-// Create nodes outside cluster
-const lb = diagram.add(new Node("Load Balancer"));
-
-// Create a cluster
-diagram.cluster("Services", (cluster) => {
-  const web1 = cluster.add(new Node("Web 1"));
-  const web2 = cluster.add(new Node("Web 2"));
-
-  // Connect within cluster
-  web1.with(web2);
-});
-
-// Connect outside to cluster
-lb.to(/* nodes in cluster */);
-```
-
-## Themes
-
-Built-in themes:
-
-- `neutral` (default)
-- `pastel`
-- `blues`
-- `greens`
-- `orange`
-
-```typescript
-const diagram = new Diagram("Themed", { theme: "blues" });
-```
-
-## Output Formats
-
-- **SVG** (default): `outformat: "svg"` - Works in all environments
-- **PNG**: `outformat: "png"` - Works in browsers (Canvas API) and Node.js (with sharp)
-
-### Browser PNG Export
-
-```typescript
-const diagram = new Diagram("My Diagram", { outformat: "png" });
-const pngDataUrl = await diagram.render();
-```
-
-### Node.js PNG Export
-
-For PNG output in Node.js, install the optional `sharp` dependency:
-
-```bash
-npm install sharp
-```
-
-Then use PNG output as normal:
-
-```typescript
-const diagram = new Diagram("My Diagram", { outformat: "png" });
-const pngBuffer = await diagram.render(); // Returns Uint8Array
-await fs.writeFile("diagram.png", pngBuffer);
-```
+View the [full list](https://diagrams-js.hatemhosny.dev/docs/providers)
 
 ## Development
 
-This project uses [Vite+](https://vitejs.dev/) (a unified toolchain).
+### Prerequisites
+
+- Node.js 18+
+- pnpm (preferred package manager)
+
+### Setup
 
 ```bash
+# Clone the repository
+git clone https://github.com/author/diagrams-js.git
+cd diagrams-js/diagrams-js
+
 # Install dependencies
 vp install
 
 # Run tests
 vp test
 
-# Build library
-vp pack
-
-# Build providers
-npm run build:providers
-
-# Type check and lint
+# Run checks (lint, format, types)
 vp check
+
+# Build the library
+vp run build
 ```
 
-## Project Status
+### Project Structure
 
-**Completed:**
+```
+diagrams-js/
+├── src/              # Source code
+│   ├── index.ts      # Main exports
+│   ├── Diagram.ts    # Core diagram class
+│   ├── Node.ts       # Base node class
+│   ├── Edge.ts       # Edge/connection class
+│   ├── Cluster.ts    # Cluster/grouping class
+│   └── providers/    # Auto-generated provider classes
+├── resources/        # Icon resources (PNG files)
+├── scripts/          # Build and generation scripts
+├── tests/            # Test files
+└── docs/             # Documentation site
+```
 
-- ✅ Core classes (Diagram, Node, Edge, Cluster)
-- ✅ Context management
-- ✅ Graphviz rendering via WASM
-- ✅ Cross-platform support (Node.js, Deno, Bun, browsers, workers)
-- ✅ Connection operators (to, from, with)
-- ✅ Themes
-- ✅ Clusters with nesting
-- ✅ Edge customization
-- ✅ 17 Provider classes with 1000+ node types
-- ✅ Automatic icon embedding
-- ✅ SVG and PNG output
+## Contributing
 
-**Coming Soon:**
-
-- 🔄 C4 model support
-- 🔄 Custom node templates
-- 🔄 Python-to-TypeScript migration tool
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ## License
 
-MIT - Same as the original diagrams library
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+This project is a TypeScript port of the excellent Python [diagrams](https://github.com/mingrammer/diagrams) library by [mingrammer](https://github.com/mingrammer).
+
+Icon resources are sourced from the Python diagrams repository and various cloud provider icon sets.
+
+## Support
+
+- 📖 [Documentation](https://diagrams-js.hatemhosny.dev)
+- 🐛 [Issue Tracker](https://github.com/author/diagrams-js/issues)
+- 💬 [Discussions](https://github.com/author/diagrams-js/discussions)
+
+---
+
+Made with ❤️ by the diagrams-js community
