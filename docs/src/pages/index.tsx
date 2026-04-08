@@ -156,7 +156,11 @@ function CodeExampleSection() {
               <li>Custom styling for edges and nodes</li>
             </ul>
             <div className={styles.buttons}>
-              <Link className="button button--primary" to="/docs/getting-started/examples">
+              <Link
+                className="button button--primary"
+                style={{ marginBottom: "2rem" }}
+                to="/docs/getting-started/examples"
+              >
                 View Examples
               </Link>
             </div>
