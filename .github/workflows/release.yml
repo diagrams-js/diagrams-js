@@ -118,28 +118,31 @@ jobs:
       - name: Build library
         run: vp run build
 
-      - name: Create release archive
+      - name: Create release archives
         run: |
+          # Create archives in /tmp to avoid committing them
           cd dist
-          zip -r ../diagrams-js-v${{ env.NEW_VERSION }}.zip .
+          zip -r /tmp/diagrams-js-v${{ env.NEW_VERSION }}.zip .
           cd ..
-          tar -czf diagrams-js-v${{ env.NEW_VERSION }}.tar.gz -C dist .
+          tar -czf /tmp/diagrams-js-v${{ env.NEW_VERSION }}.tar.gz -C dist .
 
       - name: Create release branch and commit
         run: |
           # Create and checkout release branch
           git checkout -b ${{ env.RELEASE_BRANCH }}
-
+          
           # Add and commit version bump and changelog
           vp check --fix
           git add package.json
           git add ./CHANGELOG.md
           git commit -m "chore(release): bump version to ${{ env.NEW_VERSION }}"
-
+          
           # Push release branch
           git push origin ${{ env.RELEASE_BRANCH }}
 
-          # Create and push tag
+      - name: Create and push tag
+        run: |
+          # Create and push tag from the release branch
           git tag -a "v${{ env.NEW_VERSION }}" -m "Release v${{ env.NEW_VERSION }}"
           git push origin "v${{ env.NEW_VERSION }}"
 
@@ -153,13 +156,15 @@ jobs:
           prerelease: false
           generate_release_notes: true
           files: |
-            diagrams-js-v${{ env.NEW_VERSION }}.zip
-            diagrams-js-v${{ env.NEW_VERSION }}.tar.gz
+            /tmp/diagrams-js-v${{ env.NEW_VERSION }}.zip
+            /tmp/diagrams-js-v${{ env.NEW_VERSION }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
           commit-message: "chore(release): bump version to ${{ env.NEW_VERSION }}"
           title: "chore(release): bump version to ${{ env.NEW_VERSION }}"
           body: |
