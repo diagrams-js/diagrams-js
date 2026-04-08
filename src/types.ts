@@ -1,15 +1,15 @@
 // Theme definitions for diagram styling
 // Each theme defines: cluster background colors (by depth), border color, edge color
 export const THEMES = {
-  neutral: {
-    bgcolor: ["#F8F9FA", "#F1F3F5", "#E9ECEF", "#DEE2E6"],
-    pencolor: "#ADB5BD",
-    edgecolor: "#495057",
-  },
   pastel: {
     bgcolor: ["#E5F5FD", "#EBF3E7", "#ECE8F6", "#FDF7E3"],
     pencolor: "#AEB6BE",
     edgecolor: "#7B8894",
+  },
+  neutral: {
+    bgcolor: ["#F8F9FA", "#F1F3F5", "#E9ECEF", "#DEE2E6"],
+    pencolor: "#ADB5BD",
+    edgecolor: "#495057",
   },
   blues: {
     bgcolor: ["#E7F5FF", "#D0EBFF", "#A5D8FF", "#74C0FC"],
