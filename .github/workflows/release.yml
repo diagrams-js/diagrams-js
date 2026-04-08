@@ -25,6 +25,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      id-token: write
 
     env:
       VITE_GIT_HOOKS: 0
@@ -42,9 +43,10 @@ jobs:
           version: 10.33.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "24.4.1"
+          registry-url: "https://registry.npmjs.org"
           cache: "pnpm"
           cache-dependency-path: ./pnpm-lock.yaml
 
@@ -181,3 +183,8 @@ jobs:
           - [ ] CHANGELOG.md updated"
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+      # Publish using OIDC token (configured as trusted publisher on npm)
+      # See: https://docs.npmjs.com/trusted-publishers
+      - name: Publish to npm
+        run: npm publish
