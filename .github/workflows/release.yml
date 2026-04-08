@@ -173,14 +173,16 @@ jobs:
 
           This PR bumps the version to **${{ env.NEW_VERSION }}**.
 
+          ### npm Package
+          📦 [diagrams-js on npm](https://www.npmjs.com/package/diagrams-js)
+
           ### Changes
           - Updated package.json version
           - Updated CHANGELOG.md
 
-          ### Checklist
-          - [ ] Tests pass
-          - [ ] Documentation updated (if needed)
-          - [ ] CHANGELOG.md updated"
+          ### Changelog
+
+          ${{ steps.changelog.outputs.notes }}"
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
