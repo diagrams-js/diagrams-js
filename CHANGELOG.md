@@ -1,3 +1,17 @@
+## [0.0.2] - 2026-04-08
+
+### Features
+
+- No new features
+
+### Bug Fixes
+
+- fix workflows (e152c74)
+
+### Other Changes
+
+- update CI workflows (a528f24)
+
 ## [0.0.1] - 2026-04-07
 
 ### Features
