@@ -1,3 +1,17 @@
+## [0.0.7] - 2026-04-08
+
+### Features
+
+- No new features
+
+### Bug Fixes
+
+- fix publish (6729561)
+
+### Other Changes
+
+- No other changes
+
 ## [0.0.6] - 2026-04-08
 
 ### Features
