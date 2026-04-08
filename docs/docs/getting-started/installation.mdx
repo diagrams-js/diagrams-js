@@ -62,8 +62,8 @@ import { EC2 } from "diagrams-js/aws/compute";
 
 ```html
 <script type="module">
-  import { Diagram } from "https://cdn.jsdelivr.net/npm/diagrams-js";
-  import { EC2 } from "https://cdn.jsdelivr.net/npm/diagrams-js/providers/aws/compute";
+  import { Diagram } from "https://esm.sh/diagrams-js";
+  import { EC2 } from "https://esm.sh/diagrams-js/aws/compute";
 </script>
 ```
 
@@ -75,8 +75,8 @@ You can use import maps to enable bare module imports while loading from a CDN:
 <script type="importmap">
   {
     "imports": {
-      "diagrams-js": "https://cdn.jsdelivr.net/npm/diagrams-js",
-      "diagrams-js/": "https://cdn.jsdelivr.net/npm/diagrams-js/providers/"
+      "diagrams-js": "https://esm.sh/diagrams-js",
+      "diagrams-js/": "https://esm.sh/diagrams-js/"
     }
   }
 </script>
