@@ -186,5 +186,8 @@ jobs:
 
       # Publish using OIDC token (configured as trusted publisher on npm)
       # See: https://docs.npmjs.com/trusted-publishers
+      # Ensure npm 11.5.1 or later for trusted publishing
       - name: Publish to npm
-        run: npm publish
+        run: |
+          npm install -g npm@11.6.4
+          npm publish
