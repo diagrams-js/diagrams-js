@@ -144,7 +144,7 @@
         <p class="subtitle">diagrams-js examples, rendered in your browser</p>
       </header>
 
-      <!-- Example 1: Grouped Workers on AWS -->
+      <!-- Example 1: Grouped Workers on AWS  -->
       <div class="example">
         <h2>Example 1: Grouped Workers on AWS</h2>
         <div class="example-content">
@@ -601,10 +601,10 @@ const pvcs = [];
 for (let i = 0; i < 3; i++) {
   const pod = appsCluster.add(Pod("pod"));
   const pvc = appsCluster.add(PVC("pvc"));
-  
+
   pod.with(sts).with(pvc);
   svc.to(pod).to(pvc);
-  
+
   pods.push(pod);
   pvcs.push(pvc);
 }
@@ -937,8 +937,8 @@ const consumers = [
 
 const queue = diagram.add(
   Custom(
-    "Message queue", 
-    "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png", 
+    "Message queue",
+    "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png",
     { width: "1.0" },
   ),
 );
