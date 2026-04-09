@@ -5,7 +5,26 @@ description: Migrate from Python diagrams to TypeScript
 
 # Migration from Python diagrams
 
-This guide helps you migrate from the Python diagrams library to diagrams-js.
+This guide helps you migrate from the Python [diagrams library](diagrams.mingrammer.com) to diagrams-js.
+
+## Why JavaScript?
+
+The JavaScript/TypeScript port has some unique features:
+
+- **Browser support** - runs directly in browsers with no need for a build step ([demo](/playground))
+- **Runs everywhere** - works in Node.js, Deno, and Bun
+- **Dependency-free** - no dependencies required (uses a Wasm build of Graphviz)
+- Render as [**Data URL**](./rendering.mdx#render-as-data-url) - returns base64 data URL for easy embedding in HTML
+- **Type safety** - full TypeScript support with IDE autocompletion
+
+![IDE autocompletion](./img/autocomplete.png)
+
+:::tip
+
+Let your AI agent do the migration for you!
+
+There is a [skill](../ai-guide.mdx#skills) available for migration from Python to TypeScript.
+:::
 
 ## Syntax Differences
 
@@ -232,22 +251,6 @@ web2.to(Edge({ color: "red" }), db);
 
 const svg = await diagram.render();
 ```
-
-## Missing Features
-
-Some Python features are not implemented:
-
-- Automatic file opening (use `save()` instead)
-- Multiple output formats at once (call `render()` multiple times)
-
-## New Features
-
-TypeScript version has some unique features:
-
-- Browser support - runs directly in browsers
-- Dependency-free - no extra dependencies needed for browsers and SVG rendering in Node.js
-- Render as [Data URL](./rendering.mdx#render-as-data-url) - returns base64 data URL for easy embedding in HTML
-- Type safety - full TypeScript support with IDE autocompletion
 
 ## Getting Help
 
