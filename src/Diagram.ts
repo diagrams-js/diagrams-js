@@ -1048,7 +1048,9 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
      * @param options - Optional render options for format and dimensions
      */
     async save(filepath?: string, options: RenderOptions = {}): Promise<void> {
-      const format = options.format ?? "svg";
+      // Determine format from options or file extension
+      const format =
+        options.format ?? (filepath ? _getFormatFromExtension(filepath) : undefined) ?? "svg";
       const output = await diagram.render({ ...options, format });
       const path = filepath ?? `${filename}.${format}`;
 
@@ -1185,6 +1187,25 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
   setDiagram(diagram);
 
   return diagram;
+}
+
+/**
+ * Extract format from file extension
+ * @param filepath - The file path to extract format from
+ * @returns The format (svg, png, jpg, or dot) or undefined if not recognized
+ */
+function _getFormatFromExtension(filepath: string): "svg" | "png" | "jpg" | "dot" | undefined {
+  const ext = filepath.toLowerCase().split(".").pop();
+  switch (ext) {
+    case "svg":
+    case "png":
+    case "jpg":
+    case "jpeg":
+    case "dot":
+      return ext === "jpeg" ? "jpg" : ext;
+    default:
+      return undefined;
+  }
 }
 
 /**
