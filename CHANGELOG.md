@@ -1,3 +1,30 @@
+## [0.0.10] - 2026-04-09
+
+### Features
+
+- No new features
+
+### Bug Fixes
+
+- fix (6619f88)
+- fix CI (019b022)
+- fix types (69230ea)
+- fix landing page style (b043425)
+
+### Other Changes
+
+- format (c965cd1)
+- add try in livecodes in readme (5db636f)
+- add @tanstack/intent (ec91d67)
+- update AI guide (fe54640)
+- add skills (2eca8fa)
+- remove destroy method (598fe34)
+- add ~ prefix for all internal properties and methods (827c8a4)
+- add jsdoc comments (1a93b15)
+- add AI guide (8538f26)
+- improve release PR (76c6d1f)
+- eager loading in playground (af6f437)
+
 ## [0.0.9] - 2026-04-08
 
 ### Features
