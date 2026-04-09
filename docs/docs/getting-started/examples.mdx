@@ -41,7 +41,6 @@ lb.to(workers);
 workers.forEach((w) => w.to(events));
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 <img
@@ -83,7 +82,6 @@ svcGroup.forEach((s) => s.to(memcached));
 dns.to(lb);
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 <img
@@ -133,7 +131,6 @@ handlers.forEach((h) => {
 });
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 <img
@@ -187,7 +184,6 @@ const appengine = serverlessCluster.add(AppEngine("appengine"));
 dataflow.to(func).to(appengine);
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 <img
@@ -220,7 +216,6 @@ rs.from(dp);
 dp.from(hpa);
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 <img
@@ -263,7 +258,6 @@ pvcs.forEach((pvc) => {
 pv.from(sc);
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 <img
@@ -323,7 +317,6 @@ ingress.to(grpcsvc);
 grpcsvc.forEach((svc) => svc.to(aggregator));
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 <img
@@ -386,7 +379,6 @@ grpcsvc.forEach((svc) => {
 grpcsvc.forEach((svc) => svc.to(Edge({ color: "darkorange" }), aggregator));
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 <img
@@ -423,7 +415,6 @@ queue.to(consumers);
 consumers.forEach((consumer) => consumer.to(database));
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 <img

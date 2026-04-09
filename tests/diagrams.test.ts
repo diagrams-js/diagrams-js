@@ -6,14 +6,12 @@ describe("Diagram Options - DOT Output", () => {
     const diagram = Diagram("My Test Diagram", {});
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('digraph "My Test Diagram"');
-    diagram.destroy();
   });
 
   it("should set direction LR by default", async () => {
     const diagram = Diagram("Test", {});
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('rankdir="LR"');
-    diagram.destroy();
   });
 
   it("should set direction TB", async () => {
@@ -21,49 +19,42 @@ describe("Diagram Options - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('rankdir="TB"');
     expect(dot).not.toContain('rankdir="LR"');
-    diagram.destroy();
   });
 
   it("should set direction BT", async () => {
     const diagram = Diagram("Test", { direction: "BT" });
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('rankdir="BT"');
-    diagram.destroy();
   });
 
   it("should set direction RL", async () => {
     const diagram = Diagram("Test", { direction: "RL" });
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('rankdir="RL"');
-    diagram.destroy();
   });
 
   it("should set curve style ortho by default", async () => {
     const diagram = Diagram("Test", {});
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('splines="ortho"');
-    diagram.destroy();
   });
 
   it("should set curve style curved", async () => {
     const diagram = Diagram("Test", { curvestyle: "curved" });
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('splines="curved"');
-    diagram.destroy();
   });
 
   it("should set curve style spline", async () => {
     const diagram = Diagram("Test", { curvestyle: "spline" });
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('splines="spline"');
-    diagram.destroy();
   });
 
   it("should set curve style polyline", async () => {
     const diagram = Diagram("Test", { curvestyle: "polyline" });
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('splines="polyline"');
-    diagram.destroy();
   });
 
   it("should set graph attributes", async () => {
@@ -76,7 +67,6 @@ describe("Diagram Options - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('fontsize="45"');
     expect(dot).toContain('bgcolor="transparent"');
-    diagram.destroy();
   });
 
   it("should set node attributes", async () => {
@@ -90,7 +80,6 @@ describe("Diagram Options - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('style="filled"');
     expect(dot).toContain('fillcolor="lightblue"');
-    diagram.destroy();
   });
 
   it("should set edge attributes", async () => {
@@ -106,7 +95,6 @@ describe("Diagram Options - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('color="red"');
     expect(dot).toContain('style="dashed"');
-    diagram.destroy();
   });
 
   it("should combine multiple options correctly", async () => {
@@ -122,7 +110,6 @@ describe("Diagram Options - DOT Output", () => {
     expect(dot).toContain('splines="spline"');
     expect(dot).toContain('fontsize="20"');
     expect(dot).toContain('penwidth="2"');
-    diagram.destroy();
   });
 });
 
@@ -132,7 +119,6 @@ describe("Node Behaviors - DOT Output", () => {
     diagram.add(Node("My Node"));
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('label="My Node"');
-    diagram.destroy();
   });
 
   it("should create node with empty label", async () => {
@@ -140,7 +126,6 @@ describe("Node Behaviors - DOT Output", () => {
     diagram.add(Node(""));
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('label=""');
-    diagram.destroy();
   });
 
   it("should create node with custom attributes", async () => {
@@ -149,7 +134,6 @@ describe("Node Behaviors - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('color="red"');
     expect(dot).toContain('fillcolor="blue"');
-    diagram.destroy();
   });
 
   it("should create multiple nodes", async () => {
@@ -161,7 +145,6 @@ describe("Node Behaviors - DOT Output", () => {
     expect(dot).toContain('label="Node A"');
     expect(dot).toContain('label="Node B"');
     expect(dot).toContain('label="Node C"');
-    diagram.destroy();
   });
 
   it("should create node with multiline label", async () => {
@@ -169,7 +152,6 @@ describe("Node Behaviors - DOT Output", () => {
     diagram.add(Node("Line 1\nLine 2"));
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('label="Line 1\nLine 2"');
-    diagram.destroy();
   });
 });
 
@@ -181,7 +163,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toMatch(/"[^"]+"\s*->\s*"[^"]+"/);
-    diagram.destroy();
   });
 
   it("should create edge with label", async () => {
@@ -191,7 +172,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ label: "data flow" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('label="data flow"');
-    diagram.destroy();
   });
 
   it("should have default edge label font size of 8", async () => {
@@ -201,7 +181,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ label: "test" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('fontsize="8"');
-    diagram.destroy();
   });
 
   it("should allow custom edge label font size", async () => {
@@ -211,7 +190,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ label: "test", fontsize: "14" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('fontsize="14"');
-    diagram.destroy();
   });
 
   it("should respect diagram edgeAttr font size", async () => {
@@ -225,7 +203,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ label: "test" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('fontsize="9"');
-    diagram.destroy();
   });
 
   it("should have default edge font properties", async () => {
@@ -237,7 +214,6 @@ describe("Edge Behaviors - DOT Output", () => {
     expect(dot).toContain('fontsize="8"');
     expect(dot).toContain('fontcolor="#2D3436"');
     expect(dot).toContain('fontname="Sans-Serif"');
-    diagram.destroy();
   });
 
   it("should allow diagram edgeAttr to customize fontcolor", async () => {
@@ -252,7 +228,6 @@ describe("Edge Behaviors - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     // Check edge block has fontcolor="red"
     expect(dot).toMatch(/edge \[[^\]]*fontcolor="red"[^\]]*\]/);
-    diagram.destroy();
   });
 
   it("should allow diagram edgeAttr to customize fontname", async () => {
@@ -267,7 +242,6 @@ describe("Edge Behaviors - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     // Check edge block has fontname="Arial"
     expect(dot).toMatch(/edge \[[^\]]*fontname="Arial"[^\]]*\]/);
-    diagram.destroy();
   });
 
   it("should allow diagram edgeAttr to customize all font properties", async () => {
@@ -285,7 +259,6 @@ describe("Edge Behaviors - DOT Output", () => {
     expect(dot).toContain('fontsize="12"');
     expect(dot).toContain('fontcolor="blue"');
     expect(dot).toContain('fontname="Helvetica"');
-    diagram.destroy();
   });
 
   it("should allow edge-level override of diagram fontcolor", async () => {
@@ -300,7 +273,6 @@ describe("Edge Behaviors - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     // Edge-level should override diagram-level
     expect(dot).toContain('fontcolor="green"');
-    diagram.destroy();
   });
 
   it("should allow edge-level override of diagram fontname", async () => {
@@ -315,7 +287,6 @@ describe("Edge Behaviors - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     // Edge-level should override diagram-level
     expect(dot).toContain('fontname="Times"');
-    diagram.destroy();
   });
 
   it("should create edge with color", async () => {
@@ -325,7 +296,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ color: "blue" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('color="blue"');
-    diagram.destroy();
   });
 
   it("should create edge with style dashed", async () => {
@@ -335,7 +305,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ style: "dashed" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('style="dashed"');
-    diagram.destroy();
   });
 
   it("should create edge with style dotted", async () => {
@@ -345,7 +314,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ style: "dotted" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('style="dotted"');
-    diagram.destroy();
   });
 
   it("should create edge with style bold", async () => {
@@ -355,7 +323,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ style: "bold" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('style="bold"');
-    diagram.destroy();
   });
 
   it("should create edge with forward direction", async () => {
@@ -365,7 +332,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ forward: true }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('dir="forward"');
-    diagram.destroy();
   });
 
   it("should create edge with reverse direction", async () => {
@@ -375,7 +341,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node2.from(node1);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('dir="back"');
-    diagram.destroy();
   });
 
   it("should create bidirectional edge", async () => {
@@ -385,7 +350,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ forward: true, reverse: true }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('dir="both"');
-    diagram.destroy();
   });
 
   it("should create edge with no direction using with()", async () => {
@@ -395,7 +359,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.with(node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('dir="none"');
-    diagram.destroy();
   });
 
   it("should create edge with custom penwidth", async () => {
@@ -405,7 +368,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ penwidth: "3" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('penwidth="3"');
-    diagram.destroy();
   });
 
   it("should create edge with custom arrowhead", async () => {
@@ -415,7 +377,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ arrowhead: "vee" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('arrowhead="vee"');
-    diagram.destroy();
   });
 
   it("should create edge with custom arrowsize", async () => {
@@ -425,7 +386,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ arrowsize: "1.5" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('arrowsize="1.5"');
-    diagram.destroy();
   });
 
   it("should create edge with minlen", async () => {
@@ -435,7 +395,6 @@ describe("Edge Behaviors - DOT Output", () => {
     node1.to(Edge({ minlen: "2" }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('minlen="2"');
-    diagram.destroy();
   });
 
   it("should combine multiple edge attributes", async () => {
@@ -448,7 +407,6 @@ describe("Edge Behaviors - DOT Output", () => {
     expect(dot).toContain('style="dashed"');
     expect(dot).toContain('label="test"');
     expect(dot).toContain('penwidth="2"');
-    diagram.destroy();
   });
 });
 
@@ -462,7 +420,6 @@ describe("Connection Patterns - DOT Output", () => {
     const dot = (await diagram.render({ format: "dot" })) as string;
     const edgeMatches = (dot.match(/->/g) || []).length;
     expect(edgeMatches).toBe(2);
-    diagram.destroy();
   });
 
   it("should connect one to many nodes", async () => {
@@ -473,7 +430,6 @@ describe("Connection Patterns - DOT Output", () => {
     const dot = (await diagram.render({ format: "dot" })) as string;
     const edgeMatches = (dot.match(/->/g) || []).length;
     expect(edgeMatches).toBe(3);
-    diagram.destroy();
   });
 
   it("should connect many to one node with from()", async () => {
@@ -484,7 +440,6 @@ describe("Connection Patterns - DOT Output", () => {
     const dot = (await diagram.render({ format: "dot" })) as string;
     const edgeMatches = (dot.match(/->/g) || []).length;
     expect(edgeMatches).toBe(3);
-    diagram.destroy();
   });
 
   it("should support from() with single node", async () => {
@@ -494,7 +449,6 @@ describe("Connection Patterns - DOT Output", () => {
     node2.from(node1);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('dir="back"');
-    diagram.destroy();
   });
 
   it("should support with() with multiple nodes", async () => {
@@ -506,7 +460,6 @@ describe("Connection Patterns - DOT Output", () => {
     const edgeMatches = (dot.match(/->/g) || []).length;
     expect(edgeMatches).toBe(2);
     expect(dot).toContain('dir="none"');
-    diagram.destroy();
   });
 
   it("should support bidirectional connections", async () => {
@@ -516,7 +469,6 @@ describe("Connection Patterns - DOT Output", () => {
     node1.to(Edge({ forward: true, reverse: true }), node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('dir="both"');
-    diagram.destroy();
   });
 
   it("should support edge chaining with to(Edge)", async () => {
@@ -528,7 +480,6 @@ describe("Connection Patterns - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('color="red"');
     expect(dot).toContain('color="blue"');
-    diagram.destroy();
   });
 
   it("should support mixed connections", async () => {
@@ -545,7 +496,6 @@ describe("Connection Patterns - DOT Output", () => {
     const dot = (await diagram.render({ format: "dot" })) as string;
     const edgeMatches = (dot.match(/->/g) || []).length;
     expect(edgeMatches).toBe(4);
-    diagram.destroy();
   });
 });
 
@@ -556,7 +506,6 @@ describe("Cluster Behaviors - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('subgraph "cluster_My_Cluster"');
     expect(dot).toContain('label="My Cluster"');
-    diagram.destroy();
   });
 
   it("should create cluster with nodes", async () => {
@@ -568,7 +517,6 @@ describe("Cluster Behaviors - DOT Output", () => {
     expect(dot).toContain('subgraph "cluster_Services"');
     expect(dot).toContain('label="Service A"');
     expect(dot).toContain('label="Service B"');
-    diagram.destroy();
   });
 
   it("should support nested clusters", async () => {
@@ -579,7 +527,6 @@ describe("Cluster Behaviors - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('subgraph "cluster_Outer"');
     expect(dot).toContain('subgraph "cluster_Inner"');
-    diagram.destroy();
   });
 
   it("should set cluster style attributes", async () => {
@@ -587,7 +534,6 @@ describe("Cluster Behaviors - DOT Output", () => {
     diagram.cluster("My Cluster");
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('style="rounded"');
-    diagram.destroy();
   });
 
   it("should support connections between clusters", async () => {
@@ -601,7 +547,6 @@ describe("Cluster Behaviors - DOT Output", () => {
     expect(dot).toContain('subgraph "cluster_Frontend"');
     expect(dot).toContain('subgraph "cluster_Backend"');
     expect(dot).toMatch(/->/);
-    diagram.destroy();
   });
 
   it("should set different cluster background colors by depth", async () => {
@@ -614,7 +559,6 @@ describe("Cluster Behaviors - DOT Output", () => {
     // Should have different bgcolor values for different depths
     const bgColors = dot.match(/bgcolor="#[A-Fa-f0-9]+"/g);
     expect(bgColors?.length).toBeGreaterThanOrEqual(3);
-    diagram.destroy();
   });
 });
 
@@ -624,7 +568,6 @@ describe("Theme Behaviors - DOT Output", () => {
     diagram.cluster("Test");
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain("bgcolor=");
-    diagram.destroy();
   });
 
   it("should apply pastel theme colors", async () => {
@@ -632,7 +575,6 @@ describe("Theme Behaviors - DOT Output", () => {
     diagram.cluster("Test");
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain("bgcolor=");
-    diagram.destroy();
   });
 
   it("should apply blues theme colors", async () => {
@@ -640,7 +582,6 @@ describe("Theme Behaviors - DOT Output", () => {
     diagram.cluster("Test");
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain("bgcolor=");
-    diagram.destroy();
   });
 
   it("should apply greens theme colors", async () => {
@@ -648,7 +589,6 @@ describe("Theme Behaviors - DOT Output", () => {
     diagram.cluster("Test");
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain("bgcolor=");
-    diagram.destroy();
   });
 
   it("should apply orange theme colors", async () => {
@@ -656,7 +596,6 @@ describe("Theme Behaviors - DOT Output", () => {
     diagram.cluster("Test");
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain("bgcolor=");
-    diagram.destroy();
   });
 
   it("should set edge colors based on theme", async () => {
@@ -666,7 +605,6 @@ describe("Theme Behaviors - DOT Output", () => {
     node1.to(node2);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain("color=");
-    diagram.destroy();
   });
 });
 
@@ -675,7 +613,6 @@ describe("Autolabel Feature", () => {
     const diagram = Diagram("Test", {});
     const node = diagram.add(Node("My Server"));
     expect(node.label).toBe("My Server");
-    diagram.destroy();
   });
 
   it("should add autolabel prefix when enabled", () => {
@@ -684,7 +621,6 @@ describe("Autolabel Feature", () => {
     // autolabel adds "Node" prefix by default when ~type is not set
     expect(node.label).toContain("Node");
     expect(node.label).toContain("My Server");
-    diagram.destroy();
   });
 
   it("should use ~type for autolabel prefix when provided", () => {
@@ -692,7 +628,6 @@ describe("Autolabel Feature", () => {
     const node = Node("My Server", { "~type": "EC2" });
     diagram.add(node);
     expect(node.label).toBe("EC2\nMy Server");
-    diagram.destroy();
   });
 
   it("should handle autolabel with empty node label", () => {
@@ -700,7 +635,6 @@ describe("Autolabel Feature", () => {
     const node = Node("", { "~type": "EC2" });
     diagram.add(node);
     expect(node.label).toBe("EC2");
-    diagram.destroy();
   });
 });
 
@@ -713,7 +647,6 @@ describe("Provider Node Behaviors - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('image="data:image/png;base64,test"');
     expect(dot).toContain('shape="none"');
-    diagram.destroy();
   });
 
   it("should respect diagram nodeAttr.shape for icon nodes", async () => {
@@ -730,7 +663,6 @@ describe("Provider Node Behaviors - DOT Output", () => {
     // When diagram nodeAttr.shape is set, icon nodes should use that shape
     expect(dot).toContain('shape="box"');
     expect(dot).not.toContain('shape="none"');
-    diagram.destroy();
   });
 
   it("should respect diagram nodeAttr.shape=circle for icon nodes", async () => {
@@ -746,7 +678,6 @@ describe("Provider Node Behaviors - DOT Output", () => {
     expect(dot).toContain('image="data:image/png;base64,test"');
     expect(dot).toContain('shape="circle"');
     expect(dot).not.toContain('shape="none"');
-    diagram.destroy();
   });
 
   it("should allow node-level shape to override diagram nodeAttr for icon nodes", async () => {
@@ -763,7 +694,6 @@ describe("Provider Node Behaviors - DOT Output", () => {
     // Node-level shape should take precedence over diagram nodeAttr
     // Check that the specific node has shape="ellipse"
     expect(dot).toMatch(/label="EC2"[^\]]*shape="ellipse"[^\]]*\]/);
-    diagram.destroy();
   });
 
   it("should respect diagram nodeAttr.height for icon nodes", async () => {
@@ -777,7 +707,6 @@ describe("Provider Node Behaviors - DOT Output", () => {
     diagram.add(node);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('height="2.0"');
-    diagram.destroy();
   });
 
   it("should respect diagram nodeAttr.width for icon nodes", async () => {
@@ -791,7 +720,6 @@ describe("Provider Node Behaviors - DOT Output", () => {
     diagram.add(node);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('width="2.0"');
-    diagram.destroy();
   });
 
   it("should respect diagram nodeAttr.margin for icon nodes", async () => {
@@ -805,7 +733,6 @@ describe("Provider Node Behaviors - DOT Output", () => {
     diagram.add(node);
     const dot = await diagram.render({ format: "dot" });
     expect(dot).toContain('margin="0.2,0.2"');
-    diagram.destroy();
   });
 
   it("should allow node-level height to override diagram nodeAttr for icon nodes", async () => {
@@ -820,7 +747,6 @@ describe("Provider Node Behaviors - DOT Output", () => {
     const dot = await diagram.render({ format: "dot" });
     // Node-level should take precedence
     expect(dot).toMatch(/label="EC2"[^\]]*height="1.5"[^\]]*\]/);
-    diagram.destroy();
   });
 });
 
@@ -837,7 +763,6 @@ describe("Icon Node Attributes - DOT Output", () => {
     expect(dot).toContain('margin="0,0"');
     expect(dot).toContain('labelloc="b"');
     expect(dot).toContain('imagescale="true"');
-    diagram.destroy();
   });
 
   it("should handle mixed plain and icon nodes", async () => {
@@ -853,7 +778,6 @@ describe("Icon Node Attributes - DOT Output", () => {
     expect(dot).toContain('label="Icon"');
     expect(dot).toContain('shape="none"');
     expect(dot).toMatch(/->/);
-    diagram.destroy();
   });
 });
 
@@ -885,7 +809,6 @@ describe("Complex Integration - DOT Output", () => {
     expect(dot).toContain('subgraph "cluster_Web_Tier"');
     expect(dot).toContain('subgraph "cluster_Database_Tier"');
     expect(dot).toContain('style="dashed"');
-    diagram.destroy();
   });
 
   it("should create diagram with all edge styles", async () => {
@@ -907,7 +830,6 @@ describe("Complex Integration - DOT Output", () => {
     expect(dot).toContain('style="dashed"');
     expect(dot).toContain('style="dotted"');
     expect(dot).toContain('style="bold"');
-    diagram.destroy();
   });
 
   it("should create diagram with all curve styles", async () => {
@@ -919,7 +841,6 @@ describe("Complex Integration - DOT Output", () => {
       node1.to(node2);
       const dot = await diagram.render({ format: "dot" });
       expect(dot).toContain(`splines="${style}"`);
-      diagram.destroy();
     }
   });
 
@@ -932,7 +853,6 @@ describe("Complex Integration - DOT Output", () => {
       node1.to(node2);
       const dot = await diagram.render({ format: "dot" });
       expect(dot).toContain(`rankdir="${dir}"`);
-      diagram.destroy();
     }
   });
 });

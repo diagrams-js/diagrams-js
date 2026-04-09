@@ -37,7 +37,7 @@ Key differences:
 
 - Use function call `Diagram()` instead of context manager `with Diagram()`
 - Explicitly add nodes with `diagram.add()`
-- Call `render()` and `destroy()` explicitly
+- Call `render()` explicitly
 
 ### Creating Nodes
 
@@ -231,7 +231,6 @@ web1.to(Edge({ color: "red" }), db);
 web2.to(Edge({ color: "red" }), db);
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 ## Missing Features

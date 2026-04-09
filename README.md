@@ -8,6 +8,8 @@
 [![CI](https://github.com/hatemhosny/diagrams-js/actions/workflows/ci.yml/badge.svg)](https://github.com/hatemhosny/diagrams-js/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+<a href="https://livecodes.io/?x=id/456y7h6in9s" target="_blank"><img src="./assets/try-in-livecodes.png" alt="Try in LiveCodes" width="150"/></a>
+
 ## Features
 
 - **Diagram as Code**: Define your architecture diagrams in TypeScript
@@ -63,9 +65,6 @@ api.to([db, storage]);
 
 // Render to SVG
 const svg = await diagram.render();
-
-// Clean up
-diagram.destroy();
 ```
 
 ### Browser

@@ -30,7 +30,6 @@ webApp.to(Relationship("Calls"), api);
 api.to(Relationship("Reads/Writes"), db);
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 ## Node Reference
@@ -216,5 +215,4 @@ api.to(Relationship("Makes API calls to [XML/HTTPS]"), mainframe);
 customer.from(Relationship("Sends e-mails to"), email);
 
 const svg = await diagram.render();
-diagram.destroy();
 ```

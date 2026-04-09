@@ -17,7 +17,6 @@ describe("C4 Model", () => {
 
       expect(person).toBeDefined();
       expect(person.nodeId).toBeDefined();
-      diagram.destroy();
     });
 
     it("should create a person with description", () => {
@@ -29,7 +28,6 @@ describe("C4 Model", () => {
       expect(dot).toContain("Person");
       expect(dot).toContain('fillcolor="dodgerblue4"');
       expect(dot).toContain('style="rounded,filled"');
-      diagram.destroy();
     });
 
     it("should create an external person", () => {
@@ -40,7 +38,6 @@ describe("C4 Model", () => {
       expect(dot).toContain("External User");
       expect(dot).toContain("External Person");
       expect(dot).toContain('fillcolor="gray60"');
-      diagram.destroy();
     });
 
     it("should have correct dimensions with description", () => {
@@ -50,7 +47,6 @@ describe("C4 Model", () => {
       const dot = diagram.toString();
       expect(dot).toContain('width="2.6"');
       expect(dot).toContain('height="1.6"');
-      diagram.destroy();
     });
 
     it("should have smaller dimensions without description", () => {
@@ -60,7 +56,6 @@ describe("C4 Model", () => {
       const dot = diagram.toString();
       expect(dot).toContain('width="2"');
       expect(dot).toContain('height="1"');
-      diagram.destroy();
     });
   });
 
@@ -71,7 +66,6 @@ describe("C4 Model", () => {
 
       expect(container).toBeDefined();
       expect(container.nodeId).toBeDefined();
-      diagram.destroy();
     });
 
     it("should create a container with technology", () => {
@@ -82,7 +76,6 @@ describe("C4 Model", () => {
       expect(dot).toContain("API");
       expect(dot).toContain("Container: Node.js");
       expect(dot).toContain('fillcolor="dodgerblue3"');
-      diagram.destroy();
     });
 
     it("should create a container with technology and description", () => {
@@ -93,7 +86,6 @@ describe("C4 Model", () => {
       expect(dot).toContain("Web App");
       expect(dot).toContain("Container: React");
       expect(dot).toContain("Frontend application");
-      diagram.destroy();
     });
   });
 
@@ -106,7 +98,6 @@ describe("C4 Model", () => {
       expect(dot).toContain("PostgreSQL");
       expect(dot).toContain('shape="cylinder"');
       expect(dot).toContain('labelloc="b"');
-      diagram.destroy();
     });
 
     it("should create a database with technology and description", () => {
@@ -117,7 +108,6 @@ describe("C4 Model", () => {
       expect(dot).toContain("Main DB");
       expect(dot).toContain("Database: PostgreSQL");
       expect(dot).toContain("Primary data store");
-      diagram.destroy();
     });
   });
 
@@ -128,7 +118,6 @@ describe("C4 Model", () => {
 
       expect(system).toBeDefined();
       expect(system.nodeId).toBeDefined();
-      diagram.destroy();
     });
 
     it("should create a system with description", () => {
@@ -140,7 +129,6 @@ describe("C4 Model", () => {
       expect(dot).toContain("System");
       expect(dot).toContain("Handles payments");
       expect(dot).toContain('fillcolor="dodgerblue4"');
-      diagram.destroy();
     });
 
     it("should create an external system", () => {
@@ -151,7 +139,6 @@ describe("C4 Model", () => {
       expect(dot).toContain("Payment Gateway");
       expect(dot).toContain("External System");
       expect(dot).toContain('fillcolor="gray60"');
-      diagram.destroy();
     });
   });
 
@@ -166,7 +153,6 @@ describe("C4 Model", () => {
       const dot = diagram.toString();
       expect(dot).toContain('style="dashed"');
       expect(dot).toContain('color="gray60"');
-      diagram.destroy();
     });
 
     it("should create a relationship with label", () => {
@@ -180,7 +166,6 @@ describe("C4 Model", () => {
       expect(dot).toContain('style="dashed"');
       expect(dot).toContain('color="gray60"');
       expect(dot).toContain("Uses");
-      diagram.destroy();
     });
   });
 
@@ -192,7 +177,6 @@ describe("C4 Model", () => {
       expect(boundary).toBeDefined();
       expect(boundary.label).toBe("My System");
       expect(boundary.name).toBe("cluster_My_System");
-      diagram.destroy();
     });
 
     it("should have correct styling", () => {
@@ -204,7 +188,6 @@ describe("C4 Model", () => {
       expect(dot).toContain('bgcolor="white"');
       expect(dot).toContain('margin="16"');
       expect(dot).toContain('labeljust="l"');
-      diagram.destroy();
     });
 
     it("should contain nodes", () => {
@@ -214,7 +197,6 @@ describe("C4 Model", () => {
 
       expect(container).toBeDefined();
       expect(boundary.getNodes().size).toBe(1);
-      diagram.destroy();
     });
   });
 
@@ -248,8 +230,6 @@ describe("C4 Model", () => {
 
       // Verify relationships
       expect(dot).toContain('style="dashed"');
-
-      diagram.destroy();
     });
 
     it("should render C4 diagram to SVG", async () => {
@@ -265,8 +245,6 @@ describe("C4 Model", () => {
       expect(result).toContain('<?xml version="1.0"');
       expect(result).toContain("<svg");
       expect(result).toContain("</svg>");
-
-      diagram.destroy();
     });
   });
 
@@ -277,7 +255,6 @@ describe("C4 Model", () => {
 
       const dot = diagram.toString();
       expect(dot).toContain("App");
-      diagram.destroy();
     });
 
     it("should handle HTML special characters in descriptions", () => {
@@ -289,7 +266,6 @@ describe("C4 Model", () => {
       expect(dot).toContain("&lt;special&gt;");
       expect(dot).toContain("&amp;");
       expect(dot).toContain("&quot;chars&quot;");
-      diagram.destroy();
     });
   });
 });

@@ -181,8 +181,7 @@ const db = diagram.add(RDS("Database"));
 
 lb.to(web).to(db);
 
-const svg = await diagram.render();
-diagram.destroy();`}</CodeBlock>
+const svg = await diagram.render();`}</CodeBlock>
           </div>
         </div>
       </div>

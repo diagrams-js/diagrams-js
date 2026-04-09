@@ -197,7 +197,6 @@ function generateProviderDocs(provider) {
   }
 
   content += "\nconst svg = await diagram.render();\n";
-  content += "diagram.destroy();\n";
   content += "```\n\n";
 
   // Note section

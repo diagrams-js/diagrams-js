@@ -32,7 +32,6 @@ web.to(app).to(db);
 const svg = await diagram.render();
 
 // Clean up
-diagram.destroy();
 ```
 
 <img src="/examples/quickstart-basic.svg" alt="Basic Diagram" className="example-img" />
@@ -65,7 +64,6 @@ api.to([db, storage]);
 const svg = await diagram.render();
 
 // Clean up
-diagram.destroy();
 ```
 
 <img src="/examples/quickstart-cloud.svg" alt="AWS Architecture Example" className="example-img" />
@@ -86,8 +84,6 @@ Display the diagram directly in the browser:
 
   const svg = await diagram.render();
   document.getElementById("diagram").innerHTML = svg;
-
-  diagram.destroy();
 </script>
 ```
 
@@ -105,8 +101,6 @@ diagram.add(EC2("Server"));
 
 const svg = await diagram.render();
 writeFileSync("diagram.svg", svg);
-
-diagram.destroy();
 ```
 
 ## Key Concepts

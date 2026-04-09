@@ -59,7 +59,6 @@ async function generateExample1() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "example1-grouped-workers.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 
@@ -91,7 +90,6 @@ async function generateExample2() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "example2-clustered-web-services.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 
@@ -130,7 +128,6 @@ async function generateExample3() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "example3-event-processing.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 
@@ -172,7 +169,6 @@ async function generateExample4() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "example4-message-collecting.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 
@@ -195,7 +191,6 @@ async function generateExample5() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "example5-k8s-exposed-pod.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 
@@ -228,7 +223,6 @@ async function generateExample6() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "example6-k8s-stateful.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 
@@ -273,7 +267,6 @@ async function generateExample7() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "example7-onprem-advanced.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 
@@ -321,7 +314,6 @@ async function generateExample8() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "example8-onprem-advanced-colors.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 
@@ -349,7 +341,6 @@ async function generateExample9() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "example9-custom-nodes.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 
@@ -370,7 +361,6 @@ async function generateQuickstartBasic() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "quickstart-basic.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 
@@ -391,7 +381,6 @@ async function generateQuickstartCloud() {
 
   const svg = await diagram.render();
   fs.writeFileSync(path.join(OUTPUT_DIR, "quickstart-cloud.svg"), svg);
-  diagram.destroy();
   console.log("  ✓ Generated");
 }
 

@@ -13,7 +13,6 @@ describe("Node shape default behavior", () => {
     // Individual nodes should not have shape attribute (they inherit from global)
     expect(dot).not.toMatch(/label="Plain Node 1"[^\]]*shape=/);
     expect(dot).not.toMatch(/label="Plain Node 2"[^\]]*shape=/);
-    diagram.destroy();
   });
 
   it("should have shape=none and icon attributes for icon nodes at per-node level", async () => {
@@ -32,7 +31,6 @@ describe("Node shape default behavior", () => {
     expect(dot).toMatch(/label="Icon Node"[^\]]*labelloc="b"[^\]]*\]/);
     expect(dot).toMatch(/label="Icon Node"[^\]]*imagescale="true"[^\]]*\]/);
     expect(dot).toMatch(/label="Icon Node"[^\]]*fixedsize="true"[^\]]*\]/);
-    diagram.destroy();
   });
 
   it("should allow explicit shape override for icon nodes", async () => {
@@ -47,7 +45,6 @@ describe("Node shape default behavior", () => {
     expect(dot).toMatch(/label="Icon Node"[^\]]*shape="circle"[^\]]*\]/);
     // Should NOT have shape="none" at node level
     expect(dot).not.toMatch(/label="Icon Node"[^\]]*shape="none"[^\]]*\]/);
-    diagram.destroy();
   });
 
   it("should have explicit shape at per-node level for plain nodes with custom shape", async () => {
@@ -57,7 +54,6 @@ describe("Node shape default behavior", () => {
     const dot = await diagram.render({ format: "dot" });
     // Node explicitly sets shape="diamond" to override global "box"
     expect(dot).toMatch(/label="Plain Node"[^\]]*shape="diamond"[^\]]*\]/);
-    diagram.destroy();
   });
 
   it("should override global shape=box with shape=none for icon nodes in mixed diagram", async () => {
@@ -77,7 +73,6 @@ describe("Node shape default behavior", () => {
     expect(dot).not.toMatch(/label="Plain Node"[^\]]*shape=/);
     // Icon node explicitly sets shape="none" to override global
     expect(dot).toMatch(/label="Icon Node"[^\]]*shape="none"[^\]]*\]/);
-    diagram.destroy();
   });
 
   it("should have shape=none and icon attributes for Custom nodes with data URL icons", async () => {
@@ -93,7 +88,6 @@ describe("Node shape default behavior", () => {
     expect(dot).toMatch(/label="Custom Service"[^\]]*labelloc="b"[^\]]*\]/);
     expect(dot).toMatch(/label="Custom Service"[^\]]*imagescale="true"[^\]]*\]/);
     expect(dot).toMatch(/label="Custom Service"[^\]]*fixedsize="true"[^\]]*\]/);
-    diagram.destroy();
   });
 
   it("should allow explicit shape override for Custom nodes", async () => {
@@ -109,6 +103,5 @@ describe("Node shape default behavior", () => {
     const dot = await diagram.render({ format: "dot" });
     // Custom node uses the overridden shape
     expect(dot).toMatch(/label="Custom Service"[^\]]*shape="ellipse"[^\]]*\]/);
-    diagram.destroy();
   });
 });

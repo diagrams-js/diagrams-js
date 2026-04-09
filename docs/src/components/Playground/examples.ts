@@ -406,8 +406,6 @@ const svg = await diagram.render();
 document.getElementById("diagram").innerHTML = svg;
 
 //await diagram.save("${ex.config.title.toLowerCase().replaceAll(" ", "-")}.svg");
-
-diagram.destroy();
 `;
   return ex;
 });

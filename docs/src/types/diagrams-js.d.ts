@@ -6,7 +6,6 @@ declare module "diagrams-js" {
     add(node: any): any;
     cluster(label: string): any;
     render(): Promise<string>;
-    destroy(): void;
   }
 
   export function Diagram(name: string, options?: any): Diagram;

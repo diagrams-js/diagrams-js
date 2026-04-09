@@ -212,7 +212,6 @@ describe("Feature Name", () => {
   it("should do something", async () => {
     const diagram = new Diagram("Test");
     // ... test code
-    diagram.destroy(); // Clean up
   });
 });
 ```
@@ -221,7 +220,6 @@ describe("Feature Name", () => {
 
 - [ ] Tests cover happy path
 - [ ] Tests cover edge cases
-- [ ] Tests clean up resources (call `diagram.destroy()`)
 - [ ] All tests pass: `vp test`
 - [ ] No lint errors: `vp check`
 
@@ -296,7 +294,6 @@ ALl must pass before committing.
 ### Memory Issues
 
 - Diagrams with many nodes may use significant memory
-- Call `diagram.destroy()` when done to free resources
 - For large diagrams, consider pagination or splitting
 
 ## Important Notes

@@ -102,14 +102,6 @@ await diagram.save("diagram.svg");
 await diagram.save("diagram.png");
 ```
 
-#### diagram.destroy()
-
-Clean up resources.
-
-```typescript
-diagram.destroy();
-```
-
 ### Node(label, options?)
 
 Creates a generic node. Usually you use provider-specific node functions instead.
@@ -299,5 +291,4 @@ img.src = dataUrl;
 document.body.appendChild(img);
 
 await diagram.save("architecture.svg");
-diagram.destroy();
 ```

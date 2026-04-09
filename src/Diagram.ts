@@ -211,11 +211,6 @@ export interface Diagram {
    * @returns DOT format string
    */
   toString(): string;
-
-  /**
-   * Cleanup resources and destroy the diagram
-   */
-  destroy(): void;
 }
 
 /**
@@ -1183,14 +1178,6 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
         clusterDot += `${spaces}}\n`;
         return clusterDot;
       }
-    },
-
-    /**
-     * Cleanup resources
-     */
-    destroy(): void {
-      // Clear the context - for now just a no-op since we're using a stack-based approach
-      _viz = null;
     },
   };
 

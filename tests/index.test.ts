@@ -7,13 +7,11 @@ describe("Diagram", () => {
     expect(diagram.name).toBe("Test Diagram");
     expect(diagram.filename).toBe("test_diagram");
     expect(diagram.direction).toBe("LR");
-    diagram.destroy();
   });
 
   it("should support different directions", () => {
     const diagram = Diagram("Test", { direction: "TB" });
     expect(diagram.direction).toBe("TB");
-    diagram.destroy();
   });
 
   it("should generate DOT source", () => {
@@ -21,7 +19,6 @@ describe("Diagram", () => {
     const dot = diagram.toString();
     expect(dot).toContain('digraph "Test"');
     expect(dot).toContain('rankdir="LR"');
-    diagram.destroy();
   });
 });
 
@@ -37,14 +34,12 @@ describe("Node", () => {
     const node = diagram.add(Node("My Node"));
     expect(node.label).toBe("My Node");
     expect(node.nodeId).toBeDefined();
-    diagram.destroy();
   });
 
   it("should support autolabel", () => {
     const diagram = Diagram("Test", { autolabel: true });
     const node = diagram.add(Node("test"));
     expect(node.label).toContain("Node");
-    diagram.destroy();
   });
 });
 
@@ -86,7 +81,6 @@ describe("Node connections", () => {
 
     const dot = diagram.toString();
     expect(dot).toContain('"' + node1.nodeId + '" -> "' + node2.nodeId + '"');
-    diagram.destroy();
   });
 
   it("should connect nodes with from()", () => {
@@ -101,7 +95,6 @@ describe("Node connections", () => {
     // This places node2 to the left of node1 in the layout
     expect(dot).toContain('"' + node2.nodeId + '" -> "' + node1.nodeId + '"');
     expect(dot).toContain('dir="back"');
-    diagram.destroy();
   });
 
   it("should support bidirectional connections with with()", () => {
@@ -113,7 +106,6 @@ describe("Node connections", () => {
 
     const dot = diagram.toString();
     expect(dot).toContain('"' + node1.nodeId + '" -> "' + node2.nodeId + '"');
-    diagram.destroy();
   });
 
   it("should connect to multiple nodes", () => {
@@ -127,7 +119,6 @@ describe("Node connections", () => {
     const dot = diagram.toString();
     expect(dot).toContain('"' + node1.nodeId + '" -> "' + node2.nodeId + '"');
     expect(dot).toContain('"' + node1.nodeId + '" -> "' + node3.nodeId + '"');
-    diagram.destroy();
   });
 
   it("should support edge customization", () => {
@@ -140,7 +131,6 @@ describe("Node connections", () => {
     const dot = diagram.toString();
     expect(dot).toContain('color="red"');
     expect(dot).toContain('style="dashed"');
-    diagram.destroy();
   });
 
   it("should support edge customization with forEach", () => {
@@ -164,7 +154,6 @@ describe("Node connections", () => {
     // Should have 3 edges
     const edgeMatches = dot.match(/->/g);
     expect(edgeMatches?.length).toBe(3);
-    diagram.destroy();
   });
 
   it("should support edge customization with with()", () => {
@@ -177,7 +166,6 @@ describe("Node connections", () => {
     const dot = diagram.toString();
     expect(dot).toContain('color="purple"');
     expect(dot).toContain('style="dashed"');
-    diagram.destroy();
   });
 
   it("should support edge customization with from(Edge, Node)", () => {
@@ -191,7 +179,6 @@ describe("Node connections", () => {
     expect(dot).toContain('color="orange"');
     expect(dot).toContain('label="test"');
     expect(dot).toContain('dir="back"');
-    diagram.destroy();
   });
 
   it("should support to(Edge) chaining", () => {
@@ -206,7 +193,6 @@ describe("Node connections", () => {
     const dot = diagram.toString();
     expect(dot).toContain('color="purple"');
     expect(dot).toContain('dir="both"');
-    diagram.destroy();
   });
 });
 
@@ -216,7 +202,6 @@ describe("Cluster", () => {
     const cluster = diagram.cluster("My Cluster");
     expect(cluster.label).toBe("My Cluster");
     expect(cluster.name).toBe("cluster_My_Cluster");
-    diagram.destroy();
   });
 
   it("should nest clusters", () => {
@@ -224,7 +209,6 @@ describe("Cluster", () => {
     const cluster1 = diagram.cluster("Outer");
     const cluster2 = cluster1.cluster("Inner");
     expect(cluster2.depth).toBe(1);
-    diagram.destroy();
   });
 
   it("should add nodes to clusters explicitly", () => {
@@ -232,7 +216,6 @@ describe("Cluster", () => {
     const cluster = diagram.cluster("My Cluster");
     const node = cluster.add(Node("Test Node"));
     expect(node.label).toBe("Test Node");
-    diagram.destroy();
   });
 });
 
@@ -250,7 +233,6 @@ describe("Image Rendering", () => {
     expect(result).toContain('<?xml version="1.0"');
     expect(result).toContain("<svg");
     expect(result).toContain("</svg>");
-    diagram.destroy();
   });
 
   it("should render to SVG with explicit format option", async () => {
@@ -266,7 +248,6 @@ describe("Image Rendering", () => {
     expect(result).toContain('<?xml version="1.0"');
     expect(result).toContain("<svg");
     expect(result).toContain("</svg>");
-    diagram.destroy();
   });
 
   it("should render to PNG in Node.js", async () => {
@@ -286,7 +267,6 @@ describe("Image Rendering", () => {
     for (let i = 0; i < pngMagic.length; i++) {
       expect(result[i]).toBe(pngMagic[i]);
     }
-    diagram.destroy();
   });
 
   it("should support icon data tracking", async () => {
@@ -308,7 +288,6 @@ describe("Image Rendering", () => {
     // Check that icon image was injected
     expect(result).toContain("<image");
     expect(result).toContain('href="data:image/png;base64,');
-    diagram.destroy();
   });
 
   it("should render PNG with icons", async () => {
@@ -332,7 +311,6 @@ describe("Image Rendering", () => {
     expect(result[1]).toBe(0x50);
     expect(result[2]).toBe(0x4e);
     expect(result[3]).toBe(0x47);
-    diagram.destroy();
   });
 
   it("should allow rendering same diagram to multiple formats", async () => {
@@ -356,8 +334,6 @@ describe("Image Rendering", () => {
     // Verify PNG magic bytes
     expect(png[0]).toBe(0x89);
     expect(png[1]).toBe(0x50);
-
-    diagram.destroy();
   });
 
   it("should render to JPG in Node.js", async () => {
@@ -375,7 +351,6 @@ describe("Image Rendering", () => {
     // Check JPG magic bytes (JPEG starts with 0xFF 0xD8)
     expect(result[0]).toBe(0xff);
     expect(result[1]).toBe(0xd8);
-    diagram.destroy();
   });
 
   it("should render JPG with icons", async () => {
@@ -397,7 +372,6 @@ describe("Image Rendering", () => {
     // Verify JPG magic bytes (JPEG starts with 0xFF 0xD8)
     expect(result[0]).toBe(0xff);
     expect(result[1]).toBe(0xd8);
-    diagram.destroy();
   });
 
   it("should render to DOT format", async () => {
@@ -416,7 +390,6 @@ describe("Image Rendering", () => {
     expect(result).toContain('label="Node A"');
     expect(result).toContain('label="Node B"');
     expect(result).toContain("->");
-    diagram.destroy();
   });
 
   it("should include image attribute in DOT format for icons", async () => {
@@ -437,7 +410,6 @@ describe("Image Rendering", () => {
     // Check that DOT includes image attribute
     expect(result).toContain("image=");
     expect(result).toContain("data:image/png;base64,");
-    diagram.destroy();
   });
 
   it("should not have duplicate attributes in DOT format", async () => {
@@ -464,8 +436,6 @@ describe("Image Rendering", () => {
     // Count occurrences of height="0.9" - should appear only once
     const heightMatches = (resultStr.match(/height="0\.9"/g) || []).length;
     expect(heightMatches).toBe(1);
-
-    diagram.destroy();
   });
 
   it("should render SVG as data URL", async () => {
@@ -479,7 +449,6 @@ describe("Image Rendering", () => {
 
     // Check that it's a data URL
     expect(result).toMatch(/^data:image\/svg\+xml;base64,/);
-    diagram.destroy();
   });
 
   it("should render PNG as data URL", async () => {
@@ -493,7 +462,6 @@ describe("Image Rendering", () => {
 
     // Check that it's a data URL
     expect(result).toMatch(/^data:image\/png;base64,/);
-    diagram.destroy();
   });
 
   it("should render JPG as data URL", async () => {
@@ -507,7 +475,6 @@ describe("Image Rendering", () => {
 
     // Check that it's a data URL
     expect(result).toMatch(/^data:image\/jpeg;base64,/);
-    diagram.destroy();
   });
 
   it("should render DOT as data URL", async () => {
@@ -521,7 +488,6 @@ describe("Image Rendering", () => {
 
     // Check that it's a data URL
     expect(result).toMatch(/^data:text\/plain;base64,/);
-    diagram.destroy();
   });
 });
 
@@ -541,8 +507,6 @@ describe("Custom Nodes", () => {
     expect(typeof result).toBe("string");
     expect(result).toContain("<image");
     expect(result).toContain('href="data:image/png;base64,');
-
-    diagram.destroy();
   });
 
   it("should deduplicate icons using <use> tags for multiple Custom nodes", async () => {
@@ -580,8 +544,6 @@ describe("Custom Nodes", () => {
     // Should have three <use> references
     const useMatches = resultStr.match(/<use href="/g);
     expect(useMatches?.length).toBe(3);
-
-    diagram.destroy();
   });
 
   it("should handle different icons for different Custom nodes", async () => {
@@ -616,7 +578,5 @@ describe("Custom Nodes", () => {
       const id2 = idMatches[1].replace('<g id="', "").replace('"', "");
       expect(id1).not.toBe(id2);
     }
-
-    diagram.destroy();
   });
 });

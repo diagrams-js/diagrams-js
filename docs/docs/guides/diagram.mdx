@@ -161,14 +161,6 @@ await diagram.save("diagram.png", {
 });
 ```
 
-### destroy()
-
-Clean up resources when done:
-
-```typescript
-diagram.destroy();
-```
-
 ## Complete Example
 
 ```typescript
@@ -195,7 +187,6 @@ api.to(storage);
 
 const svg = await diagram.render();
 await diagram.save("web-architecture.svg");
-diagram.destroy();
 ```
 
 ## Browser Integration

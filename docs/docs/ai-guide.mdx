@@ -86,16 +86,11 @@ nodeA.to(Edge({ color: "red", style: "dashed" }), nodeB);
 
 ### 4. Rendering Output
 
-Always render and cleanup:
-
 ```typescript
 // Generate SVG
 const svg = await diagram.render();
 
 // Use the SVG (save to file, display, etc.)
-
-// Clean up resources
-diagram.destroy();
 ```
 
 ## Common Patterns
@@ -120,7 +115,6 @@ lb.to(web);
 web.to([db, storage]);
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 ### Microservices Pattern
@@ -145,7 +139,6 @@ const paymentSvc = servicesCluster.add(ECS("Payment Service"));
 auth.to([userSvc, orderSvc, paymentSvc]);
 
 const svg = await diagram.render();
-diagram.destroy();
 ```
 
 ## Provider Organization
