@@ -43,7 +43,7 @@ export interface Cluster {
    * @param attrs - Graphviz attributes for the node
    * @internal
    */
-  node(nodeId: string, label: string, attrs: Record<string, unknown>): void;
+  ["~node"](nodeId: string, label: string, attrs: Record<string, unknown>): void;
 
   /**
    * Add a node to this cluster
@@ -163,7 +163,7 @@ export function Cluster(
     /**
      * Add a node to this cluster (internal method)
      */
-    node(nodeId: string, label: string, attrs: Record<string, unknown>): void {
+    ["~node"](nodeId: string, label: string, attrs: Record<string, unknown>): void {
       _nodes.set(nodeId, { label, attrs });
     },
 

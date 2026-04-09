@@ -300,7 +300,7 @@ describe("Image Rendering", () => {
     // Manually track node with icon data (simulating provider class behavior)
     const testIconData =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
-    diagram.trackNodeWithIcon(server, testIconData);
+    diagram["~trackNodeWithIcon"](server, testIconData);
 
     const result = await diagram.render();
     expect(typeof result).toBe("string");
@@ -321,7 +321,7 @@ describe("Image Rendering", () => {
     // Manually track node with icon data
     const testIconData =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
-    diagram.trackNodeWithIcon(server, testIconData);
+    diagram["~trackNodeWithIcon"](server, testIconData);
 
     const result = await diagram.render({ format: "png" });
     expect(result instanceof Uint8Array).toBe(true);
@@ -388,7 +388,7 @@ describe("Image Rendering", () => {
     // Manually track node with icon data
     const testIconData =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
-    diagram.trackNodeWithIcon(server, testIconData);
+    diagram["~trackNodeWithIcon"](server, testIconData);
 
     const result = await diagram.render({ format: "jpg" });
     expect(result instanceof Uint8Array).toBe(true);
@@ -429,7 +429,7 @@ describe("Image Rendering", () => {
     // Manually track node with icon data
     const testIconData =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
-    diagram.trackNodeWithIcon(server, testIconData);
+    diagram["~trackNodeWithIcon"](server, testIconData);
 
     const result = await diagram.render({ format: "dot" });
     expect(typeof result).toBe("string");
@@ -534,7 +534,7 @@ describe("Custom Nodes", () => {
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
     const custom = diagram.add(Custom("My Service", testIconData));
-    expect(custom.getIconUrl()).toBe(testIconData);
+    expect(custom["~getIconUrl"]()).toBe(testIconData);
 
     // Render and check that icon is injected
     const result = await diagram.render();

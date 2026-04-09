@@ -130,7 +130,7 @@ export interface Node {
    * @returns The target node
    * @internal
    */
-  connect(target: Node, edge: Edge): Node;
+  ["~connect"](target: Node, edge: Edge): Node;
 }
 
 // Type guard for Edge
@@ -336,14 +336,14 @@ export function Node(label = "", options: NodeOptions = {}): Node {
         }
 
         // Track this node for icon injection
-        _diagram.trackNodeWithIcon(node, currentIconDataUrl);
+        _diagram["~trackNodeWithIcon"](node, currentIconDataUrl);
       }
 
       // Register the node with the parent (diagram or cluster)
       if (isCluster(parent)) {
-        parent.node(_id, label, _attrs);
+        parent["~node"](_id, label, _attrs);
       } else {
-        parent.node(_id, label, _attrs);
+        parent["~node"](_id, label, _attrs);
       }
 
       // Handle Custom nodes with external icons
@@ -351,7 +351,7 @@ export function Node(label = "", options: NodeOptions = {}): Node {
       if (_isCustomNode(this) && _diagram) {
         // Track the pending icon load so render can wait for it
         const iconLoadPromise = _handleCustomNodeIcon(this, _diagram);
-        _diagram.trackPendingIconLoad(iconLoadPromise);
+        _diagram["~trackPendingIconLoad"](iconLoadPromise);
       }
     },
 
@@ -381,11 +381,11 @@ export function Node(label = "", options: NodeOptions = {}): Node {
               node: node,
               forward: true,
             });
-            node.connect(t, edgeCopy);
+            node["~connect"](t, edgeCopy);
           }
           return target;
         }
-        return node.connect(target, targetOrEdge);
+        return node["~connect"](target, targetOrEdge);
       }
 
       const target = targetOrEdge;
@@ -394,12 +394,12 @@ export function Node(label = "", options: NodeOptions = {}): Node {
         for (const t of target) {
           // Create a new edge for each target to avoid shared state
           const edge = Edge({ node: node, forward: true });
-          node.connect(t, edge);
+          node["~connect"](t, edge);
         }
         return target;
       }
       const edge = Edge({ node: node, forward: true });
-      return node.connect(target, edge);
+      return node["~connect"](target, edge);
     },
 
     /**
@@ -425,11 +425,11 @@ export function Node(label = "", options: NodeOptions = {}): Node {
               node: node,
               reverse: true,
             });
-            node.connect(s, edgeCopy);
+            node["~connect"](s, edgeCopy);
           }
           return node;
         }
-        return node.connect(source, sourceOrEdge);
+        return node["~connect"](source, sourceOrEdge);
       }
 
       const source = sourceOrEdge;
@@ -442,13 +442,13 @@ export function Node(label = "", options: NodeOptions = {}): Node {
           // Create a new edge for each source to avoid shared state
           // Edge goes from this (target) to source with reverse=true (dir=back)
           const edge = Edge({ node: s, reverse: true });
-          node.connect(s, edge);
+          node["~connect"](s, edge);
         }
         return node;
       }
       // Edge goes from this (target) to source with reverse=true (dir=back)
       const edge = Edge({ node: source, reverse: true });
-      return node.connect(source, edge);
+      return node["~connect"](source, edge);
     },
 
     /**
@@ -470,11 +470,11 @@ export function Node(label = "", options: NodeOptions = {}): Node {
               ...targetOrEdge.attrs,
               node: node,
             });
-            node.connect(t, edgeCopy);
+            node["~connect"](t, edgeCopy);
           }
           return target;
         }
-        return node.connect(target, targetOrEdge);
+        return node["~connect"](target, targetOrEdge);
       }
 
       const target = targetOrEdge;
@@ -484,17 +484,17 @@ export function Node(label = "", options: NodeOptions = {}): Node {
 
       if (Array.isArray(target)) {
         for (const t of target) {
-          node.connect(t, edge);
+          node["~connect"](t, edge);
         }
         return target;
       }
-      return node.connect(target, edge);
+      return node["~connect"](target, edge);
     },
 
     /**
      * Internal connect method
      */
-    connect(target: Node, edge: Edge): Node {
+    ["~connect"](target: Node, edge: Edge): Node {
       if (!target || typeof target !== "object" || !("nodeId" in target)) {
         throw new Error(`${String(target)} is not a valid Node`);
       }
@@ -504,7 +504,7 @@ export function Node(label = "", options: NodeOptions = {}): Node {
       if (!_diagram) {
         throw new Error("Node is not registered with a diagram");
       }
-      _diagram.connect(node, target, edge);
+      _diagram["~connect"](node, target, edge);
       return target;
     },
   };
@@ -528,7 +528,8 @@ function isCluster(parent: unknown): parent is Cluster {
  */
 function _isCustomNode(node: Node): boolean {
   return (
-    "getIconUrl" in node && typeof (node as { getIconUrl: () => string }).getIconUrl === "function"
+    "~getIconUrl" in node &&
+    typeof (node as { ["~getIconUrl"]: () => string })["~getIconUrl"] === "function"
   );
 }
 
@@ -538,14 +539,14 @@ function _isCustomNode(node: Node): boolean {
  */
 async function _handleCustomNodeIcon(node: Node, diagram: Diagram): Promise<void> {
   const customNode = node as unknown as {
-    getIconUrl: () => string;
+    ["~getIconUrl"]: () => string;
     loadIcon: () => Promise<string | null>;
   };
-  const iconUrl = customNode.getIconUrl();
+  const iconUrl = customNode["~getIconUrl"]();
 
   // If it's already a data URL, track it directly
   if (iconUrl.startsWith("data:")) {
-    diagram.trackNodeWithIcon(node, iconUrl);
+    diagram["~trackNodeWithIcon"](node, iconUrl);
     return;
   }
 
@@ -553,7 +554,7 @@ async function _handleCustomNodeIcon(node: Node, diagram: Diagram): Promise<void
   try {
     const dataUrl = await customNode.loadIcon();
     if (dataUrl) {
-      diagram.trackNodeWithIcon(node, dataUrl);
+      diagram["~trackNodeWithIcon"](node, dataUrl);
     }
   } catch (error) {
     console.warn(`Failed to load custom icon for node ${node.nodeId}:`, error);

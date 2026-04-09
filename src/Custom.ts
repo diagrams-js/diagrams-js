@@ -26,7 +26,7 @@ export interface Custom extends Node {
    * @returns The icon URL or file path
    * @internal
    */
-  getIconUrl(): string;
+  ["~getIconUrl"](): string;
 
   /**
    * Load the icon and return as data URL
@@ -114,7 +114,7 @@ export function Custom(
      * Get the icon URL/path for this node
      * @internal
      */
-    getIconUrl(): string {
+    ["~getIconUrl"](): string {
       return iconUrl;
     },
 

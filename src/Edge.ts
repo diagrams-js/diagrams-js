@@ -128,7 +128,7 @@ export function Edge(options: EdgeOptions = {}): Edge {
       }
       // Edge >> Node: connect
       if (node) {
-        node.connect(target, edge);
+        node["~connect"](target, edge);
         return target;
       }
       node = target;
@@ -145,7 +145,7 @@ export function Edge(options: EdgeOptions = {}): Edge {
         return edge;
       }
       if (node) {
-        target.connect(node, edge);
+        target["~connect"](node, edge);
         return target;
       }
       node = target;

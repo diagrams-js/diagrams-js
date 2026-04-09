@@ -106,28 +106,28 @@ export interface Diagram {
    * @param iconPath - Optional path to the icon file
    * @internal
    */
-  registerIcon(node: Node, iconKey: string, iconPath?: string): void;
+  ["~registerIcon"](node: Node, iconKey: string, iconPath?: string): void;
 
   /**
    * Load icon data for injection
    * @param iconData - Map of icon keys to data URIs
    * @internal
    */
-  setIconData(iconData: IconData): void;
+  ["~setIconData"](iconData: IconData): void;
 
   /**
    * Get the node icon map
    * @returns Array of node-to-icon mappings
    * @internal
    */
-  getNodeIconMap(): NodeIconMap[];
+  ["~getNodeIconMap"](): NodeIconMap[];
 
   /**
    * Get the icon data
    * @returns Map of icon keys to data URIs
    * @internal
    */
-  getIconData(): IconData;
+  ["~getIconData"](): IconData;
 
   /**
    * Track a node that has an icon (for automatic icon injection)
@@ -135,14 +135,14 @@ export interface Diagram {
    * @param iconDataUrl - The data URL of the icon
    * @internal
    */
-  trackNodeWithIcon(node: Node, iconDataUrl: string): void;
+  ["~trackNodeWithIcon"](node: Node, iconDataUrl: string): void;
 
   /**
    * Track a pending icon load promise
    * @param promise - Promise that resolves when icon is loaded
    * @internal
    */
-  trackPendingIconLoad(promise: Promise<void>): void;
+  ["~trackPendingIconLoad"](promise: Promise<void>): void;
 
   /**
    * Add a node to this diagram
@@ -158,7 +158,7 @@ export interface Diagram {
    * @param attrs - Graphviz attributes for the node
    * @internal
    */
-  node(nodeId: string, label: string, attrs: Record<string, unknown>): void;
+  ["~node"](nodeId: string, label: string, attrs: Record<string, unknown>): void;
 
   /**
    * Connect two nodes with an edge
@@ -167,14 +167,14 @@ export interface Diagram {
    * @param edge - Edge configuration
    * @internal
    */
-  connect(from: Node, to: Node, edge: Edge): void;
+  ["~connect"](from: Node, to: Node, edge: Edge): void;
 
   /**
    * Add a subgraph (cluster) to the diagram
    * @param cluster - The cluster to add
    * @internal
    */
-  subgraph(cluster: Cluster): void;
+  ["~subgraph"](cluster: Cluster): void;
 
   /**
    * Create a new cluster within the diagram
@@ -327,7 +327,7 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
      * @param iconKey - Key to identify the icon in iconData
      * @param iconPath - Optional path to the icon file
      */
-    registerIcon(node: Node, iconKey: string, iconPath?: string): void {
+    ["~registerIcon"](node: Node, iconKey: string, iconPath?: string): void {
       _nodeIconMap.push({ node, icon: iconKey, iconPath });
     },
 
@@ -335,21 +335,21 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
      * Load icon data for injection
      * @param iconData - Map of icon keys to data URIs
      */
-    setIconData(iconData: IconData): void {
+    ["~setIconData"](iconData: IconData): void {
       _iconData = iconData;
     },
 
     /**
      * Get the node icon map
      */
-    getNodeIconMap(): NodeIconMap[] {
+    ["~getNodeIconMap"](): NodeIconMap[] {
       return [..._nodeIconMap];
     },
 
     /**
      * Get the icon data
      */
-    getIconData(): IconData {
+    ["~getIconData"](): IconData {
       return { ..._iconData };
     },
 
@@ -357,7 +357,7 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
      * Track a node that has an icon (for automatic icon injection)
      * @internal
      */
-    trackNodeWithIcon(node: Node, iconDataUrl: string): void {
+    ["~trackNodeWithIcon"](node: Node, iconDataUrl: string): void {
       // Extract icon key from the node id
       const iconKey = node.nodeId.replace(/[^a-zA-Z0-9]/g, "_");
 
@@ -376,7 +376,7 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
      * Track a pending icon load promise
      * @internal
      */
-    trackPendingIconLoad(promise: Promise<void>): void {
+    ["~trackPendingIconLoad"](promise: Promise<void>): void {
       _pendingIconLoads.push(promise);
     },
 
@@ -391,14 +391,14 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
     /**
      * Internal method to register a node
      */
-    node(nodeId: string, label: string, attrs: Record<string, unknown>): void {
+    ["~node"](nodeId: string, label: string, attrs: Record<string, unknown>): void {
       _nodes.set(nodeId, { label, attrs });
     },
 
     /**
      * Connect two nodes
      */
-    connect(from: Node, to: Node, edge: Edge): void {
+    ["~connect"](from: Node, to: Node, edge: Edge): void {
       _edges.push({
         from: from.nodeId,
         to: to.nodeId,
@@ -409,7 +409,7 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
     /**
      * Add a subgraph (cluster)
      */
-    subgraph(cluster: Cluster): void {
+    ["~subgraph"](cluster: Cluster): void {
       _clusters.push(cluster);
     },
 

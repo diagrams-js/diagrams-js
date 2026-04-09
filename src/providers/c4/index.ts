@@ -254,7 +254,7 @@ export function SystemBoundary(
   label: string,
   diagram: {
     cluster: (label: string) => ReturnType<typeof Cluster>;
-    subgraph: (cluster: ReturnType<typeof Cluster>) => void;
+    ["~subgraph"]: (cluster: ReturnType<typeof Cluster>) => void;
   },
   options: Record<string, unknown> = {},
 ): ReturnType<typeof Cluster> {
