@@ -115,6 +115,14 @@ const config: Config = {
               label: "API Reference",
               to: "/docs/guides/diagram",
             },
+            {
+              label: "llms.txt",
+              href: "pathname:///llms.txt",
+            },
+            {
+              label: "llms-full.txt",
+              href: "pathname:///llms-full.txt",
+            },
           ],
         },
         {
@@ -166,6 +174,23 @@ const config: Config = {
   } satisfies Preset.ThemeConfig,
   stylesheets: [],
   scripts: [],
+  plugins: [
+    "docusaurus-markdown-source-plugin",
+    [
+      "@signalwire/docusaurus-plugin-llms-txt",
+      {
+        siteTitle: "diagrams-js",
+        siteDescription: "Draw cloud system architecture diagrams as code in TypeScript",
+        content: {
+          includeBlog: false,
+          includePages: true,
+          enableMarkdownFiles: false, //already created by docusaurus-markdown-source-plugin
+          enableLlmsFullTxt: true,
+        },
+      },
+    ],
+  ],
+  // themes: ["@signalwire/docusaurus-theme-llms-txt"], // breaks the build
 };
 
 export default config;

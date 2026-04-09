@@ -1,0 +1,192 @@
+---
+title: AI Guide
+description: Guide for AI LLMs and agents using diagrams-js
+---
+
+# AI Guide
+
+This guide is specifically designed for AI Large Language Models (LLMs) and autonomous agents to effectively use the diagrams-js library for generating cloud architecture diagrams.
+
+## Quick Reference Files
+
+:::tip LLM-Optimized Documentation
+For optimal context when working with diagrams-js, use these specially formatted documentation files:
+
+**📄 [llms.txt](pathname:///llms.txt)** - Concise overview of the library, installation, basic usage, and key concepts
+
+**📄 [llms-full.txt](pathname:///llms-full.txt)** - Complete documentation including all guides, API reference, and examples
+:::
+
+These files are specifically structured for AI consumption with:
+
+- Clear API signatures and type definitions
+- Code examples with expected outputs
+- Provider reference lists
+- Best practices and common patterns
+
+## Key Concepts for AI Agents
+
+### 1. Diagram Structure
+
+```typescript
+import { Diagram } from "diagrams-js";
+
+// Always create a diagram instance first
+const diagram = Diagram("Architecture Name", {
+  direction: "TB", // Top-Bottom (or "LR" for Left-Right)
+});
+```
+
+### 2. Adding Nodes
+
+Nodes can be added using the `add()` method:
+
+```typescript
+import { Diagram, Node } from "diagrams-js";
+
+const diagram = Diagram("Example");
+
+// Basic node (no icon)
+const basicNode = diagram.add(Node("Label"));
+
+// Provider nodes (auto-include icons)
+import { EC2 } from "diagrams-js/aws/compute";
+const server = diagram.add(EC2("Web Server"));
+```
+
+### 3. Creating Connections
+
+Use method chaining for connections:
+
+```typescript
+import { Edge } from "diagrams-js";
+
+// .to() - Forward direction (left to right)
+nodeA.to(nodeB);
+
+// Sequential connections
+nodeA.to(nodeB).to(nodeC);
+
+// Branching connections
+nodeA.to([nodeB, nodeC]);
+
+// Connect multiple nodes to one target
+const nodes = [nodeB, nodeC, nodeD];
+nodes.forEach((n) => n.to(nodeA));
+
+// .from() - Reverse direction (right to left)
+nodeB.from(nodeA);
+
+// .with() - Undirected/bidirectional (no arrows)
+nodeA.with(nodeB);
+
+// With custom styling using Edge
+nodeA.to(Edge({ color: "red", style: "dashed" }), nodeB);
+```
+
+### 4. Rendering Output
+
+Always render and cleanup:
+
+```typescript
+// Generate SVG
+const svg = await diagram.render();
+
+// Use the SVG (save to file, display, etc.)
+
+// Clean up resources
+diagram.destroy();
+```
+
+## Common Patterns
+
+### Web Application Architecture
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { ALB } from "diagrams-js/aws/network";
+import { EC2, AutoScaling } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
+import { S3 } from "diagrams-js/aws/storage";
+
+const diagram = Diagram("Web App Architecture");
+
+const lb = diagram.add(ALB("Load Balancer"));
+const web = diagram.add(EC2("Web Servers"));
+const db = diagram.add(RDS("Database"));
+const storage = diagram.add(S3("Assets"));
+
+lb.to(web);
+web.to([db, storage]);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+### Microservices Pattern
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { ECS } from "diagrams-js/aws/compute";
+
+const diagram = Diagram("Microservices");
+
+// Group related services using clusters
+const apiCluster = diagram.cluster("API Gateway");
+const auth = apiCluster.add(ECS("Auth Service"));
+const rateLimiter = apiCluster.add(ECS("Rate Limiter"));
+
+const servicesCluster = diagram.cluster("Services");
+const userSvc = servicesCluster.add(ECS("User Service"));
+const orderSvc = servicesCluster.add(ECS("Order Service"));
+const paymentSvc = servicesCluster.add(ECS("Payment Service"));
+
+// Connect clusters
+auth.to([userSvc, orderSvc, paymentSvc]);
+
+const svg = await diagram.render();
+diagram.destroy();
+```
+
+## Provider Organization
+
+Cloud providers are organized hierarchically:
+
+```
+diagrams-js/
+├── aws/
+│   ├── compute/      # EC2, Lambda, etc.
+│   ├── database/     # RDS, DynamoDB, etc.
+│   ├── storage/      # S3, EBS, etc.
+│   └── ...
+├── azure/
+│   ├── compute/
+│   ├── database/
+│   └── ...
+└── gcp/
+    ├── compute/
+    ├── database/
+    └── ...
+```
+
+## Best Practices for AI Generation
+
+1. **Use descriptive node labels** that explain the component's role
+2. **Group related nodes** using `Cluster` for better organization
+3. **Set appropriate diagram direction** based on the layout needs
+4. **Import only needed providers** to optimize bundle size
+5. **Handle async operations** properly with `await diagram.render()`
+
+## Environment Support
+
+- **Browsers**: Direct usage with ES modules
+- **Node.js/Deno/Bun**: Save SVG to files using <br />
+  `await diagram.save("filename.svg", { format: "svg" }); // or "png"/"jpeg"`
+
+## Resources
+
+- 📚 [Full Documentation](./getting-started/installation.mdx)
+- 🔧 [API Reference](./guides/diagram.mdx)
+- 🎨 [Provider List](./guides/providers.mdx)
+- 📄 [llms.txt](pathname:///llms.txt) - Quick reference
+- 📄 [llms-full.txt](pathname:///llms-full.txt) - Complete docs

@@ -109,10 +109,12 @@ const diagram = Diagram("Workers", {
 });
 
 const lb = diagram.add(ELB("lb"));
+const worker1 = diagram.add(EC2("worker1"));
+const worker2 = diagram.add(EC2("worker2"));
 const db = diagram.add(RDS("events"));
 
-lb.to(EC2("worker1")).to(db);
-lb.to(EC2("worker2")).to(db);
+lb.to(worker1).to(db);
+lb.to(worker2).to(db);
 ```
 
 ## Complete Example

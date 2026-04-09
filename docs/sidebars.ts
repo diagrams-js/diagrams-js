@@ -39,6 +39,7 @@ const sidebars: SidebarsConfig = {
       ],
     },
     "credits",
+    "ai-guide",
   ],
 };
 
