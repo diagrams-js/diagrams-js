@@ -3,8 +3,9 @@
  *
  * @example
  * ```typescript
- * import { Diagram, Node, Edge } from "diagrams-js";
- * import { EC2, S3 } from "diagrams-js/providers/aws";
+ * import { Diagram } from "diagrams-js";
+ * import { EC2 } from "diagrams-js/aws/compute";
+ * import { S3 } from "diagrams-js/aws/storage";
  *
  * const diagram = Diagram("My Architecture", { direction: "LR" });
  *

@@ -72,9 +72,9 @@ const svg = await diagram.render();
 
 ```html
 <script type="module">
-  import { Diagram } from "https://cdn.jsdelivr.net/npm/diagrams-js";
-  import { EC2 } from "https://cdn.jsdelivr.net/npm/diagrams-js/providers/aws/compute";
-  import { RDS } from "https://cdn.jsdelivr.net/npm/diagrams-js/providers/aws/database";
+  import { Diagram } from "https://esm.sh/diagrams-js";
+  import { EC2 } from "https://esm.sh/diagrams-js/aws/compute";
+  import { RDS } from "https://esm.sh/diagrams-js/aws/database";
 
   const diagram = Diagram("My Diagram");
   const web = diagram.add(EC2("Web Server"));
