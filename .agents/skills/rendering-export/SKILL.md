@@ -1,0 +1,189 @@
+---
+name: diagrams-js/rendering-export
+description: >
+  Rendering diagrams to multiple formats. SVG output as string, PNG/JPG as Uint8Array (requires sharp in Node.js),
+  DOT format as Graphviz source. Data URLs for embedding. Saving files with diagram.save().
+type: core
+library: diagrams-js
+library_version: "0.0.9"
+requires:
+  - diagrams-js/getting-started
+sources:
+  - "hatemhosny/diagrams-js:docs/docs/guides/rendering.mdx"
+  - "hatemhosny/diagrams-js:docs/docs/guides/api.mdx"
+  - "hatemhosny/diagrams-js:src/Diagram.ts"
+---
+
+This skill builds on diagrams-js/getting-started. Read it first for foundational concepts.
+
+# diagrams-js — Rendering & Export
+
+Render diagrams to SVG, PNG, JPG, or DOT formats. Get data URLs for embedding. Save to files in Node.js or trigger downloads in browsers.
+
+## Setup
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+
+const diagram = Diagram("My Diagram");
+diagram.add(EC2("Server"));
+
+// Render to SVG
+const svg = await diagram.render();
+```
+
+## Core Patterns
+
+### Render to SVG (Default)
+
+```typescript
+const svg = await diagram.render();
+// Returns: SVG string
+
+// Explicit format option
+const svg = await diagram.render({ format: "svg" });
+```
+
+### Render to PNG (Node.js only, requires sharp)
+
+```bash
+npm install sharp
+```
+
+```typescript
+import { writeFileSync } from "fs";
+
+const png = await diagram.render({ format: "png" });
+// Returns: Uint8Array
+
+writeFileSync("diagram.png", Buffer.from(png));
+```
+
+### Render to JPG (Node.js only, requires sharp)
+
+```typescript
+const jpg = await diagram.render({ format: "jpg" });
+// Returns: Uint8Array
+
+writeFileSync("diagram.jpg", Buffer.from(jpg));
+```
+
+### Render as Data URL
+
+```typescript
+// SVG as data URL
+const svgDataUrl = await diagram.render({ dataUrl: true });
+// Returns: data:image/svg+xml;base64,...
+
+// PNG as data URL
+const pngDataUrl = await diagram.render({ format: "png", dataUrl: true });
+// Returns: data:image/png;base64,...
+
+// Use in HTML
+const img = document.createElement("img");
+img.src = svgDataUrl;
+document.body.appendChild(img);
+```
+
+### Render to DOT Format
+
+```typescript
+const dot = await diagram.render({ format: "dot" });
+// Returns: Graphviz DOT source as string
+```
+
+### Save to File
+
+```typescript
+// Auto-detects format from extension
+await diagram.save("diagram.svg");
+await diagram.save("diagram.png");
+
+// With options
+await diagram.save("diagram.png", {
+  format: "png",
+  width: 1200,
+  height: 800,
+});
+```
+
+### PNG/JPG Dimensions and Scale
+
+```typescript
+const png = await diagram.render({
+  format: "png",
+  width: 800,    // Output width in pixels
+  height: 600,   // Output height in pixels
+  scale: 2,      // Scale factor (default: 2)
+});
+```
+
+## Common Mistakes
+
+### CRITICAL Trying to render PNG without sharp installed
+
+Wrong:
+
+```typescript
+// sharp not installed
+const png = await diagram.render({ format: "png" });
+// Throws: Failed to convert SVG to PNG. Make sure 'sharp' is installed
+```
+
+Correct:
+
+```bash
+npm install sharp
+```
+
+```typescript
+const png = await diagram.render({ format: "png" });
+```
+
+PNG/JPG rendering requires sharp package in Node.js. Browser uses Canvas API.
+
+Source: source code - Diagram.ts _svgToPngNode() error message
+
+### HIGH Assuming render() always returns string
+
+Wrong:
+
+```typescript
+const data = await diagram.render({ format: "png" });
+fs.writeFileSync("out.png", data); // Error: data is Uint8Array, not string
+```
+
+Correct:
+
+```typescript
+const data = await diagram.render({ format: "png" });
+fs.writeFileSync("out.png", Buffer.from(data));
+```
+
+Returns string for SVG/DOT, Uint8Array for PNG/JPG. Always check format or use Buffer.from() for binary.
+
+Source: source code - Diagram.ts render() overload types
+
+### MEDIUM Calling save() without filepath in browser
+
+Wrong:
+
+```typescript
+await diagram.save(); // Uses default filename from diagram name
+```
+
+Correct:
+
+```typescript
+await diagram.save("my-diagram.svg");
+```
+
+In browser, always specify filename for clarity. In Node.js, default filename is derived from diagram name.
+
+Source: source code - Diagram.ts save() method
+
+## See also
+
+- diagrams-js/nodejs-integration — File system operations and sharp setup
+- diagrams-js/browser-integration — Browser-specific rendering and downloads

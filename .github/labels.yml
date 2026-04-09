@@ -1,0 +1,47 @@
+# GitHub Labels for diagrams-js Intent Skills
+# Apply these labels to your repository with:
+# npx @tanstack/intent@latest create-labels --repo hatemhosny/diagrams-js
+
+- name: "intent:getting-started"
+  color: "0366d6"
+  description: "Installation, first diagram, basic concepts"
+
+- name: "intent:diagram-configuration"
+  color: "0366d6"
+  description: "Direction, theme, curve style, attributes"
+
+- name: "intent:rendering-export"
+  color: "0366d6"
+  description: "SVG, PNG, JPG, DOT, data URLs"
+
+- name: "intent:provider-nodes"
+  color: "0366d6"
+  description: "17+ providers, 2000+ node classes"
+
+- name: "intent:custom-nodes"
+  color: "0366d6"
+  description: "External icons, URLs, data URLs"
+
+- name: "intent:node-connections"
+  color: "0366d6"
+  description: "to(), from(), with(), Edge styling"
+
+- name: "intent:clusters-grouping"
+  color: "0366d6"
+  description: "Clusters, nesting, organization"
+
+- name: "intent:browser-integration"
+  color: "0366d6"
+  description: "CDN, DOM, data URLs, downloads"
+
+- name: "intent:nodejs-integration"
+  color: "0366d6"
+  description: "File system, sharp, local icons"
+
+- name: "intent:python-migration"
+  color: "0366d6"
+  description: "Python to TypeScript conversion"
+
+- name: "intent:all"
+  color: "5319e7"
+  description: "All intent skills"
