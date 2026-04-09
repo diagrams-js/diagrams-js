@@ -18,22 +18,66 @@ import { Node } from "./Node.js";
  * ```
  */
 export interface Custom extends Node {
+  /** @internal */
   ["~iconUrl"]: string;
+
+  /**
+   * Get the icon URL/path for this node
+   * @returns The icon URL or file path
+   * @internal
+   */
   getIconUrl(): string;
+
+  /**
+   * Load the icon and return as data URL
+   * @returns Promise resolving to the icon data URL, or null if loading failed
+   */
   loadIcon(): Promise<string | null>;
 }
 
+/**
+ * Create a custom node with an external icon
+ * @param label - The display label for the node
+ * @param iconUrl - URL or file path to the icon image (supports PNG, JPG, SVG)
+ * @param options - Optional configuration for the node
+ * @returns A new Custom node instance
+ * @example
+ * ```typescript
+ * // Using a remote URL
+ * const node = Custom("My Service", "https://example.com/icon.png");
+ * diagram.add(node);
+ *
+ * // Using a local file (Node.js)
+ * const local = Custom("Local Service", "./assets/icon.svg");
+ * diagram.add(local);
+ *
+ * // With custom options
+ * const styled = Custom("Service", "icon.png", {
+ *   shape: "box",
+ *   width: "1.2",
+ *   height: "1.2"
+ * });
+ * ```
+ */
 export function Custom(
   label: string,
   iconUrl: string,
   options?: {
+    /** Custom node ID */
     nodeId?: string;
+    /** Graphviz shape attribute */
     shape?: string;
+    /** Graphviz height attribute */
     height?: string;
+    /** Graphviz width attribute */
     width?: string;
+    /** Graphviz fixedsize attribute */
     fixedsize?: string;
+    /** Graphviz margin attribute */
     margin?: string;
+    /** Graphviz labelloc attribute */
     labelloc?: string;
+    /** Graphviz imagescale attribute */
     imagescale?: string;
   },
 ): Custom {

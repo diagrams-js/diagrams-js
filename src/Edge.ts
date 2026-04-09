@@ -1,15 +1,57 @@
 import type { Node } from "./Node.js";
 import type { EdgeOptions } from "./types.js";
 
+/**
+ * Represents an edge (connection) between nodes in a diagram.
+ * Edges can be styled with labels, colors, and styles.
+ *
+ * @example
+ * ```typescript
+ * // Create a labeled edge
+ * db.to(EdgeLabel("queries"), app);
+ *
+ * // Create a colored edge
+ * db.to(EdgeColor("red"), app);
+ *
+ * // Create a styled edge
+ * db.to(EdgeStyle("dashed"), app);
+ * ```
+ */
 export interface Edge {
+  /** The node this edge is connected to */
   node: Node | undefined;
+  /** Whether this is a forward edge (arrow points forward) */
   forward: boolean;
+  /** Whether this is a reverse edge (arrow points back) */
   reverse: boolean;
+  /** Graphviz attributes for this edge */
   attrs: Record<string, string>;
+
+  /**
+   * Connect this edge to a node or merge with another edge
+   * @param target - The target node or edge to merge
+   * @returns The target node or this edge
+   */
   to(target: Node | Edge): Node | Edge;
+
+  /**
+   * Connect from a node or merge with another edge
+   * @param target - The source node or edge to merge
+   * @returns The source node or this edge
+   */
   from(target: Node | Edge): Node | Edge;
 }
 
+/**
+ * Create a new edge
+ * @param options - Edge configuration options
+ * @returns A new Edge instance
+ * @example
+ * ```typescript
+ * const edge = Edge({ label: "HTTP", color: "blue", style: "dashed" });
+ * nodeA.to(edge, nodeB);
+ * ```
+ */
 export function Edge(options: EdgeOptions = {}): Edge {
   let node: Node | undefined = options.node;
   let forward = options.forward ?? false;
@@ -126,16 +168,40 @@ function isEdge(target: unknown): target is Edge {
 }
 
 /**
- * Static factory methods for common edge styles
+ * Create an edge with a label
+ * @param label - The text label for the edge
+ * @returns An Edge with the specified label
+ * @example
+ * ```typescript
+ * db.to(EdgeLabel("queries"), app);
+ * ```
  */
 export function EdgeLabel(label: string): Edge {
   return Edge({ label });
 }
 
+/**
+ * Create an edge with a color
+ * @param color - The color for the edge (CSS color or Graphviz color)
+ * @returns An Edge with the specified color
+ * @example
+ * ```typescript
+ * db.to(EdgeColor("red"), app);
+ * ```
+ */
 export function EdgeColor(color: string): Edge {
   return Edge({ color });
 }
 
+/**
+ * Create an edge with a style
+ * @param style - The line style (solid, dashed, dotted, etc.)
+ * @returns An Edge with the specified style
+ * @example
+ * ```typescript
+ * db.to(EdgeStyle("dashed"), app);
+ * ```
+ */
 export function EdgeStyle(style: string): Edge {
   return Edge({ style });
 }

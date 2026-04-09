@@ -5,37 +5,131 @@ import type { NodeOptions } from "./types.js";
 
 let _iconBaseDir = "";
 
+/**
+ * Set the base directory for icon paths
+ * @param dir - The base directory path
+ * @internal
+ */
 export function setIconBaseDir(dir: string): void {
   _iconBaseDir = dir;
 }
 
+/**
+ * Get the current icon base directory
+ * @returns The base directory path
+ * @internal
+ */
 export function getIconBaseDir(): string {
   return _iconBaseDir;
 }
 
+/**
+ * Represents a node in a diagram.
+ * Nodes are connected using the `to()`, `from()`, and `with()` methods.
+ *
+ * @example
+ * ```typescript
+ * const db = Database("PostgreSQL");
+ * const app = AppServer("API");
+ *
+ * // Connect db to app (db → app)
+ * db.to(app);
+ *
+ * // Connect with edge styling
+ * db.to(EdgeColor("red"), app);
+ *
+ * // Undirected connection
+ * db.with(app);
+ * ```
+ */
 export interface Node {
+  /** The display label of the node */
   label: string;
+  /** Unique identifier for the node */
   nodeId: string;
+  /** The cluster this node belongs to, if any */
   cluster: Cluster | undefined;
+  /** @internal */
   ["~id"]: string;
+  /** @internal */
   ["~diagram"]: Diagram | null;
+  /** @internal */
   ["~cluster"]: Cluster | undefined;
+  /** @internal */
   ["~attrs"]: Record<string, string | number>;
+  /** @internal */
   ["~iconDataUrl"]: string | null;
+  /** @internal */
   ["~register"](parent: Diagram | Cluster): void;
+
+  /**
+   * Connect this node to another node (forward direction)
+   * Creates an edge from this node to the target
+   * @param target - The target node or array of nodes
+   * @returns The target node(s) for chaining
+   */
   to(target: Node): Node;
   to(targets: Node[]): Node[];
+
+  /**
+   * Connect this node to another node with an edge
+   * @param edge - The edge configuration
+   * @returns The edge for further configuration
+   */
   to(edge: Edge): Edge;
+
+  /**
+   * Connect this node to another node with a styled edge
+   * @param edge - The edge configuration
+   * @param target - The target node
+   * @returns The target node for chaining
+   */
   to(edge: Edge, target: Node): Node;
   to(edge: Edge, targets: Node[]): Node[];
+
+  /**
+   * Connect this node from another node (reverse direction)
+   * Creates an edge pointing back from the target to this node
+   * @param source - The source node or array of nodes
+   * @returns This node for chaining
+   */
   from(source: Node): Node;
   from(sources: Node[]): Node;
+
+  /**
+   * Connect from a node with an edge (reverse direction)
+   * @param edge - The edge configuration
+   * @param source - The source node
+   * @returns This node for chaining
+   */
   from(edge: Edge, source: Node): Node;
   from(edge: Edge, sources: Node[]): Node[];
+
+  /**
+   * Create an undirected connection between nodes
+   * Creates an edge without arrowheads
+   * @param target - The target node or array of nodes
+   * @returns The target node(s) for chaining
+   */
   with(target: Node): Node;
   with(targets: Node[]): Node[];
+
+  /**
+   * Create an undirected connection with edge styling
+   * @param edge - The edge configuration
+   * @param target - The target node
+   * @returns The target node for chaining
+   */
   with(edge: Edge, target: Node): Node;
   with(edge: Edge, targets: Node[]): Node[];
+
+  /**
+   * Internal method to connect this node to another with an edge
+   * @param target - The target node
+   * @param edge - The edge configuration
+   * @returns The target node
+   * @internal
+   */
   connect(target: Node, edge: Edge): Node;
 }
 
@@ -54,6 +148,17 @@ function _randId(): string {
   return `${Date.now().toString(36)}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
+/**
+ * Create a new node
+ * @param label - The display label for the node
+ * @param options - Optional configuration for the node
+ * @returns A new Node instance
+ * @example
+ * ```typescript
+ * const node = Node("My Service", { shape: "box", color: "blue" });
+ * diagram.add(node);
+ * ```
+ */
 export function Node(label = "", options: NodeOptions = {}): Node {
   const _id = options.nodeId ?? _randId();
   let _diagram: Diagram | null = null;

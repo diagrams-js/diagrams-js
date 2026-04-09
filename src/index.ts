@@ -1,3 +1,26 @@
+/**
+ * diagrams-js - Draw cloud system architecture diagrams as code
+ *
+ * @example
+ * ```typescript
+ * import { Diagram, Node, Edge } from "diagrams-js";
+ * import { EC2, S3 } from "diagrams-js/providers/aws";
+ *
+ * const diagram = Diagram("My Architecture", { direction: "LR" });
+ *
+ * const db = diagram.add(Database("PostgreSQL"));
+ * const api = diagram.add(EC2("API Server"));
+ * const storage = diagram.add(S3("Storage"));
+ *
+ * db.to(api);
+ * api.to(storage);
+ *
+ * const svg = await diagram.render();
+ * ```
+ *
+ * @packageDocumentation
+ */
+
 // Core functions
 export { Diagram } from "./Diagram.js";
 export { Node } from "./Node.js";

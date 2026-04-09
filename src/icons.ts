@@ -1,13 +1,22 @@
 import type { Node } from "./Node.js";
 
+/**
+ * Maps a node to its icon information
+ */
 export interface NodeIconMap {
+  /** The node that has an icon */
   node: Node;
+  /** Key to identify the icon in IconData */
   icon: string;
+  /** Optional path to the icon file */
   iconPath?: string;
 }
 
 export type { Node };
 
+/**
+ * Map of icon keys to data URIs
+ */
 export interface IconData {
   [key: string]: string;
 }
@@ -22,7 +31,11 @@ function isBrowser(): boolean {
 /**
  * Load an icon as a base64 data URI (browser only)
  * @param path - Path to the icon file
- * @returns Promise resolving to the data URI
+ * @returns Promise resolving to the data URI, or null if loading failed
+ * @example
+ * ```typescript
+ * const iconData = await loadIcon("/icons/aws/s3.png");
+ * ```
  */
 export async function loadIcon(path: string): Promise<string | null> {
   if (!isBrowser()) {
@@ -58,6 +71,13 @@ export async function loadIcon(path: string): Promise<string | null> {
  * Load multiple icons as data URIs (browser only)
  * @param iconPaths - Map of icon keys to paths
  * @returns Promise resolving to map of icon keys to data URIs
+ * @example
+ * ```typescript
+ * const icons = await loadIcons({
+ *   s3: "/icons/aws/s3.png",
+ *   ec2: "/icons/aws/ec2.png"
+ * });
+ * ```
  */
 export async function loadIcons(iconPaths: Record<string, string>): Promise<IconData> {
   if (!isBrowser()) {
@@ -199,6 +219,10 @@ function generateIconId(iconData: string): string {
  * @param nodeMap - Map of nodes to their icon keys
  * @param iconData - Map of icon keys to data URIs
  * @returns Modified SVG string with icons injected
+ * @example
+ * ```typescript
+ * const svgWithIcons = injectIcons(svgString, nodeIconMap, iconData);
+ * ```
  */
 export function injectIcons(svgString: string, nodeMap: NodeIconMap[], iconData: IconData): string {
   if (!iconData || Object.keys(iconData).length === 0 || nodeMap.length === 0) {
@@ -433,12 +457,24 @@ function injectIconsNode(svgString: string, nodeMap: NodeIconMap[], iconData: Ic
 
 /**
  * Helper class to manage icon loading and injection
+ * @example
+ * ```typescript
+ * const manager = new IconManager("/icons");
+ * manager.register(node1, "s3", "/icons/aws/s3.png");
+ * manager.register(node2, "ec2");
+ * await manager.loadAllIcons();
+ * const svgWithIcons = manager.inject(svgString);
+ * ```
  */
 export class IconManager {
   private nodeMap: NodeIconMap[] = [];
   private iconData: IconData = {};
   private iconBaseDir: string = "";
 
+  /**
+   * Create a new IconManager
+   * @param iconBaseDir - Base directory for icon paths
+   */
   constructor(iconBaseDir = "") {
     this.iconBaseDir = iconBaseDir;
   }
@@ -459,6 +495,7 @@ export class IconManager {
 
   /**
    * Load all registered icons (browser only)
+   * @returns Promise that resolves when all icons are loaded
    */
   async loadAllIcons(): Promise<void> {
     if (!isBrowser()) {
@@ -489,6 +526,7 @@ export class IconManager {
 
   /**
    * Get all loaded icon data
+   * @returns Map of icon keys to data URIs
    */
   getIconData(): IconData {
     return { ...this.iconData };
@@ -496,6 +534,7 @@ export class IconManager {
 
   /**
    * Get the node map
+   * @returns Array of node-to-icon mappings
    */
   getNodeMap(): NodeIconMap[] {
     return [...this.nodeMap];

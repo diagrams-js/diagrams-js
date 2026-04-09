@@ -47,19 +47,48 @@ const defaultEdgeAttrs: Record<string, string> = {
   fontsize: "8",
 };
 
+/**
+ * Represents a diagram that contains nodes, edges, and clusters.
+ * Diagrams are rendered using Graphviz to produce SVG, PNG, JPG, or DOT output.
+ *
+ * @example
+ * ```typescript
+ * const diagram = Diagram("My Architecture", {
+ *   direction: "TB",
+ *   theme: "pastel"
+ * });
+ *
+ * const db = diagram.add(Database("PostgreSQL"));
+ * const app = diagram.add(AppServer("API"));
+ * db.to(app);
+ *
+ * const svg = await diagram.render();
+ * ```
+ */
 export interface Diagram {
+  /** The name/title of the diagram */
   name: string;
+  /** The filename used when saving the diagram */
   filename: string;
+  /** Layout direction: TB (top-bottom), BT (bottom-top), LR (left-right), RL (right-left) */
   direction: "TB" | "BT" | "LR" | "RL";
+  /** Edge curve style: ortho (orthogonal), curved, spline, or polyline */
   curveStyle: "ortho" | "curved" | "spline" | "polyline";
+  /** Whether to automatically prefix node labels with their type */
   autolabel: boolean;
+  /** Whether to create a strict graph (no duplicate edges) */
   strict: boolean;
+  /** The color theme name */
   theme: ThemeName;
+  /** The theme configuration */
   themeConfig: ThemeConfig;
+  /** Graph-level attributes for Graphviz */
   graphAttr: Record<string, string>;
+  /** Default node attributes for Graphviz */
   nodeAttr: Record<string, string>;
+  /** Default edge attributes for Graphviz */
   edgeAttr: Record<string, string>;
-  // Track if user explicitly set icon-related properties in nodeAttr
+  /** @internal Track if user explicitly set icon-related properties in nodeAttr */
   ["~userNodeAttr"]?: {
     shape?: string;
     height?: string;
@@ -69,24 +98,140 @@ export interface Diagram {
     labelloc?: string;
     imagescale?: string;
   };
+
+  /**
+   * Register a node with an icon for automatic icon injection
+   * @param node - The node to register
+   * @param iconKey - Key to identify the icon in iconData
+   * @param iconPath - Optional path to the icon file
+   * @internal
+   */
   registerIcon(node: Node, iconKey: string, iconPath?: string): void;
+
+  /**
+   * Load icon data for injection
+   * @param iconData - Map of icon keys to data URIs
+   * @internal
+   */
   setIconData(iconData: IconData): void;
+
+  /**
+   * Get the node icon map
+   * @returns Array of node-to-icon mappings
+   * @internal
+   */
   getNodeIconMap(): NodeIconMap[];
+
+  /**
+   * Get the icon data
+   * @returns Map of icon keys to data URIs
+   * @internal
+   */
   getIconData(): IconData;
+
+  /**
+   * Track a node that has an icon (for automatic icon injection)
+   * @param node - The node with an icon
+   * @param iconDataUrl - The data URL of the icon
+   * @internal
+   */
   trackNodeWithIcon(node: Node, iconDataUrl: string): void;
+
+  /**
+   * Track a pending icon load promise
+   * @param promise - Promise that resolves when icon is loaded
+   * @internal
+   */
   trackPendingIconLoad(promise: Promise<void>): void;
+
+  /**
+   * Add a node to this diagram
+   * @param node - The node to add
+   * @returns The added node
+   */
   add<T extends Node>(node: T): T;
+
+  /**
+   * Internal method to register a node with the diagram
+   * @param nodeId - Unique identifier for the node
+   * @param label - Display label for the node
+   * @param attrs - Graphviz attributes for the node
+   * @internal
+   */
   node(nodeId: string, label: string, attrs: Record<string, unknown>): void;
+
+  /**
+   * Connect two nodes with an edge
+   * @param from - Source node
+   * @param to - Target node
+   * @param edge - Edge configuration
+   * @internal
+   */
   connect(from: Node, to: Node, edge: Edge): void;
+
+  /**
+   * Add a subgraph (cluster) to the diagram
+   * @param cluster - The cluster to add
+   * @internal
+   */
   subgraph(cluster: Cluster): void;
+
+  /**
+   * Create a new cluster within the diagram
+   * @param label - The label for the cluster
+   * @returns The created cluster
+   */
   cluster(label: string): Cluster;
+
+  /**
+   * Render the diagram to the specified format
+   * @param options - Render options including format, dimensions, and scale
+   * @returns Promise resolving to the rendered output (SVG string, binary data, or data URL)
+   */
   render: RenderFunction;
+
+  /**
+   * Render the diagram with explicit icon injection
+   * @param iconData - Map of icon keys to data URIs (uses diagram's registered icons if not provided)
+   * @param nodeMap - Optional node-to-icon mapping (uses diagram's registered icons if not provided)
+   * @returns Promise resolving to SVG string with icons injected
+   */
   renderWithIcons(iconData?: IconData, nodeMap?: NodeIconMap[]): Promise<string>;
+
+  /**
+   * Save the diagram to a file (Node.js only)
+   * In browser, triggers a file download
+   * @param filepath - Optional file path (defaults to diagram.filename with appropriate extension)
+   * @param options - Optional render options for format and dimensions
+   */
   save(filepath?: string, options?: RenderOptions): Promise<void>;
+
+  /**
+   * Get the DOT source representation of the diagram
+   * @returns DOT format string
+   */
   toString(): string;
+
+  /**
+   * Cleanup resources and destroy the diagram
+   */
   destroy(): void;
 }
 
+/**
+ * Create a new diagram
+ * @param name - The name/title of the diagram (optional, can also be set in options)
+ * @param options - Configuration options for the diagram
+ * @returns A new Diagram instance
+ * @example
+ * ```typescript
+ * const diagram = Diagram("My System", {
+ *   direction: "LR",
+ *   theme: "pastel",
+ *   curvestyle: "ortho"
+ * });
+ * ```
+ */
 export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
   const _nodes = new Map<string, { label: string; attrs: Record<string, unknown> }>();
   const _edges: Array<{
