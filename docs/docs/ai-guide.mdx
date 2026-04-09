@@ -7,6 +7,47 @@ description: Guide for AI LLMs and agents using diagrams-js
 
 This guide is specifically designed for AI Large Language Models (LLMs) and autonomous agents to effectively use the diagrams-js library for generating cloud architecture diagrams.
 
+## TanStack Intent Skills
+
+:::tip AI-Assisted Development
+diagrams-js now includes [TanStack Intent](https://github.com/tanstack/intent) skills for enhanced AI-assisted development. These skills provide specialized guidance for common tasks and help prevent common mistakes.
+:::
+
+### Available Skills
+
+| Skill                               | Description                                 |
+| ----------------------------------- | ------------------------------------------- |
+| `diagrams-js/getting-started`       | Installation, first diagram, basic concepts |
+| `diagrams-js/diagram-configuration` | Direction, theme, curve style, attributes   |
+| `diagrams-js/rendering-export`      | SVG, PNG, JPG, DOT, data URLs               |
+| `diagrams-js/provider-nodes`        | 17+ providers, 2000+ node classes           |
+| `diagrams-js/custom-nodes`          | External icons, URLs, data URLs             |
+| `diagrams-js/node-connections`      | to(), from(), with(), Edge styling          |
+| `diagrams-js/clusters-grouping`     | Clusters, nesting, organization             |
+| `diagrams-js/browser-integration`   | CDN, DOM, data URLs, downloads              |
+| `diagrams-js/nodejs-integration`    | File system, sharp, local icons             |
+| `diagrams-js/python-migration`      | Python to TypeScript conversion             |
+
+### Using Skills
+
+AI agents can load relevant skills automatically based on context:
+
+- Creating a new diagram → loads `getting-started`
+- Adding AWS/GCP/Azure nodes → loads `provider-nodes`
+- Connecting nodes with edges → loads `node-connections`
+- Rendering to different formats → loads `rendering-export`
+- Migrating from Python diagrams → loads `python-migration`
+
+### Installation for AI Agents
+
+```bash
+# Install skills into your project
+npx @tanstack/intent@latest install
+
+# Or use directly without installation
+npx @tanstack/intent@latest show diagrams-js/getting-started
+```
+
 ## Quick Reference Files
 
 :::tip LLM-Optimized Documentation
@@ -162,6 +203,73 @@ diagrams-js/
     └── ...
 ```
 
+## Common Mistakes to Avoid
+
+Here are critical mistakes that AI agents should avoid:
+
+### Python Migration Issues
+
+When converting from Python diagrams:
+
+- ❌ **Context managers**: Python uses `with Diagram():`, TypeScript uses `const diagram = Diagram()`
+- ❌ **Operators**: Python uses `>>` / `<<` / `-`, TypeScript uses `.to()` / `.from()` / `.with()`
+- ❌ **Auto-registration**: Python auto-registers nodes, TypeScript requires `diagram.add()`
+- ❌ **Auto-render**: Python auto-renders on exit, TypeScript requires `await diagram.render()`
+
+### Node Registration
+
+```typescript
+// ❌ Wrong: Node not registered
+const web = EC2("Web Server");
+web.to(db); // Error!
+
+// ✅ Correct: Explicit registration
+const web = diagram.add(EC2("Web Server"));
+web.to(db); // Works!
+```
+
+### Async Rendering
+
+```typescript
+// ❌ Wrong: Not awaiting
+const svg = diagram.render();
+
+// ✅ Correct: Always await
+const svg = await diagram.render();
+```
+
+### Import Paths
+
+```typescript
+// ❌ Wrong: Missing category
+import { EC2 } from "diagrams-js/aws";
+
+// ✅ Correct: Include category
+import { EC2 } from "diagrams-js/aws/compute";
+```
+
+### Connection Direction
+
+```typescript
+// For << arrow (db << api)
+// ❌ Wrong
+db.to(api);
+
+// ✅ Correct
+db.from(api);
+```
+
+### Browser vs Node.js
+
+```typescript
+// ❌ Wrong in browser
+import { writeFileSync } from "fs";
+writeFileSync("out.svg", svg);
+
+// ✅ Correct in browser
+await diagram.save("diagram.svg");
+```
+
 ## Best Practices for AI Generation
 
 1. **Use descriptive node labels** that explain the component's role
@@ -169,6 +277,8 @@ diagrams-js/
 3. **Set appropriate diagram direction** based on the layout needs
 4. **Import only needed providers** to optimize bundle size
 5. **Handle async operations** properly with `await diagram.render()`
+6. **Always register nodes** with `diagram.add()` before connecting
+7. **Load relevant skills** for enhanced guidance on specific tasks
 
 ## Environment Support
 
@@ -181,5 +291,21 @@ diagrams-js/
 - 📚 [Full Documentation](./getting-started/installation.mdx)
 - 🔧 [API Reference](./guides/diagram.mdx)
 - 🎨 [Provider List](./guides/providers.mdx)
+- 🤖 [TanStack Intent Skills](https://github.com/hatemhosny/diagrams-js/blob/main/.agents/INTENT.md) - AI-assisted development
 - 📄 [llms.txt](pathname:///llms.txt) - Quick reference
 - 📄 [llms-full.txt](pathname:///llms-full.txt) - Complete docs
+
+### Skill Development
+
+The TanStack Intent skills are located in `.agents/skills/` and include:
+
+- **10 specialized skills** covering all aspects of diagrams-js
+- **24 failure modes** with wrong/correct code examples
+- **Cross-references** between related skills
+- **Framework-specific** guidance for browser and Node.js environments
+
+To contribute to skills or learn more about the skill structure:
+
+- See [Skill Specification](https://github.com/hatemhosny/diagrams-js/blob/main/.agents/skills/_artifacts/skill_spec.md)
+- Review [Domain Map](https://github.com/hatemhosny/diagrams-js/blob/main/.agents/skills/_artifacts/domain_map.yaml)
+- Check [Skill Tree](https://github.com/hatemhosny/diagrams-js/blob/main/.agents/skills/_artifacts/skill_tree.yaml)
