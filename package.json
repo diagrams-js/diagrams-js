@@ -13,9 +13,9 @@
     "infrastructure",
     "kubernetes",
     "svg",
+    "tanstack-intent",
     "typescript",
-    "visualization",
-    "tanstack-intent"
+    "visualization"
   ],
   "homepage": "https://diagrams-js.hatemhosny.dev",
   "bugs": {
