@@ -98,9 +98,7 @@ import { Diagram, Custom } from "diagrams-js";
 const diagram = Diagram("Custom Icons");
 
 // Load icon from local file system
-const service = diagram.add(
-  Custom("Internal Service", "./assets/icon.png")
-);
+const service = diagram.add(Custom("Internal Service", "./assets/icon.png"));
 
 const svg = await diagram.render();
 ```

@@ -28,9 +28,7 @@ import { Diagram, Custom } from "diagrams-js";
 const diagram = Diagram("Custom Services");
 
 // Remote URL
-const service = diagram.add(
-  Custom("My Service", "https://example.com/icon.png")
-);
+const service = diagram.add(Custom("My Service", "https://example.com/icon.png"));
 
 const svg = await diagram.render();
 ```
@@ -44,13 +42,9 @@ import { Diagram, Custom } from "diagrams-js";
 
 const diagram = Diagram("External Services");
 
-const rabbitmq = diagram.add(
-  Custom("Message Queue", "https://example.com/rabbitmq.png")
-);
+const rabbitmq = diagram.add(Custom("Message Queue", "https://example.com/rabbitmq.png"));
 
-const redis = diagram.add(
-  Custom("Cache", "https://example.com/redis.png")
-);
+const redis = diagram.add(Custom("Cache", "https://example.com/redis.png"));
 
 rabbitmq.to(redis);
 ```
@@ -62,9 +56,7 @@ import { Diagram, Custom } from "diagrams-js";
 
 const diagram = Diagram("Local Services");
 
-const service = diagram.add(
-  Custom("Internal API", "./assets/internal-api.png")
-);
+const service = diagram.add(Custom("Internal API", "./assets/internal-api.png"));
 ```
 
 ### Data URL Icon
@@ -90,7 +82,7 @@ const node = diagram.add(
     margin: "0.1,0.1",
     labelloc: "b",
     imagescale: "true",
-  })
+  }),
 );
 ```
 
@@ -101,13 +93,9 @@ const diagram = Diagram("Services");
 
 const external = diagram.cluster("External Services");
 
-const stripe = external.add(
-  Custom("Stripe", "https://example.com/stripe.png")
-);
+const stripe = external.add(Custom("Stripe", "https://example.com/stripe.png"));
 
-const twilio = external.add(
-  Custom("Twilio", "https://example.com/twilio.png")
-);
+const twilio = external.add(Custom("Twilio", "https://example.com/twilio.png"));
 
 stripe.to(twilio);
 ```
@@ -143,9 +131,7 @@ Source: docs/guides/custom-nodes.mdx
 Wrong:
 
 ```typescript
-const node = diagram.add(
-  Custom("Service", "https://bad-url/icon.png")
-);
+const node = diagram.add(Custom("Service", "https://bad-url/icon.png"));
 // Icon silently missing if fetch fails
 ```
 
@@ -171,7 +157,7 @@ const node = diagram.add(Custom("Service", iconData));
 
 Remote icon fetch can fail (CORS, 404, network). Check console warnings or pre-load as data URL.
 
-Source: source code - Custom.ts _fetchRemoteIcon()
+Source: source code - Custom.ts \_fetchRemoteIcon()
 
 ## See also
 

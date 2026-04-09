@@ -5,160 +5,160 @@
 # Generated at: 2026-04-09
 
 library:
-  name: 'diagrams-js'
-  version: '0.0.9'
-  repository: 'https://github.com/hatemhosny/diagrams-js'
-  description: 'A TypeScript port of the Python diagrams library for drawing cloud system architecture diagrams as code'
+  name: "diagrams-js"
+  version: "0.0.9"
+  repository: "https://github.com/hatemhosny/diagrams-js"
+  description: "A TypeScript port of the Python diagrams library for drawing cloud system architecture diagrams as code"
 
 generated_from:
-  domain_map: '.agents/skills/_artifacts/domain_map.yaml'
-  skill_spec: '.agents/skills/_artifacts/skill_spec.md'
-generated_at: '2026-04-09'
+  domain_map: ".agents/skills/_artifacts/domain_map.yaml"
+  skill_spec: ".agents/skills/_artifacts/skill_spec.md"
+generated_at: "2026-04-09"
 
 skills:
-  - name: 'Getting Started'
-    slug: 'getting-started'
-    type: 'lifecycle'
-    domain: 'diagram-creation'
-    path: '.agents/skills/getting-started/SKILL.md'
-    description: 'Installation, first diagram creation, and basic concepts. Install via npm/yarn/pnpm/bun or use CDN, create diagram with Diagram(), add nodes with diagram.add(), render with await diagram.render().'
+  - name: "Getting Started"
+    slug: "getting-started"
+    type: "lifecycle"
+    domain: "diagram-creation"
+    path: ".agents/skills/getting-started/SKILL.md"
+    description: "Installation, first diagram creation, and basic concepts. Install via npm/yarn/pnpm/bun or use CDN, create diagram with Diagram(), add nodes with diagram.add(), render with await diagram.render()."
     requires: []
     sources:
-      - 'hatemhosny/diagrams-js:docs/docs/getting-started/quickstart.mdx'
-      - 'hatemhosny/diagrams-js:docs/docs/getting-started/installation.mdx'
-      - 'hatemhosny/diagrams-js:src/Diagram.ts'
+      - "hatemhosny/diagrams-js:docs/docs/getting-started/quickstart.mdx"
+      - "hatemhosny/diagrams-js:docs/docs/getting-started/installation.mdx"
+      - "hatemhosny/diagrams-js:src/Diagram.ts"
 
-  - name: 'Diagram Configuration'
-    slug: 'diagram-configuration'
-    type: 'core'
-    domain: 'diagram-creation'
-    path: '.agents/skills/diagram-configuration/SKILL.md'
-    description: 'Configuring diagram direction (TB/BT/LR/RL), theme (pastel/neutral/blues/greens/orange), curve style (ortho/curved/spline/polyline), and custom Graphviz attributes via graphAttr, nodeAttr, edgeAttr.'
+  - name: "Diagram Configuration"
+    slug: "diagram-configuration"
+    type: "core"
+    domain: "diagram-creation"
+    path: ".agents/skills/diagram-configuration/SKILL.md"
+    description: "Configuring diagram direction (TB/BT/LR/RL), theme (pastel/neutral/blues/greens/orange), curve style (ortho/curved/spline/polyline), and custom Graphviz attributes via graphAttr, nodeAttr, edgeAttr."
     requires:
-      - 'getting-started'
+      - "getting-started"
     sources:
-      - 'hatemhosny/diagrams-js:docs/docs/guides/diagram.mdx'
-      - 'hatemhosny/diagrams-js:src/Diagram.ts'
-      - 'hatemhosny/diagrams-js:src/types.ts'
+      - "hatemhosny/diagrams-js:docs/docs/guides/diagram.mdx"
+      - "hatemhosny/diagrams-js:src/Diagram.ts"
+      - "hatemhosny/diagrams-js:src/types.ts"
 
-  - name: 'Rendering & Export'
-    slug: 'rendering-export'
-    type: 'core'
-    domain: 'diagram-creation'
-    path: '.agents/skills/rendering-export/SKILL.md'
-    description: 'Rendering diagrams to SVG (string), PNG/JPG (Uint8Array, requires sharp in Node.js), DOT format. Using data URLs for embedding. Saving files with diagram.save().'
+  - name: "Rendering & Export"
+    slug: "rendering-export"
+    type: "core"
+    domain: "diagram-creation"
+    path: ".agents/skills/rendering-export/SKILL.md"
+    description: "Rendering diagrams to SVG (string), PNG/JPG (Uint8Array, requires sharp in Node.js), DOT format. Using data URLs for embedding. Saving files with diagram.save()."
     requires:
-      - 'getting-started'
+      - "getting-started"
     sources:
-      - 'hatemhosny/diagrams-js:docs/docs/guides/rendering.mdx'
-      - 'hatemhosny/diagrams-js:docs/docs/guides/api.mdx'
-      - 'hatemhosny/diagrams-js:src/Diagram.ts'
+      - "hatemhosny/diagrams-js:docs/docs/guides/rendering.mdx"
+      - "hatemhosny/diagrams-js:docs/docs/guides/api.mdx"
+      - "hatemhosny/diagrams-js:src/Diagram.ts"
 
-  - name: 'Provider Nodes'
-    slug: 'provider-nodes'
-    type: 'core'
-    domain: 'node-management'
-    path: '.agents/skills/provider-nodes/SKILL.md'
-    description: 'Using 2000+ pre-built node classes from 17+ cloud providers (AWS, Azure, GCP, Kubernetes, On-premises, AlibabaCloud, DigitalOcean, Elastic, Firebase, Generic, GIS, IBM, OCI, OpenStack, Outscale, Programming, SaaS, C4). Import from diagrams-js/{provider}/{category}.'
+  - name: "Provider Nodes"
+    slug: "provider-nodes"
+    type: "core"
+    domain: "node-management"
+    path: ".agents/skills/provider-nodes/SKILL.md"
+    description: "Using 2000+ pre-built node classes from 17+ cloud providers (AWS, Azure, GCP, Kubernetes, On-premises, AlibabaCloud, DigitalOcean, Elastic, Firebase, Generic, GIS, IBM, OCI, OpenStack, Outscale, Programming, SaaS, C4). Import from diagrams-js/{provider}/{category}."
     requires:
-      - 'getting-started'
+      - "getting-started"
     sources:
-      - 'hatemhosny/diagrams-js:docs/docs/guides/providers.mdx'
-      - 'hatemhosny/diagrams-js:docs/docs/guides/node.mdx'
-      - 'hatemhosny/diagrams-js:src/providers/'
+      - "hatemhosny/diagrams-js:docs/docs/guides/providers.mdx"
+      - "hatemhosny/diagrams-js:docs/docs/guides/node.mdx"
+      - "hatemhosny/diagrams-js:src/providers/"
     subsystems:
-      - 'aws'
-      - 'azure'
-      - 'gcp'
-      - 'k8s'
-      - 'onprem'
-      - 'alibabacloud'
-      - 'digitalocean'
-      - 'elastic'
-      - 'firebase'
-      - 'generic'
-      - 'gis'
-      - 'ibm'
-      - 'oci'
-      - 'openstack'
-      - 'outscale'
-      - 'programming'
-      - 'saas'
-      - 'c4'
+      - "aws"
+      - "azure"
+      - "gcp"
+      - "k8s"
+      - "onprem"
+      - "alibabacloud"
+      - "digitalocean"
+      - "elastic"
+      - "firebase"
+      - "generic"
+      - "gis"
+      - "ibm"
+      - "oci"
+      - "openstack"
+      - "outscale"
+      - "programming"
+      - "saas"
+      - "c4"
 
-  - name: 'Custom Nodes'
-    slug: 'custom-nodes'
-    type: 'core'
-    domain: 'node-management'
-    path: '.agents/skills/custom-nodes/SKILL.md'
-    description: 'Creating nodes with external icons using Custom() function. Support for remote URLs, local files (Node.js), and data URLs. Customizing appearance with shape, width, height options.'
+  - name: "Custom Nodes"
+    slug: "custom-nodes"
+    type: "core"
+    domain: "node-management"
+    path: ".agents/skills/custom-nodes/SKILL.md"
+    description: "Creating nodes with external icons using Custom() function. Support for remote URLs, local files (Node.js), and data URLs. Customizing appearance with shape, width, height options."
     requires:
-      - 'getting-started'
+      - "getting-started"
     sources:
-      - 'hatemhosny/diagrams-js:docs/docs/guides/custom-nodes.mdx'
-      - 'hatemhosny/diagrams-js:src/Custom.ts'
+      - "hatemhosny/diagrams-js:docs/docs/guides/custom-nodes.mdx"
+      - "hatemhosny/diagrams-js:src/Custom.ts"
 
-  - name: 'Node Connections'
-    slug: 'node-connections'
-    type: 'core'
-    domain: 'connections-flow'
-    path: '.agents/skills/node-connections/SKILL.md'
-    description: 'Connecting nodes with .to() (forward), .from() (reverse), .with() (undirected). Using Edge() for styling with color, style, label. Chaining connections and connecting to multiple targets with arrays.'
+  - name: "Node Connections"
+    slug: "node-connections"
+    type: "core"
+    domain: "connections-flow"
+    path: ".agents/skills/node-connections/SKILL.md"
+    description: "Connecting nodes with .to() (forward), .from() (reverse), .with() (undirected). Using Edge() for styling with color, style, label. Chaining connections and connecting to multiple targets with arrays."
     requires:
-      - 'getting-started'
-      - 'provider-nodes'
+      - "getting-started"
+      - "provider-nodes"
     sources:
-      - 'hatemhosny/diagrams-js:docs/docs/guides/node.mdx'
-      - 'hatemhosny/diagrams-js:docs/docs/guides/edge.mdx'
-      - 'hatemhosny/diagrams-js:src/Node.ts'
-      - 'hatemhosny/diagrams-js:src/Edge.ts'
+      - "hatemhosny/diagrams-js:docs/docs/guides/node.mdx"
+      - "hatemhosny/diagrams-js:docs/docs/guides/edge.mdx"
+      - "hatemhosny/diagrams-js:src/Node.ts"
+      - "hatemhosny/diagrams-js:src/Edge.ts"
 
-  - name: 'Clusters & Grouping'
-    slug: 'clusters-grouping'
-    type: 'core'
-    domain: 'organization-layout'
-    path: '.agents/skills/clusters-grouping/SKILL.md'
-    description: 'Grouping nodes with diagram.cluster() and cluster.cluster() for nested clusters. Adding nodes to clusters with cluster.add(). Visual organization with themed backgrounds.'
+  - name: "Clusters & Grouping"
+    slug: "clusters-grouping"
+    type: "core"
+    domain: "organization-layout"
+    path: ".agents/skills/clusters-grouping/SKILL.md"
+    description: "Grouping nodes with diagram.cluster() and cluster.cluster() for nested clusters. Adding nodes to clusters with cluster.add(). Visual organization with themed backgrounds."
     requires:
-      - 'getting-started'
-      - 'provider-nodes'
+      - "getting-started"
+      - "provider-nodes"
     sources:
-      - 'hatemhosny/diagrams-js:docs/docs/guides/clusters.mdx'
-      - 'hatemhosny/diagrams-js:src/Cluster.ts'
+      - "hatemhosny/diagrams-js:docs/docs/guides/clusters.mdx"
+      - "hatemhosny/diagrams-js:src/Cluster.ts"
 
-  - name: 'Browser Integration'
-    slug: 'browser-integration'
-    type: 'framework'
-    domain: 'environment-integration'
-    path: '.agents/skills/browser-integration/SKILL.md'
-    description: 'Using diagrams-js in browsers with CDN (esm.sh), bundlers, and import maps. DOM insertion of SVG, data URLs for embedding, and file downloads with diagram.save().'
+  - name: "Browser Integration"
+    slug: "browser-integration"
+    type: "framework"
+    domain: "environment-integration"
+    path: ".agents/skills/browser-integration/SKILL.md"
+    description: "Using diagrams-js in browsers with CDN (esm.sh), bundlers, and import maps. DOM insertion of SVG, data URLs for embedding, and file downloads with diagram.save()."
     requires:
-      - 'getting-started'
+      - "getting-started"
     sources:
-      - 'hatemhosny/diagrams-js:docs/docs/getting-started/installation.mdx'
-      - 'hatemhosny/diagrams-js:docs/docs/guides/rendering.mdx'
-      - 'hatemhosny/diagrams-js:README.md'
+      - "hatemhosny/diagrams-js:docs/docs/getting-started/installation.mdx"
+      - "hatemhosny/diagrams-js:docs/docs/guides/rendering.mdx"
+      - "hatemhosny/diagrams-js:README.md"
 
-  - name: 'Node.js Integration'
-    slug: 'nodejs-integration'
-    type: 'core'
-    domain: 'environment-integration'
-    path: '.agents/skills/nodejs-integration/SKILL.md'
-    description: 'Using diagrams-js in Node.js with npm installation. File system saving, PNG/JPG rendering with sharp package, local icon files, Buffer handling for binary formats.'
+  - name: "Node.js Integration"
+    slug: "nodejs-integration"
+    type: "core"
+    domain: "environment-integration"
+    path: ".agents/skills/nodejs-integration/SKILL.md"
+    description: "Using diagrams-js in Node.js with npm installation. File system saving, PNG/JPG rendering with sharp package, local icon files, Buffer handling for binary formats."
     requires:
-      - 'getting-started'
+      - "getting-started"
     sources:
-      - 'hatemhosny/diagrams-js:docs/docs/getting-started/installation.mdx'
-      - 'hatemhosny/diagrams-js:docs/docs/guides/rendering.mdx'
-      - 'hatemhosny/diagrams-js:README.md'
+      - "hatemhosny/diagrams-js:docs/docs/getting-started/installation.mdx"
+      - "hatemhosny/diagrams-js:docs/docs/guides/rendering.mdx"
+      - "hatemhosny/diagrams-js:README.md"
 
-  - name: 'Python Migration'
-    slug: 'python-migration'
-    type: 'lifecycle'
-    domain: 'migration-interop'
-    path: '.agents/skills/python-migration/SKILL.md'
-    description: 'Migrating from Python diagrams library to TypeScript. Converting context managers to function calls, >> operator to .to(), << operator to .from(), - operator to .with(), Cluster syntax, import paths.'
+  - name: "Python Migration"
+    slug: "python-migration"
+    type: "lifecycle"
+    domain: "migration-interop"
+    path: ".agents/skills/python-migration/SKILL.md"
+    description: "Migrating from Python diagrams library to TypeScript. Converting context managers to function calls, >> operator to .to(), << operator to .from(), - operator to .with(), Cluster syntax, import paths."
     requires:
-      - 'getting-started'
+      - "getting-started"
     sources:
-      - 'hatemhosny/diagrams-js:docs/docs/guides/migration.mdx'
+      - "hatemhosny/diagrams-js:docs/docs/guides/migration.mdx"

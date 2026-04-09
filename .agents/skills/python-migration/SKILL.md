@@ -24,6 +24,7 @@ Migrate from Python diagrams to TypeScript diagrams-js. Key syntax differences: 
 ### Python vs TypeScript Side by Side
 
 **Python:**
+
 ```python
 from diagrams import Diagram
 from diagrams.aws.compute import EC2
@@ -33,6 +34,7 @@ with Diagram("My Diagram", show=False):
 ```
 
 **TypeScript:**
+
 ```typescript
 import { Diagram } from "diagrams-js";
 import { EC2 } from "diagrams-js/aws/compute";
@@ -47,6 +49,7 @@ const svg = await diagram.render();
 ### Creating Diagrams
 
 **Python:**
+
 ```python
 from diagrams import Diagram
 from diagrams.aws.compute import EC2
@@ -56,6 +59,7 @@ with Diagram("My Diagram", show=False):
 ```
 
 **TypeScript:**
+
 ```typescript
 import { Diagram } from "diagrams-js";
 import { EC2 } from "diagrams-js/aws/compute";
@@ -68,24 +72,28 @@ const svg = await diagram.render();
 ### Adding Nodes
 
 **Python:**
+
 ```python
 web = EC2("Web Server")  # Auto-registered
 ```
 
 **TypeScript:**
+
 ```typescript
-const web = diagram.add(EC2("Web Server"));  // Explicit registration
+const web = diagram.add(EC2("Web Server")); // Explicit registration
 ```
 
 ### Connections
 
 **Python:**
+
 ```python
 web >> api >> database
 api >> storage
 ```
 
 **TypeScript:**
+
 ```typescript
 web.to(api).to(database);
 api.to(storage);
@@ -94,11 +102,13 @@ api.to(storage);
 ### Reverse Connections
 
 **Python:**
+
 ```python
 database << api
 ```
 
 **TypeScript:**
+
 ```typescript
 database.from(api);
 ```
@@ -106,11 +116,13 @@ database.from(api);
 ### Undirected Connections
 
 **Python:**
+
 ```python
 primary - replica
 ```
 
 **TypeScript:**
+
 ```typescript
 primary.with(replica);
 ```
@@ -118,20 +130,23 @@ primary.with(replica);
 ### Multiple Connections
 
 **Python:**
+
 ```python
 lb >> [web1, web2, web3]
 [worker1, worker2] >> database
 ```
 
 **TypeScript:**
+
 ```typescript
 lb.to([web1, web2, web3]);
-[worker1, worker2].forEach(w => w.to(database));
+[worker1, worker2].forEach((w) => w.to(database));
 ```
 
 ### Clusters
 
 **Python:**
+
 ```python
 from diagrams import Cluster
 
@@ -142,6 +157,7 @@ with Diagram("Services"):
 ```
 
 **TypeScript:**
+
 ```typescript
 const diagram = Diagram("Services");
 
@@ -153,6 +169,7 @@ const web2 = webTier.add(EC2("web2"));
 ### Edge Styling
 
 **Python:**
+
 ```python
 from diagrams import Edge
 
@@ -160,6 +177,7 @@ web >> Edge(color="red") >> db
 ```
 
 **TypeScript:**
+
 ```typescript
 import { Edge } from "diagrams-js";
 
@@ -169,6 +187,7 @@ web.to(Edge({ color: "red" }), db);
 ### Custom Nodes
 
 **Python:**
+
 ```python
 from diagrams.custom import Custom
 
@@ -176,6 +195,7 @@ Custom("Product", "https://mywebsite.com/icon.png")
 ```
 
 **TypeScript:**
+
 ```typescript
 import { Custom } from "diagrams-js";
 
@@ -184,12 +204,12 @@ diagram.add(Custom("Product", "https://mywebsite.com/icon.png"));
 
 ### Import Paths
 
-| Python | TypeScript |
-|--------|------------|
-| `from diagrams.aws.compute import EC2` | `import { EC2 } from "diagrams-js/aws/compute"` |
+| Python                                  | TypeScript                                       |
+| --------------------------------------- | ------------------------------------------------ |
+| `from diagrams.aws.compute import EC2`  | `import { EC2 } from "diagrams-js/aws/compute"`  |
 | `from diagrams.aws.database import RDS` | `import { RDS } from "diagrams-js/aws/database"` |
-| `from diagrams.gcp.compute import GCE` | `import { GCE } from "diagrams-js/gcp/compute"` |
-| `from diagrams.k8s.compute import Pod` | `import { Pod } from "diagrams-js/k8s/compute"` |
+| `from diagrams.gcp.compute import GCE`  | `import { GCE } from "diagrams-js/gcp/compute"`  |
+| `from diagrams.k8s.compute import Pod`  | `import { Pod } from "diagrams-js/k8s/compute"`  |
 
 ## Common Mistakes
 
@@ -247,7 +267,7 @@ Wrong:
 Correct:
 
 ```typescript
-[web1, web2].forEach(w => w.to(database));
+[web1, web2].forEach((w) => w.to(database));
 ```
 
 TypeScript arrays don't have >> operator. Use forEach with method calls.
@@ -259,7 +279,7 @@ Source: docs/guides/migration.mdx
 Wrong:
 
 ```typescript
-import { EC2 } from "diagrams-js/aws";  // Missing category
+import { EC2 } from "diagrams-js/aws"; // Missing category
 ```
 
 Correct:

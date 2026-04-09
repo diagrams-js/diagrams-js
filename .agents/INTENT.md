@@ -17,18 +17,18 @@ intent install
 
 ## Available Skills
 
-| Skill | Description |
-|-------|-------------|
-| `diagrams-js/getting-started` | Installation, first diagram, basic concepts |
-| `diagrams-js/diagram-configuration` | Direction, theme, curve style, attributes |
-| `diagrams-js/rendering-export` | SVG, PNG, JPG, DOT, data URLs |
-| `diagrams-js/provider-nodes` | 17+ providers, 2000+ node classes |
-| `diagrams-js/custom-nodes` | External icons, URLs, data URLs |
-| `diagrams-js/node-connections` | to(), from(), with(), Edge styling |
-| `diagrams-js/clusters-grouping` | Clusters, nesting, organization |
-| `diagrams-js/browser-integration` | CDN, DOM, data URLs, downloads |
-| `diagrams-js/nodejs-integration` | File system, sharp, local icons |
-| `diagrams-js/python-migration` | Python to TypeScript conversion |
+| Skill                               | Description                                 |
+| ----------------------------------- | ------------------------------------------- |
+| `diagrams-js/getting-started`       | Installation, first diagram, basic concepts |
+| `diagrams-js/diagram-configuration` | Direction, theme, curve style, attributes   |
+| `diagrams-js/rendering-export`      | SVG, PNG, JPG, DOT, data URLs               |
+| `diagrams-js/provider-nodes`        | 17+ providers, 2000+ node classes           |
+| `diagrams-js/custom-nodes`          | External icons, URLs, data URLs             |
+| `diagrams-js/node-connections`      | to(), from(), with(), Edge styling          |
+| `diagrams-js/clusters-grouping`     | Clusters, nesting, organization             |
+| `diagrams-js/browser-integration`   | CDN, DOM, data URLs, downloads              |
+| `diagrams-js/nodejs-integration`    | File system, sharp, local icons             |
+| `diagrams-js/python-migration`      | Python to TypeScript conversion             |
 
 ## Usage
 
@@ -58,10 +58,12 @@ npx @tanstack/intent validate
 ## Contributing
 
 Skills are located in `.agents/skills/`. Each skill includes:
+
 - **SKILL.md** - The skill content for AI agents
 - **References/** - Optional detailed reference files
 
 To update skills:
+
 1. Modify the relevant SKILL.md file
 2. Run validation: `npx @tanstack/intent validate`
 3. Submit a PR with your changes

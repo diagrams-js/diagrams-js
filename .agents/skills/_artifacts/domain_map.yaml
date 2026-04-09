@@ -6,309 +6,309 @@
 # Status: draft
 
 library:
-  name: 'diagrams-js'
-  version: '0.0.9'
-  repository: 'https://github.com/hatemhosny/diagrams-js'
-  description: 'A TypeScript port of the Python diagrams library for drawing cloud system architecture diagrams as code'
-  primary_framework: 'framework-agnostic'
+  name: "diagrams-js"
+  version: "0.0.9"
+  repository: "https://github.com/hatemhosny/diagrams-js"
+  description: "A TypeScript port of the Python diagrams library for drawing cloud system architecture diagrams as code"
+  primary_framework: "framework-agnostic"
 
 domains:
-  - name: 'Diagram Creation'
-    slug: 'diagram-creation'
-    description: 'Creating, configuring, and rendering diagrams with various output formats'
-  
-  - name: 'Node Management'
-    slug: 'node-management'
-    description: 'Adding and configuring nodes from providers or custom sources'
-  
-  - name: 'Connections & Flow'
-    slug: 'connections-flow'
-    description: 'Connecting nodes with edges and controlling data flow direction'
-  
-  - name: 'Organization & Layout'
-    slug: 'organization-layout'
-    description: 'Grouping nodes with clusters and controlling diagram layout'
-  
-  - name: 'Environment Integration'
-    slug: 'environment-integration'
-    description: 'Using diagrams-js in different environments (browser, Node.js, CI/CD)'
-  
-  - name: 'Migration & Interoperability'
-    slug: 'migration-interop'
-    description: 'Migrating from Python diagrams and integrating with other tools'
+  - name: "Diagram Creation"
+    slug: "diagram-creation"
+    description: "Creating, configuring, and rendering diagrams with various output formats"
+
+  - name: "Node Management"
+    slug: "node-management"
+    description: "Adding and configuring nodes from providers or custom sources"
+
+  - name: "Connections & Flow"
+    slug: "connections-flow"
+    description: "Connecting nodes with edges and controlling data flow direction"
+
+  - name: "Organization & Layout"
+    slug: "organization-layout"
+    description: "Grouping nodes with clusters and controlling diagram layout"
+
+  - name: "Environment Integration"
+    slug: "environment-integration"
+    description: "Using diagrams-js in different environments (browser, Node.js, CI/CD)"
+
+  - name: "Migration & Interoperability"
+    slug: "migration-interop"
+    description: "Migrating from Python diagrams and integrating with other tools"
 
 skills:
-  - name: 'Getting Started'
-    slug: 'getting-started'
-    domain: 'diagram-creation'
-    description: 'Installation, first diagram creation, and basic concepts'
-    type: 'lifecycle'
+  - name: "Getting Started"
+    slug: "getting-started"
+    domain: "diagram-creation"
+    description: "Installation, first diagram creation, and basic concepts"
+    type: "lifecycle"
     covers:
-      - 'Diagram constructor'
-      - 'diagram.add()'
-      - 'diagram.render()'
-      - 'Installation (npm/yarn/pnpm/bun)'
-      - 'CDN usage'
-      - 'Import maps'
+      - "Diagram constructor"
+      - "diagram.add()"
+      - "diagram.render()"
+      - "Installation (npm/yarn/pnpm/bun)"
+      - "CDN usage"
+      - "Import maps"
     tasks:
-      - 'Install diagrams-js in a project'
-      - 'Create first diagram'
-      - 'Render diagram to SVG'
-      - 'Use in browser without build steps'
+      - "Install diagrams-js in a project"
+      - "Create first diagram"
+      - "Render diagram to SVG"
+      - "Use in browser without build steps"
     failure_modes:
-      - mistake: 'Not awaiting diagram.render()'
-        mechanism: 'Returns Promise - must be awaited or use .then()'
+      - mistake: "Not awaiting diagram.render()"
+        mechanism: "Returns Promise - must be awaited or use .then()"
         wrong_pattern: |
           const svg = diagram.render();
           console.log(svg); // Promise, not string
         correct_pattern: |
           const svg = await diagram.render();
           console.log(svg); // SVG string
-        source: 'source code - Diagram.ts render() returns Promise'
-        priority: 'HIGH'
-        status: 'active'
-      - mistake: 'Using wrong import path for providers'
-        mechanism: 'Provider imports use subpath imports like diagrams-js/aws/compute'
+        source: "source code - Diagram.ts render() returns Promise"
+        priority: "HIGH"
+        status: "active"
+      - mistake: "Using wrong import path for providers"
+        mechanism: "Provider imports use subpath imports like diagrams-js/aws/compute"
         wrong_pattern: |
           import { EC2 } from "diagrams-js/providers/aws/compute";
         correct_pattern: |
           import { EC2 } from "diagrams-js/aws/compute";
-        source: 'migration guide and package.json exports'
-        priority: 'HIGH'
-        status: 'active'
+        source: "migration guide and package.json exports"
+        priority: "HIGH"
+        status: "active"
 
-  - name: 'Diagram Configuration'
-    slug: 'diagram-configuration'
-    domain: 'diagram-creation'
-    description: 'Configuring diagram direction, theme, curve style, and custom attributes'
-    type: 'core'
+  - name: "Diagram Configuration"
+    slug: "diagram-configuration"
+    domain: "diagram-creation"
+    description: "Configuring diagram direction, theme, curve style, and custom attributes"
+    type: "core"
     covers:
-      - 'direction option (TB, BT, LR, RL)'
-      - 'theme option (pastel, neutral, blues, greens, orange)'
-      - 'curvestyle option (ortho, curved, spline, polyline)'
-      - 'graphAttr, nodeAttr, edgeAttr'
-      - 'autolabel option'
-      - 'strict option'
+      - "direction option (TB, BT, LR, RL)"
+      - "theme option (pastel, neutral, blues, greens, orange)"
+      - "curvestyle option (ortho, curved, spline, polyline)"
+      - "graphAttr, nodeAttr, edgeAttr"
+      - "autolabel option"
+      - "strict option"
     tasks:
-      - 'Set diagram layout direction'
-      - 'Choose color theme'
-      - 'Customize edge curve style'
-      - 'Apply custom Graphviz attributes'
-      - 'Enable auto-labeling'
+      - "Set diagram layout direction"
+      - "Choose color theme"
+      - "Customize edge curve style"
+      - "Apply custom Graphviz attributes"
+      - "Enable auto-labeling"
     failure_modes:
-      - mistake: 'Using invalid direction value'
-        mechanism: 'Diagram constructor validates direction and throws for invalid values'
+      - mistake: "Using invalid direction value"
+        mechanism: "Diagram constructor validates direction and throws for invalid values"
         wrong_pattern: |
           const diagram = Diagram("Test", { direction: "top-down" });
         correct_pattern: |
           const diagram = Diagram("Test", { direction: "TB" });
-        source: 'source code - Diagram.ts lines 252-255'
-        priority: 'HIGH'
-        status: 'active'
-      - mistake: 'Using invalid theme name'
-        mechanism: 'Constructor validates theme against THEMES object keys'
+        source: "source code - Diagram.ts lines 252-255"
+        priority: "HIGH"
+        status: "active"
+      - mistake: "Using invalid theme name"
+        mechanism: "Constructor validates theme against THEMES object keys"
         wrong_pattern: |
           const diagram = Diagram("Test", { theme: "dark" });
         correct_pattern: |
           const diagram = Diagram("Test", { theme: "neutral" });
-        source: 'source code - Diagram.ts lines 262-267'
-        priority: 'HIGH'
-        status: 'active'
-      - mistake: 'Using invalid curve style'
-        mechanism: 'Constructor validates curvestyle against allowed values'
+        source: "source code - Diagram.ts lines 262-267"
+        priority: "HIGH"
+        status: "active"
+      - mistake: "Using invalid curve style"
+        mechanism: "Constructor validates curvestyle against allowed values"
         wrong_pattern: |
           const diagram = Diagram("Test", { curvestyle: "rounded" });
         correct_pattern: |
           const diagram = Diagram("Test", { curvestyle: "curved" });
-        source: 'source code - Diagram.ts lines 257-260'
-        priority: 'HIGH'
-        status: 'active'
+        source: "source code - Diagram.ts lines 257-260"
+        priority: "HIGH"
+        status: "active"
 
-  - name: 'Rendering & Export'
-    slug: 'rendering-export'
-    domain: 'diagram-creation'
-    description: 'Rendering diagrams to SVG, PNG, JPG, DOT formats and saving files'
-    type: 'core'
+  - name: "Rendering & Export"
+    slug: "rendering-export"
+    domain: "diagram-creation"
+    description: "Rendering diagrams to SVG, PNG, JPG, DOT formats and saving files"
+    type: "core"
     covers:
-      - 'diagram.render() options'
-      - 'SVG output (string)'
-      - 'PNG/JPG output (Uint8Array)'
-      - 'DOT output (Graphviz source)'
-      - 'Data URL output'
-      - 'diagram.save()'
-      - 'PNG/JPG scale, width, height options'
+      - "diagram.render() options"
+      - "SVG output (string)"
+      - "PNG/JPG output (Uint8Array)"
+      - "DOT output (Graphviz source)"
+      - "Data URL output"
+      - "diagram.save()"
+      - "PNG/JPG scale, width, height options"
     tasks:
-      - 'Render to SVG string'
-      - 'Render to PNG binary'
-      - 'Get data URL for embedding'
-      - 'Save to file'
-      - 'Export to DOT format'
+      - "Render to SVG string"
+      - "Render to PNG binary"
+      - "Get data URL for embedding"
+      - "Save to file"
+      - "Export to DOT format"
     failure_modes:
-      - mistake: 'Trying to render PNG without sharp installed'
-        mechanism: 'PNG/JPG rendering requires sharp package in Node.js'
+      - mistake: "Trying to render PNG without sharp installed"
+        mechanism: "PNG/JPG rendering requires sharp package in Node.js"
         wrong_pattern: |
           // sharp not installed
           const png = await diagram.render({ format: "png" });
         correct_pattern: |
           // npm install sharp
           const png = await diagram.render({ format: "png" });
-        source: 'source code - Diagram.ts _svgToPngNode() error message'
-        priority: 'CRITICAL'
-        status: 'active'
-      - mistake: 'Assuming render() always returns string'
-        mechanism: 'Returns Uint8Array for PNG/JPG, string for SVG/DOT'
+        source: "source code - Diagram.ts _svgToPngNode() error message"
+        priority: "CRITICAL"
+        status: "active"
+      - mistake: "Assuming render() always returns string"
+        mechanism: "Returns Uint8Array for PNG/JPG, string for SVG/DOT"
         wrong_pattern: |
           const data = await diagram.render({ format: "png" });
           fs.writeFileSync("out.png", data); // Error: data is Uint8Array
         correct_pattern: |
           const data = await diagram.render({ format: "png" });
           fs.writeFileSync("out.png", Buffer.from(data));
-        source: 'source code - Diagram.ts render() overload types'
-        priority: 'HIGH'
-        status: 'active'
-      - mistake: 'Calling save() without filepath in browser'
-        mechanism: 'Browser triggers download with filename parameter'
+        source: "source code - Diagram.ts render() overload types"
+        priority: "HIGH"
+        status: "active"
+      - mistake: "Calling save() without filepath in browser"
+        mechanism: "Browser triggers download with filename parameter"
         wrong_pattern: |
           await diagram.save(); // Uses default filename
         correct_pattern: |
           await diagram.save("my-diagram.svg");
-        source: 'source code - Diagram.ts save() method'
-        priority: 'MEDIUM'
-        status: 'active'
+        source: "source code - Diagram.ts save() method"
+        priority: "MEDIUM"
+        status: "active"
 
-  - name: 'Provider Nodes'
-    slug: 'provider-nodes'
-    domain: 'node-management'
-    description: 'Using 2000+ pre-built node classes from 17+ cloud providers'
-    type: 'core'
+  - name: "Provider Nodes"
+    slug: "provider-nodes"
+    domain: "node-management"
+    description: "Using 2000+ pre-built node classes from 17+ cloud providers"
+    type: "core"
     covers:
-      - 'AWS, Azure, GCP providers'
-      - 'Kubernetes provider'
-      - 'On-premises provider'
-      - '17 total providers'
-      - 'Provider category imports (e.g., aws/compute)'
-      - 'Auto-generated icons'
+      - "AWS, Azure, GCP providers"
+      - "Kubernetes provider"
+      - "On-premises provider"
+      - "17 total providers"
+      - "Provider category imports (e.g., aws/compute)"
+      - "Auto-generated icons"
     tasks:
-      - 'Import AWS EC2, Lambda nodes'
-      - 'Import Kubernetes Pod, Deployment nodes'
-      - 'Import database nodes'
-      - 'Find correct provider and category'
+      - "Import AWS EC2, Lambda nodes"
+      - "Import Kubernetes Pod, Deployment nodes"
+      - "Import database nodes"
+      - "Find correct provider and category"
     subsystems:
-      - name: 'aws'
-        description: 'Amazon Web Services - 200+ services across 20+ categories'
-      - name: 'azure'
-        description: 'Microsoft Azure - 100+ services'
-      - name: 'gcp'
-        description: 'Google Cloud Platform - 80+ services'
-      - name: 'k8s'
-        description: 'Kubernetes - 60+ resources'
-      - name: 'onprem'
-        description: 'On-premises - 80+ components'
-      - name: 'Other providers'
-        description: 'AlibabaCloud, DigitalOcean, Elastic, Firebase, Generic, GIS, IBM, OCI, OpenStack, Outscale, Programming, SaaS, C4'
+      - name: "aws"
+        description: "Amazon Web Services - 200+ services across 20+ categories"
+      - name: "azure"
+        description: "Microsoft Azure - 100+ services"
+      - name: "gcp"
+        description: "Google Cloud Platform - 80+ services"
+      - name: "k8s"
+        description: "Kubernetes - 60+ resources"
+      - name: "onprem"
+        description: "On-premises - 80+ components"
+      - name: "Other providers"
+        description: "AlibabaCloud, DigitalOcean, Elastic, Firebase, Generic, GIS, IBM, OCI, OpenStack, Outscale, Programming, SaaS, C4"
     failure_modes:
-      - mistake: 'Importing from wrong provider path'
-        mechanism: 'Provider paths are specific: diagrams-js/{provider}/{category}'
+      - mistake: "Importing from wrong provider path"
+        mechanism: "Provider paths are specific: diagrams-js/{provider}/{category}"
         wrong_pattern: |
           import { EC2 } from "diagrams-js/aws";
         correct_pattern: |
           import { EC2 } from "diagrams-js/aws/compute";
-        source: 'migration guide and API reference'
-        priority: 'HIGH'
-        status: 'active'
-      - mistake: 'Assuming nodes auto-register with diagram'
-        mechanism: 'Must explicitly call diagram.add() for each node'
+        source: "migration guide and API reference"
+        priority: "HIGH"
+        status: "active"
+      - mistake: "Assuming nodes auto-register with diagram"
+        mechanism: "Must explicitly call diagram.add() for each node"
         wrong_pattern: |
           const web = EC2("Web Server"); // Not added to diagram!
         correct_pattern: |
           const web = diagram.add(EC2("Web Server"));
-        source: 'migration guide from Python'
-        priority: 'CRITICAL'
-        status: 'active'
+        source: "migration guide from Python"
+        priority: "CRITICAL"
+        status: "active"
 
-  - name: 'Custom Nodes'
-    slug: 'custom-nodes'
-    domain: 'node-management'
-    description: 'Creating nodes with external icons from URLs, local files, or data URLs'
-    type: 'core'
+  - name: "Custom Nodes"
+    slug: "custom-nodes"
+    domain: "node-management"
+    description: "Creating nodes with external icons from URLs, local files, or data URLs"
+    type: "core"
     covers:
-      - 'Custom() function'
-      - 'Remote URL icons'
-      - 'Local file icons (Node.js)'
-      - 'Data URL icons'
-      - 'Custom node options (shape, width, height)'
-      - 'Icon loading and injection'
+      - "Custom() function"
+      - "Remote URL icons"
+      - "Local file icons (Node.js)"
+      - "Data URL icons"
+      - "Custom node options (shape, width, height)"
+      - "Icon loading and injection"
     tasks:
-      - 'Create node with external icon URL'
-      - 'Use local image file as icon'
-      - 'Embed icon as data URL'
-      - 'Customize node appearance'
+      - "Create node with external icon URL"
+      - "Use local image file as icon"
+      - "Embed icon as data URL"
+      - "Customize node appearance"
     failure_modes:
-      - mistake: 'Using local file path in browser'
-        mechanism: 'Browser cannot access local file system - use URLs or data URLs'
+      - mistake: "Using local file path in browser"
+        mechanism: "Browser cannot access local file system - use URLs or data URLs"
         wrong_pattern: |
           // In browser
           const node = Custom("Service", "./local/icon.png");
         correct_pattern: |
           // In browser - use remote URL or data URL
           const node = Custom("Service", "https://example.com/icon.png");
-        source: 'docs/guides/custom-nodes.mdx'
-        priority: 'HIGH'
-        status: 'active'
-      - mistake: 'Not handling icon load failure'
-        mechanism: 'Remote icon fetch can fail - check console for warnings'
+        source: "docs/guides/custom-nodes.mdx"
+        priority: "HIGH"
+        status: "active"
+      - mistake: "Not handling icon load failure"
+        mechanism: "Remote icon fetch can fail - check console for warnings"
         wrong_pattern: |
           const node = diagram.add(Custom("Service", "https://bad-url/icon.png"));
           // No error handling, icon silently missing
         correct_pattern: |
           // Check browser console for warnings
           // Or pre-load icon and use data URL
-        source: 'source code - Custom.ts _fetchRemoteIcon()'
-        priority: 'MEDIUM'
-        status: 'active'
+        source: "source code - Custom.ts _fetchRemoteIcon()"
+        priority: "MEDIUM"
+        status: "active"
 
-  - name: 'Node Connections'
-    slug: 'node-connections'
-    domain: 'connections-flow'
-    description: 'Connecting nodes with .to(), .from(), .with() methods and Edge styling'
-    type: 'core'
+  - name: "Node Connections"
+    slug: "node-connections"
+    domain: "connections-flow"
+    description: "Connecting nodes with .to(), .from(), .with() methods and Edge styling"
+    type: "core"
     covers:
-      - 'node.to(target) - forward connection'
-      - 'node.from(source) - reverse connection'
-      - 'node.with(target) - undirected connection'
-      - 'Edge() for styling (color, style, label)'
-      - 'Edge chaining'
-      - 'Multiple targets with arrays'
-      - 'Connection direction control'
+      - "node.to(target) - forward connection"
+      - "node.from(source) - reverse connection"
+      - "node.with(target) - undirected connection"
+      - "Edge() for styling (color, style, label)"
+      - "Edge chaining"
+      - "Multiple targets with arrays"
+      - "Connection direction control"
     tasks:
-      - 'Create forward data flow'
-      - 'Create reverse connections'
-      - 'Add bidirectional connections'
-      - 'Style edges with colors and labels'
-      - 'Connect to multiple targets'
+      - "Create forward data flow"
+      - "Create reverse connections"
+      - "Add bidirectional connections"
+      - "Style edges with colors and labels"
+      - "Connect to multiple targets"
     failure_modes:
-      - mistake: 'Confusing .to() and .from() direction'
-        mechanism: '.to() creates arrow from source to target, .from() creates arrow pointing back'
+      - mistake: "Confusing .to() and .from() direction"
+        mechanism: ".to() creates arrow from source to target, .from() creates arrow pointing back"
         wrong_pattern: |
           // Want: db << api (arrow from api to db)
           db.to(api); // Wrong! Creates db -> api
         correct_pattern: |
           // Want: db << api (arrow from api to db)
           db.from(api); // Correct! Creates api -> db with dir=back
-        source: 'migration guide and docs/guides/node.mdx'
-        priority: 'HIGH'
-        status: 'active'
-      - mistake: 'Using Python >> operator syntax'
-        mechanism: 'TypeScript uses .to() method, not >> operator'
+        source: "migration guide and docs/guides/node.mdx"
+        priority: "HIGH"
+        status: "active"
+      - mistake: "Using Python >> operator syntax"
+        mechanism: "TypeScript uses .to() method, not >> operator"
         wrong_pattern: |
           web >> api >> database; // Python syntax
         correct_pattern: |
           web.to(api).to(database); // TypeScript syntax
-        source: 'migration guide'
-        priority: 'CRITICAL'
-        status: 'active'
-      - mistake: 'Trying to connect nodes not added to diagram'
-        mechanism: 'Nodes must be registered with diagram before connecting'
+        source: "migration guide"
+        priority: "CRITICAL"
+        status: "active"
+      - mistake: "Trying to connect nodes not added to diagram"
+        mechanism: "Nodes must be registered with diagram before connecting"
         wrong_pattern: |
           const web = EC2("Web"); // Not added!
           const db = diagram.add(RDS("DB"));
@@ -317,159 +317,159 @@ skills:
           const web = diagram.add(EC2("Web"));
           const db = diagram.add(RDS("DB"));
           web.to(db); // Works!
-        source: 'source code - Node.ts ~connect() method throws error'
-        priority: 'CRITICAL'
-        status: 'active'
-      - mistake: 'Passing wrong argument order with Edge'
-        mechanism: 'Edge goes first when styling: node.to(Edge({...}), target)'
+        source: "source code - Node.ts ~connect() method throws error"
+        priority: "CRITICAL"
+        status: "active"
+      - mistake: "Passing wrong argument order with Edge"
+        mechanism: "Edge goes first when styling: node.to(Edge({...}), target)"
         wrong_pattern: |
           web.to(db, Edge({ color: "red" })); // Wrong order
         correct_pattern: |
           web.to(Edge({ color: "red" }), db); // Correct order
-        source: 'docs/guides/edge.mdx'
-        priority: 'HIGH'
-        status: 'active'
+        source: "docs/guides/edge.mdx"
+        priority: "HIGH"
+        status: "active"
 
-  - name: 'Clusters & Grouping'
-    slug: 'clusters-grouping'
-    domain: 'organization-layout'
-    description: 'Grouping nodes with clusters and nested clusters'
-    type: 'core'
+  - name: "Clusters & Grouping"
+    slug: "clusters-grouping"
+    domain: "organization-layout"
+    description: "Grouping nodes with clusters and nested clusters"
+    type: "core"
     covers:
-      - 'diagram.cluster(label)'
-      - 'cluster.add(node)'
-      - 'Nested clusters via cluster.cluster()'
-      - 'Cluster theme colors'
-      - 'Cluster connections'
+      - "diagram.cluster(label)"
+      - "cluster.add(node)"
+      - "Nested clusters via cluster.cluster()"
+      - "Cluster theme colors"
+      - "Cluster connections"
     tasks:
-      - 'Create cluster for grouping'
-      - 'Add nodes to cluster'
-      - 'Create nested clusters'
-      - 'Connect clusters to other nodes'
+      - "Create cluster for grouping"
+      - "Add nodes to cluster"
+      - "Create nested clusters"
+      - "Connect clusters to other nodes"
     failure_modes:
-      - mistake: 'Calling diagram.add() instead of cluster.add()'
-        mechanism: 'Must use cluster.add() to put nodes inside cluster'
+      - mistake: "Calling diagram.add() instead of cluster.add()"
+        mechanism: "Must use cluster.add() to put nodes inside cluster"
         wrong_pattern: |
           const vpc = diagram.cluster("VPC");
           const server = diagram.add(EC2("Server")); // Added to diagram, not cluster!
         correct_pattern: |
           const vpc = diagram.cluster("VPC");
           const server = vpc.add(EC2("Server")); // Added to cluster
-        source: 'docs/guides/clusters.mdx'
-        priority: 'HIGH'
-        status: 'active'
-      - mistake: 'Using Python Cluster context manager syntax'
-        mechanism: 'TypeScript uses method calls, not context managers'
+        source: "docs/guides/clusters.mdx"
+        priority: "HIGH"
+        status: "active"
+      - mistake: "Using Python Cluster context manager syntax"
+        mechanism: "TypeScript uses method calls, not context managers"
         wrong_pattern: |
           with Cluster("VPC"):
               server = EC2("Server")
         correct_pattern: |
           const vpc = diagram.cluster("VPC");
           const server = vpc.add(EC2("Server"));
-        source: 'migration guide'
-        priority: 'CRITICAL'
-        status: 'active'
+        source: "migration guide"
+        priority: "CRITICAL"
+        status: "active"
 
-  - name: 'Browser Integration'
-    slug: 'browser-integration'
-    domain: 'environment-integration'
-    description: 'Using diagrams-js in browsers with CDN, bundlers, and DOM integration'
-    type: 'framework'
+  - name: "Browser Integration"
+    slug: "browser-integration"
+    domain: "environment-integration"
+    description: "Using diagrams-js in browsers with CDN, bundlers, and DOM integration"
+    type: "framework"
     covers:
-      - 'CDN usage (esm.sh)'
-      - 'Import maps'
-      - 'DOM insertion of SVG'
-      - 'Data URLs for embedding'
-      - 'File download with save()'
-      - 'Custom node remote icons'
+      - "CDN usage (esm.sh)"
+      - "Import maps"
+      - "DOM insertion of SVG"
+      - "Data URLs for embedding"
+      - "File download with save()"
+      - "Custom node remote icons"
     tasks:
-      - 'Load from CDN'
-      - 'Display diagram in HTML'
-      - 'Create download link'
-      - 'Use with import maps'
+      - "Load from CDN"
+      - "Display diagram in HTML"
+      - "Create download link"
+      - "Use with import maps"
     failure_modes:
-      - mistake: 'Trying to use Node.js fs APIs in browser'
-        mechanism: 'Browser environment uses save() for downloads, not fs'
+      - mistake: "Trying to use Node.js fs APIs in browser"
+        mechanism: "Browser environment uses save() for downloads, not fs"
         wrong_pattern: |
           import { writeFileSync } from "fs"; // ERROR in browser
         correct_pattern: |
           await diagram.save("diagram.svg"); // Triggers download
-        source: 'docs/guides/rendering.mdx'
-        priority: 'CRITICAL'
-        status: 'active'
+        source: "docs/guides/rendering.mdx"
+        priority: "CRITICAL"
+        status: "active"
       - mistake: 'Not using type="module" on script tag'
-        mechanism: 'diagrams-js is ESM-only'
+        mechanism: "diagrams-js is ESM-only"
         wrong_pattern: |
           <script src="diagrams-js"></script>
         correct_pattern: |
           <script type="module">
             import { Diagram } from "diagrams-js";
           </script>
-        source: 'docs/getting-started/installation.mdx'
-        priority: 'HIGH'
-        status: 'active'
+        source: "docs/getting-started/installation.mdx"
+        priority: "HIGH"
+        status: "active"
 
-  - name: 'Node.js Integration'
-    slug: 'nodejs-integration'
-    domain: 'environment-integration'
-    description: 'Using diagrams-js in Node.js with file system and PNG/JPG rendering'
-    type: 'core'
+  - name: "Node.js Integration"
+    slug: "nodejs-integration"
+    domain: "environment-integration"
+    description: "Using diagrams-js in Node.js with file system and PNG/JPG rendering"
+    type: "core"
     covers:
-      - 'npm installation'
-      - 'File system saving'
-      - 'PNG/JPG rendering with sharp'
-      - 'Local icon files'
-      - 'Buffer handling for binary formats'
+      - "npm installation"
+      - "File system saving"
+      - "PNG/JPG rendering with sharp"
+      - "Local icon files"
+      - "Buffer handling for binary formats"
     tasks:
-      - 'Save diagram to file'
-      - 'Render PNG/JPG'
-      - 'Use local icon images'
-      - 'Write binary output'
+      - "Save diagram to file"
+      - "Render PNG/JPG"
+      - "Use local icon images"
+      - "Write binary output"
     failure_modes:
-      - mistake: 'Writing Uint8Array directly without Buffer'
-        mechanism: 'fs.writeFile needs Buffer for Uint8Array in some Node versions'
+      - mistake: "Writing Uint8Array directly without Buffer"
+        mechanism: "fs.writeFile needs Buffer for Uint8Array in some Node versions"
         wrong_pattern: |
           const png = await diagram.render({ format: "png" });
           fs.writeFileSync("out.png", png); // May fail
         correct_pattern: |
           const png = await diagram.render({ format: "png" });
           fs.writeFileSync("out.png", Buffer.from(png));
-        source: 'docs/guides/rendering.mdx'
-        priority: 'MEDIUM'
-        status: 'active'
+        source: "docs/guides/rendering.mdx"
+        priority: "MEDIUM"
+        status: "active"
 
-  - name: 'Python Migration'
-    slug: 'python-migration'
-    domain: 'migration-interop'
-    description: 'Migrating existing Python diagrams code to TypeScript'
-    type: 'lifecycle'
+  - name: "Python Migration"
+    slug: "python-migration"
+    domain: "migration-interop"
+    description: "Migrating existing Python diagrams code to TypeScript"
+    type: "lifecycle"
     covers:
-      - 'Context manager to function call'
-      - '>> operator to .to() method'
-      - '<< operator to .from() method'
-      - '- operator to .with() method'
-      - 'Cluster syntax differences'
-      - 'Edge syntax differences'
-      - 'Import path mapping'
+      - "Context manager to function call"
+      - ">> operator to .to() method"
+      - "<< operator to .from() method"
+      - "- operator to .with() method"
+      - "Cluster syntax differences"
+      - "Edge syntax differences"
+      - "Import path mapping"
     tasks:
-      - 'Convert Python diagram to TypeScript'
-      - 'Map operators to methods'
-      - 'Update import paths'
-      - 'Convert clusters'
+      - "Convert Python diagram to TypeScript"
+      - "Map operators to methods"
+      - "Update import paths"
+      - "Convert clusters"
     failure_modes:
-      - mistake: 'Using Python context manager (with statement)'
-        mechanism: 'TypeScript uses function calls and explicit add()'
+      - mistake: "Using Python context manager (with statement)"
+        mechanism: "TypeScript uses function calls and explicit add()"
         wrong_pattern: |
           with Diagram("Test"):
               EC2("Web")
         correct_pattern: |
           const diagram = Diagram("Test");
           diagram.add(EC2("Web"));
-        source: 'docs/guides/migration.mdx'
-        priority: 'CRITICAL'
-        status: 'active'
-      - mistake: 'Forgetting explicit render() call'
-        mechanism: 'Python auto-renders, TypeScript requires explicit render()'
+        source: "docs/guides/migration.mdx"
+        priority: "CRITICAL"
+        status: "active"
+      - mistake: "Forgetting explicit render() call"
+        mechanism: "Python auto-renders, TypeScript requires explicit render()"
         wrong_pattern: |
           const diagram = Diagram("Test");
           diagram.add(EC2("Web"));
@@ -478,78 +478,78 @@ skills:
           const diagram = Diagram("Test");
           diagram.add(EC2("Web"));
           const svg = await diagram.render();
-        source: 'docs/guides/migration.mdx'
-        priority: 'HIGH'
-        status: 'active'
-      - mistake: 'Using Python list >> node syntax'
-        mechanism: 'TypeScript uses forEach with method calls'
+        source: "docs/guides/migration.mdx"
+        priority: "HIGH"
+        status: "active"
+      - mistake: "Using Python list >> node syntax"
+        mechanism: "TypeScript uses forEach with method calls"
         wrong_pattern: |
           [web1, web2] >> database; // Python syntax
         correct_pattern: |
           [web1, web2].forEach(w => w.to(database)); // TypeScript
-        source: 'docs/guides/migration.mdx'
-        priority: 'CRITICAL'
-        status: 'active'
+        source: "docs/guides/migration.mdx"
+        priority: "CRITICAL"
+        status: "active"
 
 tensions:
-  - name: 'Implicit vs explicit node registration'
-    skills: ['provider-nodes', 'node-connections']
-    description: 'Python auto-registers nodes, TypeScript requires explicit diagram.add()'
-    implication: 'Agents assume Python-like behavior and forget to call diagram.add(), causing silent failures when connecting nodes'
-  
-  - name: 'Sync vs async rendering'
-    skills: ['getting-started', 'rendering-export']
-    description: 'Python renders synchronously, TypeScript uses async/await'
-    implication: 'Agents may forget await, causing code to work with Promise objects instead of actual output'
-  
-  - name: 'Browser vs Node.js capabilities'
-    skills: ['browser-integration', 'nodejs-integration']
-    description: 'Some features work only in specific environments (sharp for PNG in Node.js, file download in browser)'
-    implication: 'Agents may generate code that uses Node.js APIs in browser context or vice versa'
+  - name: "Implicit vs explicit node registration"
+    skills: ["provider-nodes", "node-connections"]
+    description: "Python auto-registers nodes, TypeScript requires explicit diagram.add()"
+    implication: "Agents assume Python-like behavior and forget to call diagram.add(), causing silent failures when connecting nodes"
+
+  - name: "Sync vs async rendering"
+    skills: ["getting-started", "rendering-export"]
+    description: "Python renders synchronously, TypeScript uses async/await"
+    implication: "Agents may forget await, causing code to work with Promise objects instead of actual output"
+
+  - name: "Browser vs Node.js capabilities"
+    skills: ["browser-integration", "nodejs-integration"]
+    description: "Some features work only in specific environments (sharp for PNG in Node.js, file download in browser)"
+    implication: "Agents may generate code that uses Node.js APIs in browser context or vice versa"
 
 cross_references:
-  - from: 'getting-started'
-    to: 'diagram-configuration'
-    reason: 'After creating first diagram, users want to customize appearance'
-  
-  - from: 'getting-started'
-    to: 'rendering-export'
-    reason: 'Basic diagram creation leads to wanting different output formats'
-  
-  - from: 'provider-nodes'
-    to: 'node-connections'
-    reason: 'After creating nodes, users need to connect them'
-  
-  - from: 'provider-nodes'
-    to: 'clusters-grouping'
-    reason: 'Complex diagrams need organization with clusters'
-  
-  - from: 'python-migration'
-    to: 'getting-started'
-    reason: 'Migrating users need to learn new syntax basics'
-  
-  - from: 'python-migration'
-    to: 'node-connections'
-    reason: 'Connection syntax is a major difference from Python'
-  
-  - from: 'custom-nodes'
-    to: 'browser-integration'
-    reason: 'Custom nodes with external icons need special handling in browsers'
-  
-  - from: 'custom-nodes'
-    to: 'nodejs-integration'
-    reason: 'Custom nodes can use local files in Node.js'
+  - from: "getting-started"
+    to: "diagram-configuration"
+    reason: "After creating first diagram, users want to customize appearance"
+
+  - from: "getting-started"
+    to: "rendering-export"
+    reason: "Basic diagram creation leads to wanting different output formats"
+
+  - from: "provider-nodes"
+    to: "node-connections"
+    reason: "After creating nodes, users need to connect them"
+
+  - from: "provider-nodes"
+    to: "clusters-grouping"
+    reason: "Complex diagrams need organization with clusters"
+
+  - from: "python-migration"
+    to: "getting-started"
+    reason: "Migrating users need to learn new syntax basics"
+
+  - from: "python-migration"
+    to: "node-connections"
+    reason: "Connection syntax is a major difference from Python"
+
+  - from: "custom-nodes"
+    to: "browser-integration"
+    reason: "Custom nodes with external icons need special handling in browsers"
+
+  - from: "custom-nodes"
+    to: "nodejs-integration"
+    reason: "Custom nodes can use local files in Node.js"
 
 gaps:
-  - skill: 'ci-cd-integration'
-    question: 'What are the best practices for running diagrams-js in CI/CD pipelines?'
-    context: 'User mentioned this would be interesting to explore but has not been tested'
-    status: 'open'
-  - skill: 'custom-nodes'
-    question: 'Are there any rate limits or CORS issues with loading external icons in browsers?'
-    context: 'Documentation mentions icons are fetched but does not discuss limitations'
-    status: 'open'
-  - skill: 'rendering-export'
-    question: 'What is the recommended approach for rendering large diagrams with 100+ nodes?'
-    context: 'Performance considerations for complex diagrams not documented'
-    status: 'open'
+  - skill: "ci-cd-integration"
+    question: "What are the best practices for running diagrams-js in CI/CD pipelines?"
+    context: "User mentioned this would be interesting to explore but has not been tested"
+    status: "open"
+  - skill: "custom-nodes"
+    question: "Are there any rate limits or CORS issues with loading external icons in browsers?"
+    context: "Documentation mentions icons are fetched but does not discuss limitations"
+    status: "open"
+  - skill: "rendering-export"
+    question: "What is the recommended approach for rendering large diagrams with 100+ nodes?"
+    context: "Performance considerations for complex diagrams not documented"
+    status: "open"

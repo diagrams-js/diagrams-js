@@ -27,21 +27,21 @@ Use diagrams-js directly in browsers without build steps. Load from CDN, display
 
 ```html
 <script type="importmap">
-{
-  "imports": {
-    "diagrams-js": "https://esm.sh/diagrams-js",
-    "diagrams-js/": "https://esm.sh/diagrams-js/"
+  {
+    "imports": {
+      "diagrams-js": "https://esm.sh/diagrams-js",
+      "diagrams-js/": "https://esm.sh/diagrams-js/"
+    }
   }
-}
 </script>
 
 <script type="module">
   import { Diagram } from "diagrams-js";
   import { EC2 } from "diagrams-js/aws/compute";
-  
+
   const diagram = Diagram("Browser Demo");
   const server = diagram.add(EC2("Server"));
-  
+
   const svg = await diagram.render();
   document.body.innerHTML = svg;
 </script>
@@ -57,10 +57,10 @@ Use diagrams-js directly in browsers without build steps. Load from CDN, display
 <script type="module">
   import { Diagram } from "diagrams-js";
   import { EC2 } from "diagrams-js/aws/compute";
-  
+
   const diagram = Diagram("My Diagram");
   diagram.add(EC2("Server"));
-  
+
   const svg = await diagram.render();
   document.getElementById("diagram").innerHTML = svg;
 </script>
@@ -74,10 +74,10 @@ Use diagrams-js directly in browsers without build steps. Load from CDN, display
 <script type="module">
   import { Diagram } from "diagrams-js";
   import { EC2 } from "diagrams-js/aws/compute";
-  
+
   const diagram = Diagram("My Diagram");
   diagram.add(EC2("Server"));
-  
+
   document.getElementById("download").onclick = async () => {
     await diagram.save("diagram.svg");
   };
@@ -92,10 +92,10 @@ Use diagrams-js directly in browsers without build steps. Load from CDN, display
 <script type="module">
   import { Diagram } from "diagrams-js";
   import { EC2 } from "diagrams-js/aws/compute";
-  
+
   const diagram = Diagram("My Diagram");
   diagram.add(EC2("Server"));
-  
+
   const dataUrl = await diagram.render({ dataUrl: true });
   document.getElementById("diagram-img").src = dataUrl;
 </script>
@@ -110,7 +110,7 @@ import { EC2 } from "diagrams-js/aws/compute";
 
 function ArchitectureDiagram() {
   const [svg, setSvg] = useState("");
-  
+
   useEffect(() => {
     async function render() {
       const diagram = Diagram("Architecture");
@@ -120,7 +120,7 @@ function ArchitectureDiagram() {
     }
     render();
   }, []);
-  
+
   return <div dangerouslySetInnerHTML={{ __html: svg }} />;
 }
 ```

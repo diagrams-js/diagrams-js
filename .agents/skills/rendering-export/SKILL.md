@@ -113,9 +113,9 @@ await diagram.save("diagram.png", {
 ```typescript
 const png = await diagram.render({
   format: "png",
-  width: 800,    // Output width in pixels
-  height: 600,   // Output height in pixels
-  scale: 2,      // Scale factor (default: 2)
+  width: 800, // Output width in pixels
+  height: 600, // Output height in pixels
+  scale: 2, // Scale factor (default: 2)
 });
 ```
 
@@ -143,7 +143,7 @@ const png = await diagram.render({ format: "png" });
 
 PNG/JPG rendering requires sharp package in Node.js. Browser uses Canvas API.
 
-Source: source code - Diagram.ts _svgToPngNode() error message
+Source: source code - Diagram.ts \_svgToPngNode() error message
 
 ### HIGH Assuming render() always returns string
 

@@ -29,18 +29,18 @@ npm install diagrams-js
 
 ```html
 <script type="importmap">
-{
-  "imports": {
-    "diagrams-js": "https://esm.sh/diagrams-js",
-    "diagrams-js/": "https://esm.sh/diagrams-js/"
+  {
+    "imports": {
+      "diagrams-js": "https://esm.sh/diagrams-js",
+      "diagrams-js/": "https://esm.sh/diagrams-js/"
+    }
   }
-}
 </script>
 
 <script type="module">
   import { Diagram } from "diagrams-js";
   import { EC2 } from "diagrams-js/aws/compute";
-  
+
   const diagram = Diagram("My Architecture");
   const server = diagram.add(EC2("Web Server"));
   const svg = await diagram.render();

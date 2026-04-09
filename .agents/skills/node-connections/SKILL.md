@@ -108,11 +108,14 @@ web.to(Edge({ style: "dashed" }), db);
 web.to(Edge({ label: "queries" }), db);
 
 // Combined styling
-web.to(Edge({
-  color: "red",
-  style: "dashed",
-  label: "auth"
-}), db);
+web.to(
+  Edge({
+    color: "red",
+    style: "dashed",
+    label: "auth",
+  }),
+  db,
+);
 ```
 
 ### Edge Direction Control
@@ -148,7 +151,7 @@ lb.to(workers);
 
 // Connect all workers to database
 const db = diagram.add(RDS("Database"));
-workers.forEach(w => w.to(db));
+workers.forEach((w) => w.to(db));
 ```
 
 ## Common Mistakes
@@ -179,7 +182,7 @@ Source: migration guide and docs/guides/node.mdx
 Wrong:
 
 ```typescript
-web >> api >> database; // Python syntax
+(web >> api) >> database; // Python syntax
 ```
 
 Correct:
