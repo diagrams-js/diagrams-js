@@ -92,6 +92,11 @@ const config: Config = {
         },
         { to: "/playground", label: "Playground", position: "left" },
         {
+          href: "https://www.npmjs.com/package/diagrams-js",
+          label: "npm",
+          position: "right",
+        },
+        {
           href: "https://github.com/hatemhosny/diagrams-js",
           label: "GitHub",
           position: "right",
@@ -115,6 +120,15 @@ const config: Config = {
               label: "API Reference",
               to: "/docs/guides/diagram",
             },
+          ],
+        },
+        {
+          title: "For AI",
+          items: [
+            {
+              label: "AI Guide",
+              to: "/docs/ai-guide",
+            },
             {
               label: "llms.txt",
               href: "pathname:///llms.txt",
@@ -135,10 +149,6 @@ const config: Config = {
             {
               label: "𝕏 / Twitter",
               href: "https://x.com/hatem_hosny_",
-            },
-            {
-              label: "Credits",
-              to: "/docs/credits",
             },
           ],
         },

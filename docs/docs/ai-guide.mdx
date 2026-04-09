@@ -7,11 +7,26 @@ description: Guide for AI LLMs and agents using diagrams-js
 
 This guide is specifically designed for AI Large Language Models (LLMs) and autonomous agents to effectively use the diagrams-js library for generating cloud architecture diagrams.
 
-## TanStack Intent Skills
+## llms.txt
 
-:::tip AI-Assisted Development
-diagrams-js now includes [TanStack Intent](https://github.com/tanstack/intent) skills for enhanced AI-assisted development. These skills provide specialized guidance for common tasks and help prevent common mistakes.
+:::tip LLM-Optimized Documentation
+For optimal context when working with diagrams-js, use these specially formatted documentation files:
+
+**📄 [llms.txt](pathname:///llms.txt)** - Concise overview of the library, installation, basic usage, and key concepts
+
+**📄 [llms-full.txt](pathname:///llms-full.txt)** - Complete documentation including all guides, API reference, and examples
 :::
+
+These files are specifically structured for AI consumption with:
+
+- Clear API signatures and type definitions
+- Code examples with expected outputs
+- Provider reference lists
+- Best practices and common patterns
+
+## Skills
+
+diagrams-js includes [TanStack Intent](https://github.com/tanstack/intent) skills for enhanced AI-assisted development. These skills provide specialized guidance for common tasks and help prevent common mistakes.
 
 ### Available Skills
 
@@ -47,23 +62,6 @@ npx @tanstack/intent@latest install
 # Or use directly without installation
 npx @tanstack/intent@latest show diagrams-js/getting-started
 ```
-
-## Quick Reference Files
-
-:::tip LLM-Optimized Documentation
-For optimal context when working with diagrams-js, use these specially formatted documentation files:
-
-**📄 [llms.txt](pathname:///llms.txt)** - Concise overview of the library, installation, basic usage, and key concepts
-
-**📄 [llms-full.txt](pathname:///llms-full.txt)** - Complete documentation including all guides, API reference, and examples
-:::
-
-These files are specifically structured for AI consumption with:
-
-- Clear API signatures and type definitions
-- Code examples with expected outputs
-- Provider reference lists
-- Best practices and common patterns
 
 ## Key Concepts for AI Agents
 
@@ -294,18 +292,3 @@ await diagram.save("diagram.svg");
 - 🤖 [TanStack Intent Skills](https://github.com/hatemhosny/diagrams-js/blob/main/.agents/INTENT.md) - AI-assisted development
 - 📄 [llms.txt](pathname:///llms.txt) - Quick reference
 - 📄 [llms-full.txt](pathname:///llms-full.txt) - Complete docs
-
-### Skill Development
-
-The TanStack Intent skills are located in `.agents/skills/` and include:
-
-- **10 specialized skills** covering all aspects of diagrams-js
-- **24 failure modes** with wrong/correct code examples
-- **Cross-references** between related skills
-- **Framework-specific** guidance for browser and Node.js environments
-
-To contribute to skills or learn more about the skill structure:
-
-- See [Skill Specification](https://github.com/hatemhosny/diagrams-js/blob/main/.agents/skills/_artifacts/skill_spec.md)
-- Review [Domain Map](https://github.com/hatemhosny/diagrams-js/blob/main/.agents/skills/_artifacts/domain_map.yaml)
-- Check [Skill Tree](https://github.com/hatemhosny/diagrams-js/blob/main/.agents/skills/_artifacts/skill_tree.yaml)
