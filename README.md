@@ -4,7 +4,7 @@
 
 > A (vibe-coded) TypeScript/JavaScript port of the popular Python [diagrams](https://github.com/mingrammer/diagrams) library for drawing cloud system architecture diagrams as code.
 
-[![npm version](https://badge.fury.io/js/diagrams-js.svg)](https://www.npmjs.com/package/diagrams-js)
+[![NPM Version](https://img.shields.io/npm/v/diagrams-js)](https://www.npmjs.com/package/diagrams-js)
 [![CI](https://github.com/hatemhosny/diagrams-js/actions/workflows/ci.yml/badge.svg)](https://github.com/hatemhosny/diagrams-js/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

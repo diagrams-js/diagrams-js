@@ -174,7 +174,7 @@ jobs:
           This PR bumps the version to **${{ env.NEW_VERSION }}**.
 
           ### npm Package
-          📦 [diagrams-js on npm](https://www.npmjs.com/package/diagrams-js)
+          📦 [diagrams-js](https://www.npmjs.com/package/diagrams-js)
 
           ### Changes
           - Updated package.json version
