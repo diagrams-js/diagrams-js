@@ -1,0 +1,16 @@
+{
+  "title": "Render to PNG/JPG/Data URL",
+  "activeEditor": "script",
+  "markup": {
+    "language": "html",
+    "content": "<div id=\"controls\">\n  <button id=\"svg-btn\">Render SVG</button>\n  <button id=\"png-btn\">Render PNG</button>\n  <button id=\"dataurl-btn\">Data URL</button>\n</div>\n<div id=\"diagram\"></div>\n<div id=\"output\"></div>"
+  },
+  "script": {
+    "language": "javascript",
+    "content": "import { Diagram } from 'diagrams-js';\nimport { EC2 } from 'diagrams-js/aws/compute.js';\nimport { RDS } from 'diagrams-js/aws/database.js';\nimport { S3 } from 'diagrams-js/aws/storage.js';\n\nconst diagram = Diagram('Web Architecture', {\n  direction: 'TB'\n});\n\nconst web = diagram.add(EC2('Web Server'));\nconst db = diagram.add(RDS('Database'));\nconst storage = diagram.add(S3('Storage'));\n\nweb.to(db);\nweb.to(storage);\n\n// Render SVG\ndocument.getElementById('svg-btn').addEventListener('click', async () => {\n  const svg = await diagram.render();\n  document.getElementById('diagram').innerHTML = svg;\n  document.getElementById('output').innerHTML = '<p>SVG rendered above</p>';\n});\n\n// Render as Data URL\ndocument.getElementById('dataurl-btn').addEventListener('click', async () => {\n  const dataUrl = await diagram.render({ dataUrl: true });\n  document.getElementById('output').innerHTML = `<p>Data URL (truncated):</p><code>${dataUrl.substring(0, 100)}...</code>`;\n  \n  // Also display as image\n  const img = document.createElement('img');\n  img.src = dataUrl;\n  img.style.maxWidth = '100%';\n  document.getElementById('diagram').innerHTML = '';\n  document.getElementById('diagram').appendChild(img);\n});\n\n// Render PNG (uses canvas in browser)\ndocument.getElementById('png-btn').addEventListener('click', async () => {\n  try {\n    const png = await diagram.render({ format: 'png' });\n    document.getElementById('output').innerHTML = `<p>PNG rendered as Uint8Array, length: ${png.length} bytes</p>`;\n    \n    // Create blob and display\n    const blob = new Blob([png], { type: 'image/png' });\n    const url = URL.createObjectURL(blob);\n    const img = document.createElement('img');\n    img.src = url;\n    img.style.maxWidth = '100%';\n    document.getElementById('diagram').innerHTML = '';\n    document.getElementById('diagram').appendChild(img);\n  } catch (err) {\n    document.getElementById('output').innerHTML = `<p style='color: red'>Error: ${err.message}</p>`;\n  }\n});\n\n// Initial render\nconst svg = await diagram.render();\ndocument.getElementById('diagram').innerHTML = svg;\n"
+  },
+  "imports": {
+    "diagrams-js": "{{LC::TO_URL(./lib/index.js)}}",
+    "diagrams-js/": "{{LC::TO_URL(./lib/providers/)}}"
+  }
+}
