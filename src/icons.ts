@@ -189,11 +189,18 @@ function extractPosition(groupHtml: string): { x: number; y: number } | null {
 }
 
 /**
- * Extract title from node group
+ * Extract title from node group.
+ * Graphviz HTML-encodes special characters in titles (e.g., `-` becomes `&#45;`),
+ * so we decode them to match against the raw nodeId.
  */
 function extractTitle(groupHtml: string): string | null {
   const titleMatch = groupHtml.match(/<title>([^<]*)<\/title>/);
-  return titleMatch ? titleMatch[1] : null;
+  if (!titleMatch) return null;
+
+  // Decode HTML entities that Graphviz may produce
+  return titleMatch[1].replace(/&#(\d+);/g, (_match, code) =>
+    String.fromCharCode(parseInt(code, 10)),
+  );
 }
 
 /**

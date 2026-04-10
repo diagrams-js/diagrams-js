@@ -37,3 +37,15 @@ const libTargetDir = join(__dirname, "..", "docs", "static", "lib");
 console.log("Copying library to docs/static/lib...");
 copyRecursive(libSrcDir, libTargetDir);
 console.log("Library copied successfully!");
+
+console.log("Copying JSON schema to docs/static/schema/diagram.json...");
+mkdirSync(
+  join(__dirname, "..", "docs", "static", "schema"),
+
+  { recursive: true },
+);
+copyFileSync(
+  join(__dirname, "..", "src", "diagram.schema.json"),
+  join(__dirname, "..", "docs", "static", "schema", "diagram.json"),
+);
+console.log("JSON schema copied successfully!");

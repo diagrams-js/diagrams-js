@@ -1,0 +1,267 @@
+---
+title: JSON Serialization
+description: Export and import diagrams as JSON for cloud architecture provisioning and tool integration
+---
+
+# JSON Serialization
+
+diagrams-js supports serializing diagrams to JSON format and deserializing them back. This enables:
+
+{/* - **Cloud architecture provisioning**: Generate diagrams from infrastructure-as-code */}
+
+- **Tool integration**: Exchange diagrams with other tools and systems
+- **Dynamic diagrams**: Create diagrams from runtime data
+- **Round-trip editing**: Save work in progress and restore later
+- **Version control**: Track diagram changes with JSON diffs
+
+## Export to JSON
+
+Use `diagram.toJSON()` to export a diagram:
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { EC2 } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
+
+const diagram = Diagram("Web Architecture", {
+  direction: "TB",
+  theme: "pastel",
+});
+
+const web = diagram.add(EC2("Web Server"));
+const db = diagram.add(RDS("Database"));
+web.to(db);
+
+// Export to JSON
+const json = diagram.toJSON();
+console.log(JSON.stringify(json, null, 2));
+```
+
+### JSON Structure
+
+The exported JSON follows this structure:
+
+```json
+{
+  "$schema": "https://diagrams-js.hatemhosny.dev/schema/diagram.json",
+  "name": "Web Architecture",
+  "direction": "TB",
+  "theme": "pastel",
+  "nodes": [
+    {
+      "id": "n1",
+      "label": "Web Server",
+      "provider": "aws",
+      "service": "compute",
+      "type": "EC2"
+    },
+    {
+      "id": "n2",
+      "label": "Database",
+      "provider": "aws",
+      "service": "database",
+      "type": "RDS"
+    }
+  ],
+  "edges": [
+    {
+      "from": "n1",
+      "to": "n2",
+      "label": "SQL"
+    }
+  ]
+}
+```
+
+### Node Fields
+
+Each node in the JSON has these fields:
+
+- `id` (required): Unique identifier for the node
+- `label`: Display label for the node
+- `provider`: Cloud provider (e.g., "aws", "azure", "gcp")
+- `service`: Service category (e.g., "compute", "database", "storage")
+- `type`: Resource type (e.g., "EC2", "S3", "RDS")
+- `iconUrl`: Custom icon URL (for Custom nodes)
+- `attrs`: Additional Graphviz attributes
+
+## Import from JSON
+
+Use `Diagram.fromJSON()` to restore a diagram:
+
+```typescript
+import { Diagram } from "diagrams-js";
+
+const json = {
+  name: "My Architecture",
+  nodes: [
+    {
+      id: "web",
+      label: "Web Server",
+      provider: "aws",
+      service: "compute",
+      type: "EC2",
+    },
+    {
+      id: "db",
+      label: "Database",
+      provider: "aws",
+      service: "database",
+      type: "RDS",
+    },
+  ],
+  edges: [{ from: "web", to: "db", label: "SQL" }],
+};
+
+// Diagram.fromJSON() is an async static method
+const diagram = await Diagram.fromJSON(json);
+const svg = await diagram.render();
+```
+
+### Import from JSON String
+
+You can also pass a JSON string:
+
+```typescript
+const jsonString = '{"name":"Test","nodes":[{"id":"n1","label":"Server"}]}';
+const diagram = await Diagram.fromJSON(jsonString);
+```
+
+## Complete Example: Infrastructure as Code
+
+Generate diagrams from your infrastructure configuration:
+
+```typescript
+import { Diagram } from "diagrams-js";
+
+// Your infrastructure configuration
+const infrastructure = {
+  vpc: {
+    subnets: [
+      { name: "public", instances: ["web1", "web2"] },
+      { name: "private", instances: ["db1"] },
+    ],
+  },
+};
+
+// Convert to diagram JSON
+const diagramJSON = {
+  name: "Infrastructure",
+  direction: "TB",
+  clusters: [
+    {
+      label: infrastructure.vpc.subnets[0].name,
+      nodes: infrastructure.vpc.subnets[0].instances.map((name, i) => ({
+        id: `web-${i}`,
+        label: name,
+        provider: "aws",
+        service: "compute",
+        type: "EC2",
+      })),
+    },
+  ],
+};
+
+const diagram = await Diagram.fromJSON(diagramJSON);
+await diagram.save("infrastructure.svg");
+```
+
+## JSON Schema
+
+The JSON format follows a JSON Schema for validation:
+
+```typescript
+import schema from "diagrams-js/diagram.schema.json";
+```
+
+Include the schema reference in your JSON files for IDE support:
+
+```json
+{
+  "$schema": "https://diagrams-js.hatemhosny.dev/schema/diagram.json",
+  "name": "My Architecture",
+  "nodes": [...]
+}
+```
+
+## Supported Features
+
+The JSON format supports all diagram features:
+
+- **Nodes**: Provider nodes, custom nodes with icons
+- **Edges**: Connections with labels, styles, and attributes
+- **Clusters**: Nested groups of nodes
+- **Diagram options**: Direction, theme, curve style, custom attributes
+
+## Round-trip Conversion
+
+You can export and re-import diagrams without losing information:
+
+```typescript
+// Create original diagram
+const original = Diagram("Test");
+original.add(EC2("Server"));
+
+// Export to JSON
+const json = original.toJSON();
+
+// Import back
+const restored = await Diagram.fromJSON(json);
+
+// Render - produces same output
+const svg1 = await original.render();
+const svg2 = await restored.render();
+// svg1 === svg2
+```
+
+## Use Cases
+
+### 1. Documentation Generation
+
+Store diagrams as JSON in your repository and generate SVGs during build:
+
+```typescript
+// diagrams.json in repo
+const diagrams = JSON.parse(readFileSync("diagrams.json", "utf8"));
+
+for (const [name, json] of Object.entries(diagrams)) {
+  const diagram = await Diagram.fromJSON(json);
+  await diagram.save(`docs/diagrams/${name}.svg`);
+}
+```
+
+### 2. Dynamic Diagrams
+
+Create diagrams from runtime data:
+
+```typescript
+// Fetch infrastructure from cloud API
+const resources = await fetchAWSResources();
+
+const json = {
+  name: "Current State",
+  nodes: resources.map((r) => ({
+    id: r.id,
+    label: r.name,
+    provider: "aws",
+    service: r.service,
+    type: r.type,
+  })),
+};
+
+const diagram = await Diagram.fromJSON(json);
+```
+
+## Best Practices
+
+1. **Use node IDs**: Always provide unique `id` fields for nodes to ensure stable edge references
+2. **Include schema**: Add `"$schema"` for IDE autocompletion and validation
+3. **Minimal JSON**: Omit default values (direction "LR", theme "pastel") to keep JSON concise
+4. **Version control**: Store diagrams as JSON for better diff tracking than binary images
+5. **Cross-platform**: JSON diagrams work the same in Node.js, browsers, Deno, and Bun
+
+## See Also
+
+- [Diagram Guide](./diagram.mdx) - Core diagram concepts
+- [Rendering Guide](./rendering.mdx) - Output formats and options
+- [Custom Nodes](./custom-nodes.mdx) - Using custom icons in JSON

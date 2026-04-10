@@ -1,0 +1,187 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://diagrams-js.hatemhosny.dev/schema/diagram.json",
+  "title": "Diagrams-JS Diagram",
+  "description": "JSON schema for diagrams-js diagram serialization. Used for import/export and cloud architecture provisioning.",
+  "type": "object",
+  "required": ["nodes"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference for validation and IDE support"
+    },
+    "name": {
+      "type": "string",
+      "description": "The name/title of the diagram",
+      "default": ""
+    },
+    "filename": {
+      "type": "string",
+      "description": "The filename used when saving (defaults to name converted to snake_case)"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["TB", "BT", "LR", "RL"],
+      "default": "LR",
+      "description": "Layout direction: TB (top-bottom), BT (bottom-top), LR (left-right), RL (right-left)"
+    },
+    "curvestyle": {
+      "type": "string",
+      "enum": ["ortho", "curved", "spline", "polyline"],
+      "default": "ortho",
+      "description": "Edge curve style"
+    },
+    "autolabel": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to automatically prefix node labels with their type"
+    },
+    "strict": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to create a strict graph (no duplicate edges)"
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["pastel", "neutral", "blues", "greens", "orange"],
+      "default": "pastel",
+      "description": "Color theme for the diagram"
+    },
+    "graphAttr": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Graph-level Graphviz attributes"
+    },
+    "nodeAttr": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Default node Graphviz attributes"
+    },
+    "edgeAttr": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Default edge Graphviz attributes"
+    },
+    "nodes": {
+      "type": "array",
+      "description": "All nodes in the diagram (including those inside clusters)",
+      "items": { "$ref": "#/definitions/node" }
+    },
+    "edges": {
+      "type": "array",
+      "description": "All edges (connections) between nodes",
+      "items": { "$ref": "#/definitions/edge" }
+    },
+    "clusters": {
+      "type": "array",
+      "description": "Clusters (groups) of nodes",
+      "items": { "$ref": "#/definitions/cluster" }
+    }
+  },
+  "definitions": {
+    "node": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the node. Used for edge references and round-trip consistency."
+        },
+        "label": {
+          "type": "string",
+          "description": "Display label for the node",
+          "default": ""
+        },
+        "provider": {
+          "type": "string",
+          "description": "Cloud provider identifier (e.g., 'aws', 'gcp', 'azure', 'k8s')"
+        },
+        "service": {
+          "type": "string",
+          "description": "Service type within the provider (e.g., 'compute', 'storage', 'database')"
+        },
+        "type": {
+          "type": "string",
+          "description": "Specific resource type within the service (e.g., 'EC2', 'S3', 'RDS')"
+        },
+        "iconUrl": {
+          "type": "string",
+          "description": "Custom icon URL or data URI for Custom nodes"
+        },
+        "attrs": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "number"]
+          },
+          "description": "Additional Graphviz attributes for this node"
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": ["from", "to"],
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "Source node ID"
+        },
+        "to": {
+          "type": "string",
+          "description": "Target node ID"
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["forward", "back", "both", "none"],
+          "default": "forward",
+          "description": "Edge direction: forward (arrow to target), back (arrow to source), both (bidirectional), none (undirected)"
+        },
+        "label": {
+          "type": "string",
+          "description": "Edge label text"
+        },
+        "color": {
+          "type": "string",
+          "description": "Edge color"
+        },
+        "style": {
+          "type": "string",
+          "description": "Edge line style (solid, dashed, dotted, bold, etc.)"
+        },
+        "attrs": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Additional Graphviz attributes for this edge"
+        }
+      }
+    },
+    "cluster": {
+      "type": "object",
+      "required": ["label"],
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Display label for the cluster"
+        },
+        "nodes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of node IDs that belong to this cluster"
+        },
+        "graphAttr": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Graphviz attributes for this cluster"
+        },
+        "clusters": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/cluster" },
+          "description": "Nested clusters within this cluster"
+        }
+      }
+    }
+  }
+}

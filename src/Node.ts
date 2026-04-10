@@ -194,11 +194,12 @@ export function Node(label = "", options: NodeOptions = {}): Node {
     _attrs.shape = "none";
   }
 
-  // Merge additional attributes (excluding shape which we handled above)
+  // Merge additional attributes (excluding internal keys and shape which we handled above)
   for (const [key, value] of Object.entries(options)) {
-    if (key !== "nodeId" && key !== "~iconDataUrl" && key !== "shape") {
-      _attrs[key] = String(value);
+    if (key.startsWith("~") || key === "nodeId" || key === "shape") {
+      continue;
     }
+    _attrs[key] = String(value);
   }
 
   // If node has an icon via options, set the icon-related attributes
@@ -250,6 +251,10 @@ export function Node(label = "", options: NodeOptions = {}): Node {
       } else {
         _diagram = parent;
       }
+
+      // Track node object reference for JSON serialization
+      // Use `this` to capture Custom node wrappers (which spread from baseNode)
+      _diagram["~trackNode"](this as unknown as Node);
 
       // Handle autolabel
       if (_diagram && _diagram.autolabel) {

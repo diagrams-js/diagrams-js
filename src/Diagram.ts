@@ -12,10 +12,11 @@ import {
   type ThemeConfig,
 } from "./types.js";
 import { injectIcons, type NodeIconMap, type IconData } from "./icons.js";
+import { buildDiagramJSON, type DiagramJSON, fromJSON as fromJSONImpl } from "./json.js";
 
 // Render function overload types for proper type inference
 type RenderFunction = {
-  (options?: { format?: "svg" | "dot" } & Omit<RenderOptions, "format">): Promise<string>;
+  (options?: { format?: "svg" | "dot" | "json" } & Omit<RenderOptions, "format">): Promise<string>;
   (options: { format: "png" | "jpg" } & Omit<RenderOptions, "format">): Promise<Uint8Array>;
   (options: { dataUrl: true } & RenderOptions): Promise<string>;
   (options?: RenderOptions): Promise<Uint8Array | string>;
@@ -100,6 +101,56 @@ export interface Diagram {
   };
 
   /**
+   * Add a node to this diagram
+   * @param node - The node to add
+   * @returns The added node
+   */
+  add<T extends Node>(node: T): T;
+
+  /**
+   * Create a cluster (group) of nodes
+   * @param label - The label for the cluster
+   * @returns The cluster object
+   */
+  cluster(label: string): Cluster;
+
+  /**
+   * Render the diagram to SVG or other formats
+   * @param options - Rendering options
+   * @returns The rendered output
+   */
+  render(options?: RenderOptions): Promise<string | Uint8Array>;
+
+  /**
+   * Render with icon data (for external icon injection)
+   * @param iconData - Map of icon keys to data URIs
+   * @param nodeMap - Node-to-icon mappings
+   * @returns The rendered SVG string
+   * @internal
+   */
+  renderWithIcons(iconData?: IconData, nodeMap?: NodeIconMap[]): Promise<string>;
+
+  /**
+   * Serialize the diagram to JSON
+   * @returns JSON representation of the diagram
+   */
+  toJSON(): DiagramJSON;
+
+  /**
+   * Save the diagram to a file
+   * @param filepath - The file path to save to (optional)
+   * @param options - Rendering options
+   * @returns Promise that resolves when saved
+   */
+  save(filepath?: string, options?: RenderOptions): Promise<void>;
+
+  /**
+   * Convert the diagram to DOT format string
+   * @returns DOT format string
+   */
+  toString(): string;
+
+  /**
    * Register a node with an icon for automatic icon injection
    * @param node - The node to register
    * @param iconKey - Key to identify the icon in iconData
@@ -107,6 +158,13 @@ export interface Diagram {
    * @internal
    */
   ["~registerIcon"](node: Node, iconKey: string, iconPath?: string): void;
+
+  /**
+   * Track a node object for serialization
+   * @param node - The node object to track
+   * @internal
+   */
+  ["~trackNode"](node: Node): void;
 
   /**
    * Load icon data for injection
@@ -145,13 +203,6 @@ export interface Diagram {
   ["~trackPendingIconLoad"](promise: Promise<void>): void;
 
   /**
-   * Add a node to this diagram
-   * @param node - The node to add
-   * @returns The added node
-   */
-  add<T extends Node>(node: T): T;
-
-  /**
    * Internal method to register a node with the diagram
    * @param nodeId - Unique identifier for the node
    * @param label - Display label for the node
@@ -161,56 +212,65 @@ export interface Diagram {
   ["~node"](nodeId: string, label: string, attrs: Record<string, unknown>): void;
 
   /**
-   * Connect two nodes with an edge
+   * Internal method to connect two nodes with an edge
    * @param from - Source node
    * @param to - Target node
-   * @param edge - Edge configuration
+   * @param edge - Edge object
    * @internal
    */
   ["~connect"](from: Node, to: Node, edge: Edge): void;
 
   /**
-   * Add a subgraph (cluster) to the diagram
+   * Internal method to add a subgraph/cluster
    * @param cluster - The cluster to add
    * @internal
    */
   ["~subgraph"](cluster: Cluster): void;
+}
+
+/**
+ * Diagram constructor interface with static methods
+ */
+export interface DiagramConstructor {
+  /**
+   * Create a new diagram
+   * @param name - The name/title of the diagram (optional, can also be set in options)
+   * @param options - Configuration options for the diagram
+   * @returns A new Diagram instance
+   */
+  (name?: string, options?: DiagramOptions): Diagram;
 
   /**
-   * Create a new cluster within the diagram
-   * @param label - The label for the cluster
-   * @returns The created cluster
+   * Create a Diagram from a JSON representation.
+   * This is the inverse of `diagram.toJSON()`.
+   *
+   * @param input - The JSON object or string representing a diagram
+   * @param opts - Optional configuration for deserialization
+   * @returns A fully constructed Diagram with all nodes, edges, and clusters
+   *
+   * @example
+   * ```typescript
+   * import { Diagram } from "diagrams-js";
+   *
+   * const json = {
+   *   name: "My Architecture",
+   *   nodes: [
+   *     { id: "web", label: "Web Server", provider: "aws", service: "compute", type: "EC2" },
+   *     { id: "db", label: "Database", provider: "aws", service: "database", type: "RDS" }
+   *   ],
+   *   edges: [
+   *     { from: "web", to: "db", label: "SQL" }
+   *   ]
+   * };
+   *
+   * const diagram = await Diagram.fromJSON(json);
+   * const svg = await diagram.render(); // icons resolved automatically
+   * ```
    */
-  cluster(label: string): Cluster;
-
-  /**
-   * Render the diagram to the specified format
-   * @param options - Render options including format, dimensions, and scale
-   * @returns Promise resolving to the rendered output (SVG string, binary data, or data URL)
-   */
-  render: RenderFunction;
-
-  /**
-   * Render the diagram with explicit icon injection
-   * @param iconData - Map of icon keys to data URIs (uses diagram's registered icons if not provided)
-   * @param nodeMap - Optional node-to-icon mapping (uses diagram's registered icons if not provided)
-   * @returns Promise resolving to SVG string with icons injected
-   */
-  renderWithIcons(iconData?: IconData, nodeMap?: NodeIconMap[]): Promise<string>;
-
-  /**
-   * Save the diagram to a file (Node.js only)
-   * In browser, triggers a file download
-   * @param filepath - Optional file path (defaults to diagram.filename with appropriate extension)
-   * @param options - Optional render options for format and dimensions
-   */
-  save(filepath?: string, options?: RenderOptions): Promise<void>;
-
-  /**
-   * Get the DOT source representation of the diagram
-   * @returns DOT format string
-   */
-  toString(): string;
+  fromJSON(
+    input: import("./json.js").DiagramJSON | string,
+    opts?: import("./json.js").FromJSONOptions,
+  ): Promise<Diagram>;
 }
 
 /**
@@ -237,6 +297,7 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
   const _clusters: Cluster[] = [];
   let _viz: Viz | null = null;
   const _nodeIconMap: NodeIconMap[] = [];
+  const _nodeObjects = new Map<string, Node>();
   let _iconData: IconData = {};
   const _pendingIconLoads: Array<Promise<void>> = [];
 
@@ -376,6 +437,14 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
     },
 
     /**
+     * Track a Node object reference for serialization
+     * @internal
+     */
+    ["~trackNode"](node: Node): void {
+      _nodeObjects.set(node.nodeId, node);
+    },
+
+    /**
      * Add a node to this diagram
      */
     add<T extends Node>(node: T): T {
@@ -441,6 +510,15 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
           return _toDataUrl(dot, "dot");
         }
         return dot;
+      }
+
+      // If JSON format was requested, return the serialized JSON
+      if (format === "json") {
+        const jsonStr = JSON.stringify(diagram.toJSON(), null, 2);
+        if (options.dataUrl) {
+          return _toDataUrl(jsonStr, "json");
+        }
+        return jsonStr;
       }
 
       // Always render to SVG first - Graphviz WASM doesn't support PNG output
@@ -999,6 +1077,11 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
             base64 =
               typeof output === "string" ? btoa(output) : btoa(String.fromCharCode(...output));
             break;
+          case "json":
+            mimeType = "application/json";
+            base64 =
+              typeof output === "string" ? btoa(output) : btoa(String.fromCharCode(...output));
+            break;
           default:
             mimeType = "application/octet-stream";
             base64 =
@@ -1056,7 +1139,12 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
 
       if (typeof globalThis !== "undefined" && "document" in globalThis) {
         // Browser environment - download file
-        const mimeType = format === "svg" ? "image/svg+xml" : `image/${format}`;
+        const mimeType =
+          format === "svg"
+            ? "image/svg+xml"
+            : format === "json"
+              ? "application/json"
+              : `image/${format}`;
         const blob = new Blob([output] as BlobPart[], { type: mimeType });
         const url = URL.createObjectURL(blob);
         const a = globalThis.document.createElement("a");
@@ -1070,6 +1158,21 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
       // Node.js environment
       const fs = await import("node:fs/promises");
       await fs.writeFile(path, output);
+    },
+
+    /**
+     * Serialize the diagram to a JSON representation
+     */
+    toJSON(): DiagramJSON {
+      return buildDiagramJSON(
+        diagram,
+        _nodes,
+        _edges,
+        _clusters,
+        _nodeIconMap,
+        _nodeObjects,
+        options,
+      );
     },
 
     /**
@@ -1190,11 +1293,42 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
 }
 
 /**
+ * Create a Diagram from a JSON representation.
+ * This is the inverse of `diagram.toJSON()`.
+ *
+ * @param input - The JSON object or string representing a diagram
+ * @param opts - Optional configuration for deserialization
+ * @returns A fully constructed Diagram with all nodes, edges, and clusters
+ *
+ * @example
+ * ```typescript
+ * import { Diagram } from "diagrams-js";
+ *
+ * const json = {
+ *   name: "My Architecture",
+ *   nodes: [
+ *     { id: "web", label: "Web Server", provider: "aws", service: "compute", type: "EC2" },
+ *     { id: "db", label: "Database", provider: "aws", service: "database", type: "RDS" }
+ *   ],
+ *   edges: [
+ *     { from: "web", to: "db", label: "SQL" }
+ *   ]
+ * };
+ *
+ * const diagram = await Diagram.fromJSON(json);
+ * const svg = await diagram.render(); // icons resolved automatically
+ * ```
+ */
+Diagram.fromJSON = fromJSONImpl;
+
+/**
  * Extract format from file extension
  * @param filepath - The file path to extract format from
  * @returns The format (svg, png, jpg, or dot) or undefined if not recognized
  */
-function _getFormatFromExtension(filepath: string): "svg" | "png" | "jpg" | "dot" | undefined {
+function _getFormatFromExtension(
+  filepath: string,
+): "svg" | "png" | "jpg" | "dot" | "json" | undefined {
   const ext = filepath.toLowerCase().split(".").pop();
   switch (ext) {
     case "svg":
@@ -1202,6 +1336,7 @@ function _getFormatFromExtension(filepath: string): "svg" | "png" | "jpg" | "dot
     case "jpg":
     case "jpeg":
     case "dot":
+    case "json":
       return ext === "jpeg" ? "jpg" : ext;
     default:
       return undefined;

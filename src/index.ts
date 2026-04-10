@@ -31,3 +31,11 @@ export { Custom } from "./Custom.js";
 // Types
 export type { Cluster } from "./Cluster.js";
 export type { DiagramOptions, EdgeOptions, NodeOptions, ThemeName, ThemeConfig } from "./types.js";
+export type {
+  DiagramJSON,
+  DiagramNodeJSON,
+  DiagramEdgeJSON,
+  DiagramClusterJSON,
+  FromJSONOptions,
+  ProviderModule,
+} from "./json.js";

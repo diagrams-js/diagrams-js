@@ -31,24 +31,28 @@ function _Integration(label?: string, options?: Record<string, unknown>) {
 
 export function ApplicationIntegration(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "ApplicationIntegration", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "ApplicationIntegration";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = application_integrationIcon;
   return node;
 }
 
 export function Appsync(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "Appsync", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Appsync";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = appsyncIcon;
   return node;
 }
 
 export function ConsoleMobileApplication(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "ConsoleMobileApplication", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "ConsoleMobileApplication";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = console_mobile_applicationIcon;
   return node;
 }
 
 export function EventResource(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "EventResource", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "EventResource";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = event_resourceIcon;
   return node;
 }
@@ -58,6 +62,8 @@ export function EventbridgeCustomEventBusResource(
   options?: Record<string, unknown>,
 ) {
   const node = _Integration(label ?? "EventbridgeCustomEventBusResource", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] =
+    "EventbridgeCustomEventBusResource";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] =
     eventbridge_custom_event_bus_resourceIcon;
   return node;
@@ -68,6 +74,8 @@ export function EventbridgeDefaultEventBusResource(
   options?: Record<string, unknown>,
 ) {
   const node = _Integration(label ?? "EventbridgeDefaultEventBusResource", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] =
+    "EventbridgeDefaultEventBusResource";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] =
     eventbridge_default_event_bus_resourceIcon;
   return node;
@@ -75,18 +83,21 @@ export function EventbridgeDefaultEventBusResource(
 
 export function EventbridgeEvent(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "EventbridgeEvent", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "EventbridgeEvent";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = eventbridge_eventIcon;
   return node;
 }
 
 export function EventbridgePipes(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "EventbridgePipes", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "EventbridgePipes";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = eventbridge_pipesIcon;
   return node;
 }
 
 export function EventbridgeRule(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "EventbridgeRule", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "EventbridgeRule";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = eventbridge_ruleIcon;
   return node;
 }
@@ -96,6 +107,8 @@ export function EventbridgeSaasPartnerEventBusResource(
   options?: Record<string, unknown>,
 ) {
   const node = _Integration(label ?? "EventbridgeSaasPartnerEventBusResource", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] =
+    "EventbridgeSaasPartnerEventBusResource";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] =
     eventbridge_saas_partner_event_bus_resourceIcon;
   return node;
@@ -103,30 +116,35 @@ export function EventbridgeSaasPartnerEventBusResource(
 
 export function EventbridgeScheduler(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "EventbridgeScheduler", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "EventbridgeScheduler";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = eventbridge_schedulerIcon;
   return node;
 }
 
 export function EventbridgeSchema(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "EventbridgeSchema", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "EventbridgeSchema";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = eventbridge_schemaIcon;
   return node;
 }
 
 export function Eventbridge(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "Eventbridge", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Eventbridge";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = eventbridgeIcon;
   return node;
 }
 
 export function ExpressWorkflows(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "ExpressWorkflows", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "ExpressWorkflows";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = express_workflowsIcon;
   return node;
 }
 
 export function MQ(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "MQ", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "MQ";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = mqIcon;
   return node;
 }
@@ -136,6 +154,8 @@ export function SimpleNotificationServiceSnsEmailNotification(
   options?: Record<string, unknown>,
 ) {
   const node = _Integration(label ?? "SimpleNotificationServiceSnsEmailNotification", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] =
+    "SimpleNotificationServiceSnsEmailNotification";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] =
     simple_notification_service_sns_email_notificationIcon;
   return node;
@@ -146,6 +166,8 @@ export function SimpleNotificationServiceSnsHttpNotification(
   options?: Record<string, unknown>,
 ) {
   const node = _Integration(label ?? "SimpleNotificationServiceSnsHttpNotification", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] =
+    "SimpleNotificationServiceSnsHttpNotification";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] =
     simple_notification_service_sns_http_notificationIcon;
   return node;
@@ -156,6 +178,8 @@ export function SimpleNotificationServiceSnsTopic(
   options?: Record<string, unknown>,
 ) {
   const node = _Integration(label ?? "SimpleNotificationServiceSnsTopic", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] =
+    "SimpleNotificationServiceSnsTopic";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] =
     simple_notification_service_sns_topicIcon;
   return node;
@@ -163,6 +187,7 @@ export function SimpleNotificationServiceSnsTopic(
 
 export function SimpleNotificationServiceSns(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "SimpleNotificationServiceSns", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "SimpleNotificationServiceSns";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] =
     simple_notification_service_snsIcon;
   return node;
@@ -170,6 +195,7 @@ export function SimpleNotificationServiceSns(label?: string, options?: Record<st
 
 export function SimpleQueueServiceSqsMessage(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "SimpleQueueServiceSqsMessage", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "SimpleQueueServiceSqsMessage";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] =
     simple_queue_service_sqs_messageIcon;
   return node;
@@ -177,18 +203,21 @@ export function SimpleQueueServiceSqsMessage(label?: string, options?: Record<st
 
 export function SimpleQueueServiceSqsQueue(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "SimpleQueueServiceSqsQueue", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "SimpleQueueServiceSqsQueue";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = simple_queue_service_sqs_queueIcon;
   return node;
 }
 
 export function SimpleQueueServiceSqs(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "SimpleQueueServiceSqs", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "SimpleQueueServiceSqs";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = simple_queue_service_sqsIcon;
   return node;
 }
 
 export function StepFunctions(label?: string, options?: Record<string, unknown>) {
   const node = _Integration(label ?? "StepFunctions", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "StepFunctions";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = step_functionsIcon;
   return node;
 }

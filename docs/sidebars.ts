@@ -23,6 +23,7 @@ const sidebars: SidebarsConfig = {
         "guides/clusters",
         "guides/custom-nodes",
         "guides/rendering",
+        "guides/json",
         "guides/migration",
         "guides/providers",
       ],

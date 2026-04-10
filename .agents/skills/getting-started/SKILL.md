@@ -201,3 +201,4 @@ Source: migration guide from Python
 - diagrams-js/diagram-configuration — Customize direction, theme, curve style
 - diagrams-js/rendering-export — Output formats (PNG, JPG, DOT, data URLs)
 - diagrams-js/provider-nodes — 2000+ pre-built node classes from cloud providers
+- diagrams-js/json-serialization — JSON export/import for infrastructure-as-code
