@@ -13,30 +13,35 @@ function _Enduser(label?: string, options?: Record<string, unknown>) {
 
 export function Appstream20(label?: string, options?: Record<string, unknown>) {
   const node = _Enduser(label ?? "Appstream20", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Appstream20";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = appstream_2_0Icon;
   return node;
 }
 
 export function DesktopAndAppStreaming(label?: string, options?: Record<string, unknown>) {
   const node = _Enduser(label ?? "DesktopAndAppStreaming", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "DesktopAndAppStreaming";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = desktop_and_app_streamingIcon;
   return node;
 }
 
 export function Workdocs(label?: string, options?: Record<string, unknown>) {
   const node = _Enduser(label ?? "Workdocs", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Workdocs";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = workdocsIcon;
   return node;
 }
 
 export function Worklink(label?: string, options?: Record<string, unknown>) {
   const node = _Enduser(label ?? "Worklink", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Worklink";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = worklinkIcon;
   return node;
 }
 
 export function Workspaces(label?: string, options?: Record<string, unknown>) {
   const node = _Enduser(label ?? "Workspaces", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Workspaces";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = workspacesIcon;
   return node;
 }

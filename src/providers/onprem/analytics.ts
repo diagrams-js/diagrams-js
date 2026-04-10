@@ -25,102 +25,119 @@ function _Analytics(label?: string, options?: Record<string, unknown>) {
 
 export function Beam(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Beam", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Beam";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = beamIcon;
   return node;
 }
 
 export function Databricks(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Databricks", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Databricks";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = databricksIcon;
   return node;
 }
 
 export function Dbt(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Dbt", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Dbt";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = dbtIcon;
   return node;
 }
 
 export function Dremio(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Dremio", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Dremio";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = dremioIcon;
   return node;
 }
 
 export function Flink(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Flink", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Flink";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = flinkIcon;
   return node;
 }
 
 export function Hadoop(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Hadoop", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Hadoop";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = hadoopIcon;
   return node;
 }
 
 export function Hive(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Hive", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Hive";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = hiveIcon;
   return node;
 }
 
 export function Metabase(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Metabase", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Metabase";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = metabaseIcon;
   return node;
 }
 
 export function Norikra(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Norikra", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Norikra";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = norikraIcon;
   return node;
 }
 
 export function Powerbi(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Powerbi", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Powerbi";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = powerbiIcon;
   return node;
 }
 
 export function Presto(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Presto", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Presto";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = prestoIcon;
   return node;
 }
 
 export function Singer(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Singer", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Singer";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = singerIcon;
   return node;
 }
 
 export function Spark(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Spark", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Spark";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = sparkIcon;
   return node;
 }
 
 export function Storm(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Storm", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Storm";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = stormIcon;
   return node;
 }
 
 export function Superset(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Superset", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Superset";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = supersetIcon;
   return node;
 }
 
 export function Tableau(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Tableau", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Tableau";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = tableauIcon;
   return node;
 }
 
 export function Trino(label?: string, options?: Record<string, unknown>) {
   const node = _Analytics(label ?? "Trino", options);
+  (node as unknown as Record<string, unknown>)["~resourceType"] = "Trino";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = trinoIcon;
   return node;
 }

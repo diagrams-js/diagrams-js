@@ -2,7 +2,7 @@
 name: diagrams-js/rendering-export
 description: >
   Rendering diagrams to multiple formats. SVG output as string, PNG/JPG as Uint8Array (requires sharp in Node.js),
-  DOT format as Graphviz source. Data URLs for embedding. Saving files with diagram.save().
+  DOT format as Graphviz source, JSON for serialization. Data URLs for embedding. Saving files with diagram.save().
 type: core
 library: diagrams-js
 library_version: "0.0.9"
@@ -10,7 +10,7 @@ requires:
   - diagrams-js/getting-started
 sources:
   - "hatemhosny/diagrams-js:docs/docs/guides/rendering.mdx"
-  - "hatemhosny/diagrams-js:docs/docs/guides/api.mdx"
+  - "hatemhosny/diagrams-js:docs/docs/guides/json-serialization.mdx"
   - "hatemhosny/diagrams-js:src/Diagram.ts"
 ---
 
@@ -18,7 +18,7 @@ This skill builds on diagrams-js/getting-started. Read it first for foundational
 
 # diagrams-js — Rendering & Export
 
-Render diagrams to SVG, PNG, JPG, or DOT formats. Get data URLs for embedding. Save to files in Node.js or trigger downloads in browsers.
+Render diagrams to SVG, PNG, JPG, DOT, or JSON formats. Get data URLs for embedding. Save to files in Node.js or trigger downloads in browsers. Export/import diagrams as JSON for cloud architecture provisioning and tool integration.
 
 ## Setup
 
@@ -108,6 +108,38 @@ await diagram.save("diagram.png", {
 });
 ```
 
+### Export to JSON
+
+Serialize diagrams to JSON for infrastructure-as-code, version control, or tool integration:
+
+```typescript
+// Export to JSON object
+const json = diagram.toJSON();
+console.log(JSON.stringify(json, null, 2));
+```
+
+JSON structure includes nodes with provider/service/type for automatic icon resolution, edges, clusters, and all diagram options.
+
+### Import from JSON
+
+Restore diagrams from JSON using the static `Diagram.fromJSON()` method:
+
+```typescript
+import { Diagram } from "diagrams-js";
+
+const json = {
+  name: "My Architecture",
+  nodes: [
+    { id: "web", label: "Web Server", provider: "aws", service: "compute", type: "EC2" },
+    { id: "db", label: "Database", provider: "aws", service: "database", type: "RDS" },
+  ],
+  edges: [{ from: "web", to: "db", label: "SQL" }],
+};
+
+const diagram = await Diagram.fromJSON(json);
+const svg = await diagram.render();
+```
+
 ### PNG/JPG Dimensions and Scale
 
 ```typescript
@@ -183,7 +215,28 @@ In browser, always specify filename for clarity. In Node.js, default filename is
 
 Source: source code - Diagram.ts save() method
 
+### HIGH Forgetting to await Diagram.fromJSON()
+
+Wrong:
+
+```typescript
+const diagram = Diagram.fromJSON(json); // Missing await
+const svg = await diagram.render(); // Error: diagram is a Promise
+```
+
+Correct:
+
+```typescript
+const diagram = await Diagram.fromJSON(json);
+const svg = await diagram.render();
+```
+
+`Diagram.fromJSON()` is async because it dynamically loads provider modules. Always use `await`.
+
+Source: source code - Diagram.ts `fromJSON` is async
+
 ## See also
 
 - diagrams-js/nodejs-integration — File system operations and sharp setup
 - diagrams-js/browser-integration — Browser-specific rendering and downloads
+- diagrams-js/json-serialization — Complete JSON export/import guide

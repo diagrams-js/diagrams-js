@@ -86,8 +86,8 @@ export interface DiagramOptions {
  * ```
  */
 export interface RenderOptions {
-  /** Output format: svg, png, jpg, or dot */
-  format?: "svg" | "png" | "jpg" | "dot";
+  /** Output format: svg, png, jpg, dot, or json */
+  format?: "svg" | "png" | "jpg" | "dot" | "json";
   /** Output filename */
   filename?: string;
   /** Output width in pixels (for PNG/JPG) */
