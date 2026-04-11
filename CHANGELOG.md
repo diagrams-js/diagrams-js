@@ -1,3 +1,17 @@
+## [0.2.4] - 2026-04-11
+
+### Features
+
+- No new features
+
+### Bug Fixes
+
+- fix bundling in esm.sh (eff89ff)
+
+### Other Changes
+
+- No other changes
+
 ## [0.2.3] - 2026-04-11
 
 ### Features
