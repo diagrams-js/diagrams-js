@@ -141,24 +141,14 @@ function updatePackageExports() {
     const providerDir = path.join(SRC_PROVIDERS_DIR, provider);
     if (!fs.existsSync(providerDir)) continue;
 
-    // Provider index (without /providers/ prefix for cleaner imports)
-    exports[`./${provider}`] = {
-      types: `./dist/providers/${provider}/index.d.ts`,
-      import: `./dist/providers/${provider}/index.js`,
-      browser: `./dist/providers/${provider}/index.js`,
-      default: `./dist/providers/${provider}/index.js`,
-    };
-
     // Provider service modules (without /providers/ prefix)
     const files = fs.readdirSync(providerDir);
     for (const file of files) {
       if (file.endsWith(".ts") && file !== "index.ts") {
         const serviceName = file.replace(".ts", "");
         exports[`./${provider}/${serviceName}`] = {
-          types: `./dist/providers/${provider}/${file.replace(".ts", ".d.ts")}`,
           import: `./dist/providers/${provider}/${serviceName}.js`,
-          browser: `./dist/providers/${provider}/${serviceName}.js`,
-          default: `./dist/providers/${provider}/${serviceName}.js`,
+          types: `./dist/providers/${provider}/${file.replace(".ts", ".d.ts")}`,
         };
       }
     }
