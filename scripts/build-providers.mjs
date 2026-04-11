@@ -74,7 +74,10 @@ async function buildProvider(provider) {
 
       // Replace imports from ../../Node.js to point to the providers index
       // Provider index files import from ../../Node.js -> should point to ../../index.js
-      content = content.replace(/from\s*["']\.\.\/\.\.\/Node\.js["']/g, 'from "../../index.js"');
+      content = content.replace(
+        /from\s*["']\.\.\/\.\.\/Node\.js["']/g,
+        'from "../../index.js"',
+      );
 
       fs.writeFileSync(outFile, content);
     } catch (err) {
@@ -110,9 +113,13 @@ async function buildProvidersIndex() {
 async function buildTypes() {
   try {
     execSync("npx tsgo");
-    await fs.promises.cp(path.join("temp", "providers"), path.join("dist", "providers"), {
-      recursive: true,
-    });
+    await fs.promises.cp(
+      path.join("temp", "providers"),
+      path.join("dist", "providers"),
+      {
+        recursive: true,
+      },
+    );
     await fs.promises.rm("temp", { recursive: true });
   } catch (err) {
     console.error(`  ✗ Failed to build types: ${err.message}\n`);
@@ -141,24 +148,14 @@ function updatePackageExports() {
     const providerDir = path.join(SRC_PROVIDERS_DIR, provider);
     if (!fs.existsSync(providerDir)) continue;
 
-    // Provider index (without /providers/ prefix for cleaner imports)
-    exports[`./${provider}`] = {
-      types: `./dist/providers/${provider}/index.d.ts`,
-      import: `./dist/providers/${provider}/index.js`,
-      browser: `./dist/providers/${provider}/index.js`,
-      default: `./dist/providers/${provider}/index.js`,
-    };
-
     // Provider service modules (without /providers/ prefix)
     const files = fs.readdirSync(providerDir);
     for (const file of files) {
       if (file.endsWith(".ts") && file !== "index.ts") {
         const serviceName = file.replace(".ts", "");
         exports[`./${provider}/${serviceName}`] = {
-          types: `./dist/providers/${provider}/${file.replace(".ts", ".d.ts")}`,
           import: `./dist/providers/${provider}/${serviceName}.js`,
-          browser: `./dist/providers/${provider}/${serviceName}.js`,
-          default: `./dist/providers/${provider}/${serviceName}.js`,
+          types: `./dist/providers/${provider}/${file.replace(".ts", ".d.ts")}`,
         };
       }
     }
@@ -166,7 +163,10 @@ function updatePackageExports() {
 
   // Update package.json
   packageJson.exports = exports;
-  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + "\n");
+  fs.writeFileSync(
+    packageJsonPath,
+    JSON.stringify(packageJson, null, 2) + "\n",
+  );
 
   console.log("✓ package.json exports updated");
   console.log(`  Added ${Object.keys(exports).length - 2} provider exports`);
