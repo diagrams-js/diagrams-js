@@ -1,3 +1,18 @@
+## [0.2.0] - 2026-04-11
+
+### Features
+
+- feat: add JSON support (86cb2cd)
+
+### Bug Fixes
+
+- fix format (8fec168)
+
+### Other Changes
+
+- add provider loader fallbacks (9589b7e)
+- add more livecodes preview templates (687961e)
+
 ## [0.1.0] - 2026-04-09
 
 ### Features
