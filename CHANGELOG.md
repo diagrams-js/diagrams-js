@@ -1,3 +1,18 @@
+## [0.2.2] - 2026-04-11
+
+### Features
+
+- No new features
+
+### Bug Fixes
+
+- fix format (d444ad4)
+
+### Other Changes
+
+- enable precommit hook (1e0fc78)
+- change exports (03767c1)
+
 ## [0.2.1] - 2026-04-11
 
 ### Features
