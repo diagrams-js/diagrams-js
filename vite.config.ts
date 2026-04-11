@@ -1,9 +1,9 @@
 import { defineConfig } from "vite-plus";
 
 export default defineConfig({
-  // staged: {
-  //   "*": "vp check --fix",
-  // },
+  staged: {
+    "*": "vp check --fix",
+  },
   run: {
     enablePrePostScripts: false, // Disables automatic pre/post hooks
   },
