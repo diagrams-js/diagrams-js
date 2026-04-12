@@ -14,6 +14,7 @@ import type {
 import type { Diagram } from "../../Diagram.js";
 import type { DiagramJSON } from "../../json.js";
 import { fromJSON as fromJSONImpl } from "../../json.js";
+import { loadProviderModules } from "../../provider-loader.js";
 import type { Node } from "../../Node.js";
 
 /**
@@ -110,6 +111,18 @@ async function mergeDiagrams(
   // Get the JSON representation of the source diagram
   const json = source.toJSON();
 
+  // Collect unique provider/service pairs from nodes that have them
+  const providerServicePairs = new Map<string, [string, string]>();
+  for (const node of json.nodes) {
+    if (node.provider && node.service) {
+      const key = `${node.provider}/${node.service}`;
+      providerServicePairs.set(key, [node.provider, node.service]);
+    }
+  }
+
+  // Dynamically load provider modules based on provider/service
+  const factoryLookup = await loadProviderModules(Array.from(providerServicePairs.values()));
+
   // Build a map of node IDs to Node objects from the source diagram
   const sourceNodes = new Map<string, Node>();
 
@@ -120,31 +133,46 @@ async function mergeDiagrams(
 
     // Create nodes in the target diagram
     for (const nodeDef of diagJson.nodes) {
-      // Build node options with provider metadata for icon resolution
-      const nodeOptions: Record<string, unknown> = {
-        nodeId: nodeDef.id,
-      };
+      // Try to use a provider factory function if type is specified and a matching factory exists
+      const factory = nodeDef.type ? factoryLookup.get(nodeDef.type) : undefined;
 
-      // If the node has provider info, pass it in the options
-      // This allows the Node factory to properly set up icon tracking
-      if (nodeDef.provider) {
-        nodeOptions["~provider"] = nodeDef.provider;
-      }
-      if (nodeDef.service) {
-        nodeOptions["~type"] = nodeDef.service;
-      }
-      if (nodeDef.type) {
-        nodeOptions["~resourceType"] = nodeDef.type;
-      }
-      if (nodeDef.iconUrl) {
-        nodeOptions["~iconDataUrl"] = nodeDef.iconUrl;
-      }
-      if (nodeDef.attrs) {
-        Object.assign(nodeOptions, nodeDef.attrs);
-      }
+      let node: Node;
+      if (factory) {
+        // Use the provider factory - it sets ~provider, ~type, ~resourceType, ~iconDataUrl
+        const nodeOptions: Record<string, unknown> = {
+          nodeId: nodeDef.id,
+        };
+        if (nodeDef.attrs) {
+          Object.assign(nodeOptions, nodeDef.attrs);
+        }
+        node = factory(nodeDef.label || nodeDef.id, nodeOptions);
+      } else {
+        // Build node options with provider metadata for icon resolution
+        const nodeOptions: Record<string, unknown> = {
+          nodeId: nodeDef.id,
+        };
 
-      // Create the node in the target diagram
-      const node = lib.Node(nodeDef.label || nodeDef.id, nodeOptions);
+        // If the node has provider info, pass it in the options
+        // This allows the Node factory to properly set up icon tracking
+        if (nodeDef.provider) {
+          nodeOptions["~provider"] = nodeDef.provider;
+        }
+        if (nodeDef.service) {
+          nodeOptions["~type"] = nodeDef.service;
+        }
+        if (nodeDef.type) {
+          nodeOptions["~resourceType"] = nodeDef.type;
+        }
+        if (nodeDef.iconUrl) {
+          nodeOptions["~iconDataUrl"] = nodeDef.iconUrl;
+        }
+        if (nodeDef.attrs) {
+          Object.assign(nodeOptions, nodeDef.attrs);
+        }
+
+        // Create the node in the target diagram
+        node = lib.Node(nodeDef.label || nodeDef.id, nodeOptions);
+      }
 
       // Add to target diagram
       target.add(node);
