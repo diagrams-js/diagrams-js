@@ -344,6 +344,183 @@ async function generateExample9() {
   console.log("  ✓ Generated");
 }
 
+async function generateExample10() {
+  console.log("Generating example10-plugin-system.svg...");
+  const { HookEvent } = await import("../dist/index.js");
+
+  // Create a plugin that modifies node labels
+  const labelPrefixPlugin = () => ({
+    name: "label-prefix",
+    version: "1.0.0",
+    apiVersion: "1.0",
+    runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+    capabilities: [
+      {
+        type: "hook",
+        hooks: [
+          {
+            event: HookEvent.NODE_CREATE,
+            handler: async (data) => {
+              data.node.label = "[AWS] " + data.node.label;
+              return data;
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  // Create a plugin that adds colored edges
+  const coloredEdgePlugin = () => ({
+    name: "colored-edges",
+    version: "1.0.0",
+    apiVersion: "1.0",
+    runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+    capabilities: [
+      {
+        type: "hook",
+        hooks: [
+          {
+            event: HookEvent.EDGE_CREATE,
+            handler: async (data) => {
+              // Modify edge attributes via edgeAttrs
+              data.edge.edgeAttrs.color = "blue";
+              data.edge.edgeAttrs.penwidth = "2";
+              return data;
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  // Create a plugin that modifies node attributes
+  const nodeStylePlugin = () => ({
+    name: "node-style",
+    version: "1.0.0",
+    apiVersion: "1.0",
+    runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+    capabilities: [
+      {
+        type: "hook",
+        hooks: [
+          {
+            event: HookEvent.NODE_CREATE,
+            handler: async (data) => {
+              // Modify node attributes via nodeAttrs
+              data.node.nodeAttrs.width = "1.2";
+              return data;
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  const diagram = Diagram("Plugin Example");
+
+  // Register plugins before adding nodes
+  await diagram.registerPlugins([labelPrefixPlugin, coloredEdgePlugin, nodeStylePlugin]);
+
+  const lb = diagram.add(ELB("Load Balancer"));
+  const web = diagram.add(EC2("Web Server"));
+  const db = diagram.add(RDS("Database"));
+
+  // Connect nodes using chained syntax - edges will be modified by the plugin
+  lb.to(web).to(db);
+
+  const svg = await diagram.render();
+  fs.writeFileSync(path.join(OUTPUT_DIR, "example10-plugin-system.svg"), svg);
+  console.log("  ✓ Generated");
+}
+
+async function generateExample11() {
+  console.log("Generating example11-plugin-hooks.svg...");
+  const { HookEvent } = await import("../dist/index.js");
+
+  // Environment-based styling plugin
+  const environmentStylingPlugin = (environment) => () => ({
+    name: "environment-styling",
+    version: "1.0.0",
+    apiVersion: "1.0",
+    runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+    capabilities: [
+      {
+        type: "hook",
+        hooks: [
+          {
+            event: HookEvent.NODE_CREATE,
+            handler: async (data) => {
+              // Style nodes based on environment
+              if (environment === "prod") {
+                data.node.nodeAttrs.style = "filled";
+                data.node.nodeAttrs.fillcolor = "#FFE5E5"; // Light red for prod
+                data.node.nodeAttrs.penwidth = "2";
+                data.node.label = "[PROD] " + data.node.label;
+              } else {
+                data.node.nodeAttrs.style = "filled";
+                data.node.nodeAttrs.fillcolor = "#E5F5E5"; // Light green for dev
+                data.node.label = "[DEV] " + data.node.label;
+              }
+              return data;
+            },
+          },
+          {
+            event: HookEvent.EDGE_CREATE,
+            handler: async (data) => {
+              // Style edges based on environment
+              if (environment === "prod") {
+                data.edge.edgeAttrs.color = "#CC0000";
+                data.edge.edgeAttrs.penwidth = "2";
+              } else {
+                data.edge.edgeAttrs.color = "#00AA00";
+                data.edge.edgeAttrs.style = "dashed";
+              }
+              return data;
+            },
+          },
+          {
+            event: HookEvent.CLUSTER_CREATE,
+            handler: async (data) => {
+              // Style clusters based on environment
+              if (environment === "prod") {
+                data.cluster.clusterAttrs.bgcolor = "#FFF0F0";
+                data.cluster.clusterAttrs.pencolor = "#CC0000";
+                data.cluster.clusterAttrs.penwidth = "3";
+              } else {
+                data.cluster.clusterAttrs.bgcolor = "#F0FFF0";
+                data.cluster.clusterAttrs.pencolor = "#00AA00";
+              }
+              return data;
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  const diagram = Diagram("Environment Styling Example");
+
+  // Register the plugin for production environment
+  await diagram.registerPlugins([environmentStylingPlugin("prod")]);
+
+  const webCluster = diagram.cluster("Web Tier");
+  const lb = webCluster.add(ELB("Load Balancer"));
+  const web1 = webCluster.add(EC2("Web Server 1"));
+  const web2 = webCluster.add(EC2("Web Server 2"));
+
+  const dbCluster = diagram.cluster("Database Tier");
+  const db = dbCluster.add(RDS("Primary Database"));
+
+  lb.to([web1, web2]);
+  web1.to(db);
+  web2.to(db);
+
+  const svg = await diagram.render();
+  fs.writeFileSync(path.join(OUTPUT_DIR, "example11-plugin-hooks.svg"), svg);
+  console.log("  ✓ Generated");
+}
+
 async function generateQuickstartBasic() {
   console.log("Generating quickstart-basic.svg...");
   const diagram = Diagram("My First Diagram", {
@@ -396,6 +573,8 @@ async function main() {
   await generateExample7();
   await generateExample8();
   await generateExample9();
+  await generateExample10();
+  await generateExample11();
   await generateQuickstartBasic();
   await generateQuickstartCloud();
 

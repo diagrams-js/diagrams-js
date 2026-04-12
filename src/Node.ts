@@ -49,6 +49,18 @@ export interface Node {
   nodeId: string;
   /** The cluster this node belongs to, if any */
   cluster: Cluster | undefined;
+  /**
+   * Node attributes that can be modified by hooks.
+   * This provides direct access to the internal attribute store.
+   * Changes here will be reflected in the rendered output.
+   */
+  nodeAttrs: Record<string, string | number>;
+  /** The cloud provider (e.g., "aws", "gcp", "azure") */
+  provider?: string;
+  /** The service type (e.g., "compute", "database", "storage") */
+  type?: string;
+  /** The specific resource type (e.g., "EC2", "S3", "RDS") */
+  resourceType?: string;
   /** @internal */
   ["~id"]: string;
   /** @internal */
@@ -60,7 +72,11 @@ export interface Node {
   /** @internal */
   ["~iconDataUrl"]: string | null;
   /** @internal */
+  ["~type"]?: string;
+  /** @internal */
   ["~register"](parent: Diagram | Cluster): void;
+  /** Metadata attached to this node (e.g., cloud provider specs, pricing) */
+  metadata: Record<string, unknown>;
 
   /**
    * Connect this node to another node (forward direction)
@@ -165,6 +181,7 @@ export function Node(label = "", options: NodeOptions = {}): Node {
   let _cluster: Cluster | undefined = undefined;
   const _attrs: Record<string, string | number> = {};
   let _iconDataUrl: string | null = null;
+  let _metadata: Record<string, unknown> = {};
 
   // Check if this node has an icon data URL (embedded via esbuild dataurl loader)
   // This will be set by provider factory functions
@@ -215,6 +232,10 @@ export function Node(label = "", options: NodeOptions = {}): Node {
     });
   }
 
+  // Provider metadata internal storage (accessed via ~provider, ~type, ~resourceType)
+  // These are set by provider factory functions using the ~prefixed properties
+  // The public provider/type/resourceType getters/setters access these same properties
+
   const node: Node = {
     label,
     ["~id"]: _id,
@@ -230,6 +251,65 @@ export function Node(label = "", options: NodeOptions = {}): Node {
 
     get nodeId(): string {
       return _id;
+    },
+
+    /**
+     * Node attributes that can be modified by hooks.
+     * This provides direct access to the internal attribute store.
+     * Changes here will be reflected in the rendered output.
+     */
+    get nodeAttrs(): Record<string, string | number> {
+      return _attrs;
+    },
+    set nodeAttrs(value: Record<string, string | number>) {
+      // Clear existing attrs and set new ones
+      for (const key of Object.keys(_attrs)) {
+        delete _attrs[key];
+      }
+      Object.assign(_attrs, value);
+    },
+
+    /**
+     * Get/set the cloud provider
+     * Accesses the internal ~provider property set by provider factory functions
+     */
+    get provider(): string | undefined {
+      return (node as unknown as Record<string, string | undefined>)["~provider"];
+    },
+    set provider(value: string | undefined) {
+      (node as unknown as Record<string, string | undefined>)["~provider"] = value;
+    },
+
+    /**
+     * Get/set the service type
+     * Accesses the internal ~type property set by provider factory functions
+     */
+    get type(): string | undefined {
+      return (node as unknown as Record<string, string | undefined>)["~type"];
+    },
+    set type(value: string | undefined) {
+      (node as unknown as Record<string, string | undefined>)["~type"] = value;
+    },
+
+    /**
+     * Get/set the resource type
+     * Accesses the internal ~resourceType property set by provider factory functions
+     */
+    get resourceType(): string | undefined {
+      return (node as unknown as Record<string, string | undefined>)["~resourceType"];
+    },
+    set resourceType(value: string | undefined) {
+      (node as unknown as Record<string, string | undefined>)["~resourceType"] = value;
+    },
+
+    /**
+     * Get/set metadata for this node
+     */
+    get metadata(): Record<string, unknown> {
+      return _metadata;
+    },
+    set metadata(value: Record<string, unknown>) {
+      _metadata = value;
     },
 
     /**
@@ -345,10 +425,11 @@ export function Node(label = "", options: NodeOptions = {}): Node {
       }
 
       // Register the node with the parent (diagram or cluster)
+      // Use the node's current label and attrs (which may have been modified by hooks)
       if (isCluster(parent)) {
-        parent["~node"](_id, label, _attrs);
+        parent["~node"](_id, node.label, _attrs);
       } else {
-        parent["~node"](_id, label, _attrs);
+        parent["~node"](_id, node.label, _attrs);
       }
 
       // Handle Custom nodes with external icons

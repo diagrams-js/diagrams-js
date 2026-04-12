@@ -29,6 +29,7 @@ intent install
 | `diagrams-js/browser-integration`   | CDN, DOM, data URLs, downloads              |
 | `diagrams-js/nodejs-integration`    | File system, sharp, local icons             |
 | `diagrams-js/python-migration`      | Python to TypeScript conversion             |
+| `diagrams-js/plugin-system`         | Importers, exporters, metadata, hooks       |
 
 ## Usage
 

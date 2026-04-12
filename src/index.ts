@@ -28,6 +28,17 @@ export { Node } from "./Node.js";
 export { Edge } from "./Edge.js";
 export { Custom } from "./Custom.js";
 
+// Plugin system
+export {
+  createPluginRegistry,
+  createJSONPlugin,
+  jsonPlugin,
+  HookEvent,
+  PluginError,
+  DependencyError,
+  RuntimeError,
+} from "./plugins/index.js";
+
 // Types
 export type { Cluster } from "./Cluster.js";
 export type { DiagramOptions, EdgeOptions, NodeOptions, ThemeName, ThemeConfig } from "./types.js";
@@ -39,3 +50,25 @@ export type {
   FromJSONOptions,
   ProviderModule,
 } from "./json.js";
+
+// Plugin types
+export type {
+  DiagramsPlugin,
+  CreatePlugin,
+  PluginCapability,
+  ImporterCapability,
+  ExporterCapability,
+  RendererCapability,
+  MetadataCapability,
+  HookCapability,
+  PluginRegistry,
+  PluginContext,
+  ImportContext,
+  ExportContext,
+  RenderContext,
+  MetadataContext,
+  HookContext,
+  NodeMetadata,
+  RuntimeSupport,
+  HookHandler,
+} from "./plugins/types.js";
