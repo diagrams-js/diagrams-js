@@ -212,6 +212,12 @@ function generateFindResource(): void {
     }
   }
 
+  // Build index for O(1) exact match lookups
+  const indexEntries: Array<[string, number]> = [];
+  allResources.forEach((r, idx) => {
+    indexEntries.push([r.resource.toLowerCase(), idx]);
+  });
+
   let code = `// Auto-generated find-resource module
 // Do not edit manually
 
@@ -223,23 +229,22 @@ export interface ResourceInfo {
 
 export const allResources: ResourceInfo[] = ${JSON.stringify(allResources, null, 2)};
 
+// Index for O(1) exact match lookups
+const resourceIndex: Map<string, number> = new Map(${JSON.stringify(indexEntries)});
+
 export function findResource(query: string): ResourceInfo[] {
   const lowerQuery = query.toLowerCase();
-  const matches = allResources.filter((r) =>
+  
+  // Check for exact match first (O(1) lookup)
+  const exactMatchIndex = resourceIndex.get(lowerQuery);
+  if (exactMatchIndex !== undefined) {
+    return [allResources[exactMatchIndex]];
+  }
+  
+  // Fall back to partial match search
+  return allResources.filter((r) =>
     r.resource.toLowerCase().includes(lowerQuery)
   );
-
-  // Sort: exact matches first (case-insensitive), then partial matches
-  return matches.sort((a, b) => {
-    const aLower = a.resource.toLowerCase();
-    const bLower = b.resource.toLowerCase();
-    const aIsExact = aLower === lowerQuery;
-    const bIsExact = bLower === lowerQuery;
-
-    if (aIsExact && !bIsExact) return -1;
-    if (!aIsExact && bIsExact) return 1;
-    return 0;
-  });
 }
 `;
 

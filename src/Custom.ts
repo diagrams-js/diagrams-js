@@ -222,3 +222,36 @@ function _blobToDataUrl(blob: Blob): Promise<string> {
     reader.readAsDataURL(blob);
   });
 }
+
+/**
+ * Create a custom node with an Iconify icon
+ * Uses the Iconify API (https://iconify.design/) to fetch icons
+ *
+ * @param label - The display label for the node
+ * @param iconName - Icon name in "prefix:name" format (e.g., "mdi:home", "logos:aws")
+ * @returns A new Custom node instance with the Iconify icon
+ *
+ * @example
+ * ```typescript
+ * // Material Design icon
+ * const home = Iconify("Home", "mdi:home");
+ *
+ * // Technology logos
+ * const aws = Iconify("AWS", "logos:aws");
+ * const docker = Iconify("Docker", "logos:docker");
+ *
+ * // In a diagram
+ * const diagram = Diagram("Architecture");
+ * diagram.add(Iconify("Web Server", "mdi:server"));
+ * ```
+ *
+ * @see https://iconify.design/ - Browse icons at https://icon-sets.iconify.design/
+ *
+ * The implementation is simple:
+ * ```typescript
+ * const Iconify = (name, image) => Custom(name, `https://api.iconify.design/${image}.svg`)
+ * ```
+ */
+export function Iconify(label: string, iconName: string): Custom {
+  return Custom(label, `https://api.iconify.design/${iconName}.svg`);
+}

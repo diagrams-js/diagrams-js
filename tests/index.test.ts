@@ -547,6 +547,90 @@ describe("Custom Nodes", () => {
     expect(useMatches?.length).toBe(3);
   });
 
+  it("should fetch and inline remote URL as base64 data URL", async () => {
+    const { Custom } = await import("../src/Custom.js");
+
+    // Mock fetch to return a test image
+    const originalFetch = globalThis.fetch;
+    const testBase64 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+    globalThis.fetch = async () =>
+      ({
+        ok: true,
+        headers: { get: () => "image/png" },
+        arrayBuffer: async () => {
+          // Convert base64 to ArrayBuffer
+          const binary = atob(testBase64);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+          }
+          return bytes.buffer;
+        },
+      }) as unknown as Response;
+
+    try {
+      const diagram = Diagram("Remote Icon Test");
+      diagram.add(Custom("My Service", "https://example.com/icon.png"));
+
+      // Render - this should fetch and convert the icon
+      const result = await diagram.render();
+      expect(typeof result).toBe("string");
+
+      // The SVG should contain the inlined data URL, not the external URL
+      const resultStr = result as string;
+
+      // Should NOT contain the external URL
+      expect(resultStr).not.toContain("https://example.com/icon.png");
+
+      // Should contain a data URL
+      expect(resultStr).toContain("data:image/png;base64,");
+
+      // Should have icon injected
+      expect(resultStr).toContain("<image");
+    } finally {
+      // Restore original fetch
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("should use data URL in DOT output for remote icons", async () => {
+    const { Custom } = await import("../src/Custom.js");
+
+    // Mock fetch to return a test image
+    const originalFetch = globalThis.fetch;
+    const testBase64 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+    globalThis.fetch = async () =>
+      ({
+        ok: true,
+        headers: { get: () => "image/png" },
+        arrayBuffer: async () => {
+          const binary = atob(testBase64);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+          }
+          return bytes.buffer;
+        },
+      }) as unknown as Response;
+
+    try {
+      const diagram = Diagram("Remote Icon DOT Test");
+      diagram.add(Custom("My Service", "https://example.com/icon.png"));
+
+      // Get DOT output via render (which waits for async icon loading)
+      const dot = await diagram.render({ format: "dot" });
+
+      // DOT should contain data URL, not external URL
+      expect(dot).not.toContain("https://example.com/icon.png");
+      expect(dot).toContain("data:image/png;base64,");
+      expect(dot).toContain(`image="data:image/png;base64,${testBase64}"`);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
   it("should handle different icons for different Custom nodes", async () => {
     const { Custom } = await import("../src/Custom.js");
 
@@ -578,6 +662,56 @@ describe("Custom Nodes", () => {
       const id1 = idMatches[0].replace('<g id="', "").replace('"', "");
       const id2 = idMatches[1].replace('<g id="', "").replace('"', "");
       expect(id1).not.toBe(id2);
+    }
+  });
+
+  it("should create Iconify node with iconify API URL", async () => {
+    const { Iconify } = await import("../src/Custom.js");
+
+    const diagram = Diagram("Iconify Test");
+    const node = diagram.add(Iconify("Home", "mdi:home"));
+
+    // Verify the node was created with the correct label
+    expect(node.label).toBe("Home");
+
+    // Verify the icon URL points to iconify API
+    expect(node["~getIconUrl"]()).toBe("https://api.iconify.design/mdi:home.svg");
+  });
+
+  it("should allow Iconify nodes in diagrams", async () => {
+    const { Iconify } = await import("../src/Custom.js");
+
+    // Mock fetch to return a test SVG
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async () =>
+      ({
+        ok: true,
+        headers: { get: () => "image/svg+xml" },
+        arrayBuffer: async () => {
+          const svg = "<svg></svg>";
+          const buffer = new Uint8Array(svg.length);
+          for (let i = 0; i < svg.length; i++) {
+            buffer[i] = svg.charCodeAt(i);
+          }
+          return buffer.buffer;
+        },
+      }) as unknown as Response;
+
+    try {
+      const diagram = Diagram("Iconify Diagram");
+      const web = diagram.add(Iconify("Web Server", "mdi:server"));
+      const db = diagram.add(Iconify("Database", "mdi:database"));
+
+      web.to(db);
+
+      const result = await diagram.render();
+      expect(typeof result).toBe("string");
+
+      // Should have iconify URLs fetched
+      const resultStr = result as string;
+      expect(resultStr).toContain("<image");
+    } finally {
+      globalThis.fetch = originalFetch;
     }
   });
 });

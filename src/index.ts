@@ -26,7 +26,7 @@
 export { Diagram } from "./Diagram.js";
 export { Node } from "./Node.js";
 export { Edge } from "./Edge.js";
-export { Custom } from "./Custom.js";
+export { Custom, Iconify } from "./Custom.js";
 
 // Plugin system
 export {
