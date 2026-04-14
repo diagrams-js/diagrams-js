@@ -187,6 +187,98 @@ The plugin automatically recognizes common Docker images and maps them to approp
 
 Images that don't match any pattern use a generic container icon.
 
+## Configuration
+
+### Custom Image Mappings
+
+You can customize which icons are used for specific Docker images. The plugin supports multiple mapping formats and checks them in this priority order:
+
+1. **Service name** (e.g., `my-custom-api`) - takes precedence
+2. **Image name** (e.g., `nginx`, `postgres`) - fallback
+
+```typescript
+import { Diagram } from "diagrams-js";
+import { createDockerComposePlugin } from "@diagrams-js/plugin-docker-compose";
+
+const diagram = Diagram("My Application");
+
+// Create plugin with custom image mappings
+const plugin = createDockerComposePlugin({
+  imageMappings: {
+    // 1. Provider icon mapping - use built-in provider icons
+    "my-custom-api": {
+      provider: "onprem",
+      type: "compute",
+      resource: "Server",
+    },
+    "company-db": {
+      provider: "onprem",
+      type: "database",
+      resource: "Postgresql",
+    },
+
+    // 2. Direct URL string - use a custom image URL
+    "my-frontend": "https://example.com/react-icon.png",
+
+    // 3. URL object - same as string but as object
+    "my-backend": {
+      url: "https://example.com/node-icon.svg",
+    },
+
+    // 4. Iconify icon - use icons from Iconify (https://iconify.design/)
+    // Format: { iconify: "prefix:name" }
+    "docker-service": {
+      iconify: "logos:docker",
+    },
+    "aws-service": {
+      iconify: "logos:aws",
+    },
+    kubernetes: {
+      iconify: "logos:kubernetes",
+    },
+  },
+});
+
+await diagram.registerPlugins([plugin]);
+```
+
+#### Iconify Icons
+
+The plugin supports [Iconify](https://iconify.design/) icons, which provides access to 200,000+ open source icons. Use the `{ iconify: "prefix:name" }` format:
+
+- Browse icons at https://icon-sets.iconify.design/
+- Common prefixes: `logos:` (technology logos), `mdi:` (Material Design), `fluent-emoji:` (emoji)
+- Examples:
+  - `{ iconify: "logos:docker" }` - Docker logo
+  - `{ iconify: "logos:aws" }` - AWS logo
+  - `{ iconify: "mdi:server" }` - Server icon
+  - `{ iconify: "logos:kubernetes" }` - Kubernetes logo
+
+Icons are automatically fetched from the Iconify API and embedded in the diagram.
+
+#### Mapping Priority
+
+The plugin first checks for a mapping by the **service name**, then falls back to the **image name**:
+
+```yaml
+# docker-compose.yml
+services:
+  my-api:
+    image: nginx:latest # Would normally show nginx icon
+```
+
+```typescript
+// This mapping by SERVICE NAME takes precedence
+imageMappings: {
+  "my-api": { iconify: "logos:aws" }  // Shows AWS icon instead of nginx
+}
+
+// This mapping by IMAGE NAME is the fallback
+imageMappings: {
+  "nginx": { iconify: "logos:nginx" }  // Used only if no "my-api" mapping
+}
+```
+
 ## Examples
 
 ### Visualize a Microservices Architecture
@@ -377,9 +469,33 @@ await diagram.registerPlugins([customPlugin]);
 
 - `config` (optional): `DockerComposePluginConfig`
   - `defaultVersion`: Default Docker Compose version for exports (default: "3.8")
-  - `imageMappings`: Custom image to icon mappings
+  - `imageMappings`: Custom image to icon mappings (see [Configuration](#configuration) section)
 
 **Returns:** `DiagramsPlugin` - The plugin instance
+
+**Complete Example with All Mapping Types:**
+
+```typescript
+const plugin = createDockerComposePlugin({
+  defaultVersion: "3.9",
+  imageMappings: {
+    // Provider icons - use built-in diagrams-js icons
+    "my-api": { provider: "onprem", type: "compute", resource: "Server" },
+    "my-db": { provider: "onprem", type: "database", resource: "Postgresql" },
+
+    // Custom URL - use any image URL
+    frontend: "https://example.com/react.png",
+    backend: { url: "https://example.com/node.svg" },
+
+    // Iconify icons - 100,000+ icons available
+    docker: { iconify: "logos:docker" },
+    k8s: { iconify: "logos:kubernetes" },
+    github: { iconify: "logos:github" },
+  },
+});
+
+await diagram.registerPlugins([plugin]);
+```
 
 ### Plugin Capabilities
 
@@ -510,7 +626,24 @@ The plugin maps common images to provider icons. If your image isn't recognized:
 
 1. Check if it matches one of the patterns in the mapping table
 2. The plugin will use a generic container icon for unrecognized images
-3. You can manually set icons using provider nodes if needed
+3. Use custom image mappings to specify icons:
+
+```typescript
+const plugin = createDockerComposePlugin({
+  imageMappings: {
+    // Option 1: Use a provider icon
+    "my-service": { provider: "onprem", type: "compute", resource: "Server" },
+
+    // Option 2: Use a custom image URL
+    "my-app": "https://example.com/icon.svg",
+
+    // Option 3: Use Iconify (200,000+ icons!)
+    "custom-app": { iconify: "logos:my-icon" },
+  },
+});
+```
+
+4. You can also manually set icons using provider nodes if needed
 
 ### Import Fails
 
