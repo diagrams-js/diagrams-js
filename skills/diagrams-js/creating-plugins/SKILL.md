@@ -162,53 +162,6 @@ export const myPlugin = createMyPlugin();
 }
 ```
 
-## Import/Export Best Practices
-
-### Import: Convert to JSON Format
-
-**Recommended approach**: Parse your format, convert to diagrams-js JSON, then use built-in JSON importer:
-
-```typescript
-import: async (source, diagram, context) => {
-  // Parse your format
-  const data = parseMyFormat(source);
-
-  // Convert to diagrams-js JSON format
-  const json: DiagramJSON = {
-    name: data.name,
-    nodes: data.items.map((item) => ({
-      id: item.id,
-      label: item.name,
-      provider: "onprem",
-      service: "container",
-      type: "Docker",
-      metadata: { source: item },
-    })),
-    edges: data.connections.map((conn) => ({
-      from: conn.source,
-      to: conn.target,
-    })),
-  };
-
-  // Use built-in JSON importer - properly resolves icons
-  await diagram.import(JSON.stringify(json), "json");
-},
-```
-
-### Export: Use .export('json') Method
-
-```typescript
-export: async (diagram, context) => {
-  // Get diagram as JSON
-  const json = await diagram.export('json');
-
-  // Convert to your format
-  return json.nodes
-    .map((n) => `${n.label}: ${n.metadata?.source?.type || "unknown"}`)
-    .join("\n");
-},
-```
-
 ## Resource Discovery
 
 ### Using context.loadResourcesList()
@@ -293,11 +246,9 @@ export function createMyPlugin(config?: MyPluginConfig): DiagramsPlugin {
         mimeTypes: ["text/yaml", "application/x-yaml"],
 
         import: async (source, diagram, context) => {
-          // Load YAML module via context - no bundling needed
           const yaml = await context.loadYaml();
           const data = yaml.load(source);
 
-          // Process the parsed data
           for (const item of data.items) {
             const node = diagram.add(Node(item.name));
             node.metadata = { source: item };
@@ -315,7 +266,6 @@ export function createMyPlugin(config?: MyPluginConfig): DiagramsPlugin {
           const yaml = await context.loadYaml();
           const json = diagram.toJSON();
 
-          // Convert to your format
           const data = {
             version: "1.0",
             services: json.nodes.map((n) => ({
@@ -324,7 +274,6 @@ export function createMyPlugin(config?: MyPluginConfig): DiagramsPlugin {
             })),
           };
 
-          // Serialize to YAML
           return yaml.dump(data);
         },
       } as ExporterCapability,
@@ -332,8 +281,6 @@ export function createMyPlugin(config?: MyPluginConfig): DiagramsPlugin {
   };
 }
 ```
-
-**Benefits of using `context.loadYaml()`:**
 
 - No need to add `js-yaml` or other YAML parsers to your plugin dependencies
 - Reduces plugin bundle size
@@ -353,7 +300,6 @@ export function createMyPlugin(config?: MyPluginConfig): DiagramsPlugin {
   mimeTypes: ["text/plain"],
 
   canImport: async (source: string | string[]): Promise<boolean> => {
-    // Return true if source can be parsed as Terraform
     const sources = Array.isArray(source) ? source : [source];
     return sources.every((s) => s.includes('resource "'));
   },
@@ -361,7 +307,6 @@ export function createMyPlugin(config?: MyPluginConfig): DiagramsPlugin {
   import: async (source, diagram, context) => {
     const { Node, Cluster } = context.lib;
 
-    // Parse Terraform and create nodes/clusters
     const parsed = parseTerraform(source);
 
     for (const resource of parsed.resources) {
@@ -384,7 +329,6 @@ export function createMyPlugin(config?: MyPluginConfig): DiagramsPlugin {
   export: async (diagram, context) => {
     const json = diagram.toJSON();
 
-    // Generate Kubernetes manifests
     const manifests = json.nodes.map((node) => ({
       apiVersion: "apps/v1",
       kind: "Deployment",
@@ -449,22 +393,6 @@ export function createMyPlugin(config?: MyPluginConfig): DiagramsPlugin {
 
 ## Critical Patterns
 
-### CRITICAL: Never Import Runtime Exports
-
-**Wrong** - Creates multiple library instances:
-
-```typescript
-import { Node, Edge, Diagram } from "diagrams-js"; // ❌ NEVER DO THIS
-
-export const myPlugin = {
-  import: async (source, diagram) => {
-    const node = diagram.add(Node("name"));
-  },
-};
-```
-
-**Correct** - Use context.lib:
-
 ```typescript
 import type { Node, Edge, Diagram } from "diagrams-js"; // ✅ Type-only import
 
@@ -475,24 +403,6 @@ export const myPlugin = () => ({
   },
 });
 ```
-
-### CRITICAL: Use context.loadResourcesList()
-
-**Wrong** - Hardcoding provider paths:
-
-```typescript
-import: async (source, diagram, context) => {
-  const node: DiagramNodeJSON = {
-    id: "db",
-    label: "Database",
-    provider: "aws", // ❌ Hardcoded
-    service: "database",
-    type: "Postgresql",
-  };
-};
-```
-
-**Correct** - Dynamic discovery:
 
 ```typescript
 let findResource: (query: string) => ResourceInfo[];
@@ -516,24 +426,6 @@ export const myPlugin = () => ({
 });
 ```
 
-### CRITICAL: Use context.loadYaml() for YAML Parsing
-
-**Wrong** - Bundling your own YAML parser:
-
-```typescript
-// ❌ Adds unnecessary bundle size
-import YAML from "yaml";
-
-export const myPlugin = () => ({
-  import: async (source, diagram, context) => {
-    const data = YAML.parse(source);
-    // ...
-  },
-});
-```
-
-**Correct** - Use context-provided YAML module:
-
 ```typescript
 export const myPlugin = () => ({
   import: async (source, diagram, context) => {
@@ -541,137 +433,6 @@ export const myPlugin = () => ({
     const data = yaml.load(source);
     // ...
   },
-});
-```
-
-## Real-World Example: Docker Compose Plugin
-
-See `@diagrams-js/plugin-docker-compose` for a complete reference implementation:
-
-```typescript
-// Key patterns from docker-compose plugin:
-
-export function createDockerComposePlugin(config?: DockerComposePluginConfig): DiagramsPlugin {
-  let findResource: (query: string) => ResourceInfo[];
-  let yaml: typeof import("diagrams-js").Yaml | undefined;
-
-  return {
-    name: "docker-compose",
-    version: "1.0.0",
-    apiVersion: "1.0",
-    runtimeSupport: { node: true, browser: true, deno: true, bun: true },
-
-    // Load resource discovery and YAML module on initialization
-    initialize: async (_config, context) => {
-      const [resourcesList, yamlModule] = await Promise.all([
-        context.loadResourcesList(),
-        context.loadYaml(),
-      ]);
-      if (resourcesList?.findResource) {
-        findResource = resourcesList.findResource;
-      }
-      if (yamlModule) {
-        yaml = yamlModule;
-      }
-    },
-
-    capabilities: [
-      {
-        type: "importer",
-        name: "docker-compose",
-        extensions: [".yml", ".yaml"],
-        mimeTypes: ["text/yaml", "application/x-yaml"],
-
-        import: async (source, diagram, context) => {
-          // Parse YAML using context-provided module
-          const compose = yaml.load(source) as ComposeFile;
-
-          // Convert to diagrams-js JSON
-          const json: DiagramJSON = {
-            name: compose.name,
-            nodes: Object.entries(compose.services).map(([name, service]) => {
-              // Use findResource to map image to provider icon
-              const matches = findResource(service.image);
-
-              return {
-                id: name,
-                label: name,
-                provider: matches[0]?.provider || "onprem",
-                service: matches[0]?.type || "container",
-                type: matches[0]?.resource || "Docker",
-                metadata: { compose: service },
-              };
-            }),
-            edges: [],
-          };
-
-          // Import via JSON format
-          await diagram.import(JSON.stringify(json), "json");
-        },
-      } as ImporterCapability,
-
-      {
-        type: "exporter",
-        name: "docker-compose",
-        extension: ".yml",
-        mimeType: "text/yaml",
-
-        export: async (diagram, context) => {
-          const json = diagram.toJSON();
-
-          // Convert to Docker Compose YAML
-          const compose: ComposeFile = {
-            version: "3.8",
-            services: {},
-          };
-
-          for (const node of json.nodes) {
-            compose.services[node.label] = {
-              image: node.metadata?.compose?.image || "",
-              ports: node.metadata?.compose?.ports || [],
-            };
-          }
-
-          // Serialize using context-provided YAML module
-          return yaml.dump(compose);
-        },
-      } as ExporterCapability,
-    ],
-  };
-}
-```
-
-## Testing
-
-```typescript
-// tests/index.test.ts
-import { describe, it, expect } from "vitest";
-import { Diagram } from "diagrams-js";
-import { createMyPlugin } from "../src/index.js";
-
-describe("My Plugin", () => {
-  it("should import from my format", async () => {
-    const diagram = Diagram("Test");
-    const plugin = createMyPlugin();
-
-    await diagram.registerPlugins([plugin]);
-    await diagram.import("MYFORMAT:\nname: Test\nitems:\n  - id: 1\n    name: Server", "my-format");
-
-    const json = diagram.toJSON();
-    expect(json.nodes).toHaveLength(1);
-    expect(json.nodes[0].label).toBe("Server");
-  });
-
-  it("should export to my format", async () => {
-    const diagram = Diagram("Test");
-    const { Node } = await import("diagrams-js");
-
-    diagram.add(Node("Server"));
-    await diagram.registerPlugins([createMyPlugin()]);
-
-    const result = await diagram.export("my-format");
-    expect(result).toContain("Server");
-  });
 });
 ```
 

@@ -146,48 +146,9 @@ console.log(composeYaml);
 
 ## Image to Icon Mapping
 
-The plugin automatically maps Docker images to appropriate provider icons:
+## Image to Icon Mapping
 
-### Databases
-
-- `postgres` → PostgreSQL
-- `mysql` → MySQL
-- `mariadb` → MariaDB
-- `mongo` / `mongodb` → MongoDB
-- `redis` → Redis
-- `cassandra` → Cassandra
-- `couchdb` → CouchDB
-- `influxdb` → InfluxDB
-- `neo4j` → Neo4j
-- `oracle` → Oracle
-- `mssql` → MSSQL
-
-### Message Queues
-
-- `kafka` → Kafka
-- `rabbitmq` → RabbitMQ
-
-### Monitoring
-
-- `prometheus` → Prometheus
-- `grafana` → Grafana
-
-### Search
-
-- `elasticsearch` → Elasticsearch
-
-### Web Servers
-
-- `nginx` → Nginx
-- `apache` / `httpd` → Apache
-
-### Container Orchestration
-
-- `nomad` → Nomad
-
-### Default
-
-- Other images → Generic container
+The plugin automatically maps common Docker images to provider icons (postgres→PostgreSQL, mysql→MySQL, mongo→MongoDB, redis→Redis, nginx→Nginx, etc.). Unrecognized images use a generic container icon.
 
 ## API Reference
 
@@ -493,54 +454,8 @@ services:
 "nginx": { iconify: "logos:nginx" }   // Used if no "my-api" mapping
 ```
 
-### Provider Icons
-
-Use built-in provider icons from the diagrams-js library:
-
-```typescript
-const plugin = createDockerComposePlugin({
-  imageMappings: {
-    "my-api": { provider: "onprem", type: "compute", resource: "Server" },
-    "my-db": { provider: "onprem", type: "database", resource: "Postgresql" },
-    "my-cache": { provider: "onprem", type: "database", resource: "Redis" },
-  },
 });
-```
 
-### Custom URL Icons
-
-Use any image URL (must be accessible from the runtime):
-
-```typescript
-const plugin = createDockerComposePlugin({
-  imageMappings: {
-    // As a string
-    "custom-service": "https://example.com/my-icon.png",
-    // As an object
-    "another-service": { url: "https://example.com/icon.svg" },
-  },
-});
-```
-
-### Iconify Icons
-
-Use icons from [Iconify](https://iconify.design/) (200,000+ open source icons):
-
-```typescript
-const plugin = createDockerComposePlugin({
-  imageMappings: {
-    // Technology logos
-    docker: { iconify: "logos:docker" },
-    kubernetes: { iconify: "logos:kubernetes" },
-    aws: { iconify: "logos:aws" },
-    github: { iconify: "logos:github" },
-
-    // Material Design icons
-    server: { iconify: "mdi:server" },
-    database: { iconify: "mdi:database" },
-    cloud: { iconify: "mdi:cloud" },
-  },
-});
 ```
 
 Browse available icons at https://icon-sets.iconify.design/
@@ -550,3 +465,4 @@ Browse available icons at https://icon-sets.iconify.design/
 - diagrams-js Plugin System: See `diagrams-js-plugin-system` skill
 - diagrams-js Documentation: https://diagrams-js.hatemhosny.dev
 - Docker Compose Reference: https://docs.docker.com/compose/
+```

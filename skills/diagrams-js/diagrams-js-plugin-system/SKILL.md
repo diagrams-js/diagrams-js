@@ -396,76 +396,6 @@ const diagram = Diagram("Test");
 await diagram.registerPlugins([[apiPlugin, { apiKey: "xxx", region: "us-west-2" }]]);
 ```
 
-## API Reference
-
-### Core Types
-
-```typescript
-// Plugin factory function
-type CreatePlugin = (config?: unknown) => DiagramsPlugin;
-
-// Plugin interface
-interface DiagramsPlugin {
-  name: string;
-  version: string;
-  apiVersion: "1.0";
-  runtimeSupport: {
-    node: boolean;
-    browser: boolean;
-    deno: boolean;
-    bun: boolean;
-  };
-  dependencies?: string[];
-  requiredConfig?: string[];
-  capabilities: PluginCapability[];
-  initialize?: (config: unknown, context: PluginContext) => Promise<void>;
-  destroy?: () => Promise<void>;
-}
-
-// Capability types
-type PluginCapability =
-  | ImporterCapability
-  | ExporterCapability
-  | RendererCapability
-  | MetadataCapability
-  | HookCapability;
-
-// Hook events
-enum HookEvent {
-  BEFORE_IMPORT = "before:import",
-  AFTER_IMPORT = "after:import",
-  BEFORE_EXPORT = "before:export",
-  AFTER_EXPORT = "after:export",
-  BEFORE_RENDER = "before:render",
-  AFTER_RENDER = "after:render",
-  BEFORE_SERIALIZE = "before:serialize",
-  AFTER_DESERIALIZE = "after:deserialize",
-  NODE_CREATE = "node:create",
-  EDGE_CREATE = "edge:create",
-  CLUSTER_CREATE = "cluster:create",
-  METADATA_ATTACH = "metadata:attach",
-  METADATA_CALCULATE = "metadata:calculate",
-}
-```
-
-### Diagram Methods
-
-```typescript
-interface Diagram {
-  // Import from external format
-  import(source: string | string[], format: string): Promise<void>;
-
-  // Export to external format
-  export(format: string): Promise<string | Uint8Array>;
-
-  // Attach metadata from provider
-  attachMetadata(provider: string, nodeType?: string): Promise<void>;
-
-  // Access plugin registry
-  registry: PluginRegistry;
-}
-```
-
 ## Common Patterns
 
 ### Docker Compose Import
@@ -566,24 +496,4 @@ const awsMetadataPlugin = (config) => ({
 });
 ```
 
-## Error Handling
-
-The plugin system provides specific error types:
-
-```typescript
-import { PluginError, DependencyError, RuntimeError } from "diagrams-js";
-
-try {
-  await diagram.import(source, "unknown-format");
-} catch (error) {
-  if (error instanceof PluginError) {
-    console.log(`Plugin ${error.pluginName}: ${error.message}`);
-  }
-}
-```
-
 ## Further Reading
-
-- Full documentation: [Plugin System Guide](../../diagrams-js/docs/docs/guides/plugins.mdx)
-- API Reference: See TypeScript definitions in `src/plugins/types.ts`
-- Examples: Check `tests/index.test.ts` for plugin test examples
