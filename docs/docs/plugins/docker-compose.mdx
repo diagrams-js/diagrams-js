@@ -21,7 +21,7 @@ npm install @diagrams-js/plugin-docker-compose
 import { Diagram } from "diagrams-js";
 import { dockerComposePlugin } from "@diagrams-js/plugin-docker-compose";
 
-const diagram = Diagram("My Application");
+const diagram = Diagram("E-commerce Application");
 
 // Register the plugin instance
 await diagram.registerPlugins([dockerComposePlugin]);
@@ -29,18 +29,35 @@ await diagram.registerPlugins([dockerComposePlugin]);
 // Import from Docker Compose YAML
 const composeYaml = `
 version: "3.8"
-name: my-app
+name: ecommerce-app
 services:
-  web:
-    image: nginx:latest
+  frontend:
+    image: nginx:alpine
     ports:
       - "80:80"
     depends_on:
+      - api
+
+  api:
+    image: node:18
+    ports:
+      - "3000:3000"
+    depends_on:
       - db
+      - cache
+
   db:
-    image: postgres:13
+    image: postgres:15
     environment:
-      POSTGRES_DB: mydb
+      POSTGRES_DB: ecommerce
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  cache:
+    image: redis:7-alpine
+
+volumes:
+  pgdata:
 `;
 
 await diagram.import(composeYaml, "docker-compose");
@@ -48,6 +65,12 @@ await diagram.import(composeYaml, "docker-compose");
 // Render the diagram
 const svg = await diagram.render();
 ```
+
+<img
+  src="/examples/ecommerce-app.svg"
+  alt="Docker Compose Plugin Example"
+  className="example-img"
+/>
 
 ### Export to Docker Compose
 
@@ -102,88 +125,9 @@ console.log(composeYaml);
 - **Dependency reconstruction** - Rebuilds `depends_on` from diagram edges
 - **Network and volume export** - Includes networks and volumes in output
 
-## Supported Docker Compose Fields
-
-### Services
-
-| Field         | Import | Export | Description                                 |
-| ------------- | ------ | ------ | ------------------------------------------- |
-| `image`       | ✅     | ✅     | Container image with automatic icon mapping |
-| `build`       | ✅     | ✅     | Build configuration                         |
-| `ports`       | ✅     | ✅     | Port mappings                               |
-| `environment` | ✅     | ✅     | Environment variables                       |
-| `volumes`     | ✅     | ✅     | Volume mounts                               |
-| `depends_on`  | ✅     | ✅     | Service dependencies (creates edges)        |
-| `networks`    | ✅     | ✅     | Network connections                         |
-| `command`     | ✅     | ✅     | Container command                           |
-| `working_dir` | ✅     | ✅     | Working directory                           |
-| `restart`     | ✅     | ✅     | Restart policy                              |
-| `labels`      | ✅     | ✅     | Container labels                            |
-
-### Networks
-
-- `driver` - Network driver (e.g., bridge, overlay)
-- `external` - External network flag
-
-### Volumes
-
-- `driver` - Volume driver
-- `external` - External volume flag
-
 ## Image to Icon Mapping
 
-The plugin automatically recognizes common Docker images and maps them to appropriate provider icons:
-
-### Databases
-
-| Image Pattern      | Provider Icon |
-| ------------------ | ------------- |
-| `postgres`         | PostgreSQL    |
-| `mysql`            | MySQL         |
-| `mariadb`          | MariaDB       |
-| `mongo`, `mongodb` | MongoDB       |
-| `redis`            | Redis         |
-| `cassandra`        | Cassandra     |
-| `couchdb`          | CouchDB       |
-| `influxdb`         | InfluxDB      |
-| `neo4j`            | Neo4j         |
-| `oracle`           | Oracle        |
-| `mssql`            | MSSQL         |
-
-### Message Queues
-
-| Image Pattern | Provider Icon |
-| ------------- | ------------- |
-| `kafka`       | Kafka         |
-| `rabbitmq`    | RabbitMQ      |
-
-### Monitoring
-
-| Image Pattern | Provider Icon |
-| ------------- | ------------- |
-| `prometheus`  | Prometheus    |
-| `grafana`     | Grafana       |
-
-### Search
-
-| Image Pattern   | Provider Icon |
-| --------------- | ------------- |
-| `elasticsearch` | Elasticsearch |
-
-### Web Servers
-
-| Image Pattern     | Provider Icon |
-| ----------------- | ------------- |
-| `nginx`           | Nginx         |
-| `apache`, `httpd` | Apache        |
-
-### Container Orchestration
-
-| Image Pattern | Provider Icon |
-| ------------- | ------------- |
-| `nomad`       | Nomad         |
-
-### Default
+The plugin automatically recognizes common Docker images and maps them to appropriate provider icons.
 
 Images that don't match any pattern use a generic container icon.
 
@@ -518,7 +462,7 @@ The plugin provides two capabilities:
 The plugin exports the `ImageMappings` type for TypeScript users:
 
 ```typescript
-import { createDockerComposePlugin, ImageMappings } from "@diagrams-js/plugin-docker-compose";
+import { createDockerComposePlugin, type ImageMappings } from "@diagrams-js/plugin-docker-compose";
 
 // Type your image mappings for better IDE support and type checking
 const mappings: ImageMappings = {
@@ -579,7 +523,7 @@ services:
 
 ```typescript
 // In diagrams-js
-web.from(db);
+web.to(db);
 ```
 
 ### 4. Version Your Compose Files
@@ -681,8 +625,8 @@ try {
 
 The Docker Compose plugin supports all diagrams-js runtimes:
 
-- **Node.js** ✅
 - **Browser** ✅
+- **Node.js** ✅
 - **Deno** ✅
 - **Bun** ✅
 

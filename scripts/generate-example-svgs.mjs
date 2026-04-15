@@ -4,6 +4,7 @@
  */
 
 import { Custom, Diagram, Edge, Node } from "../dist/index.js";
+import { dockerComposePlugin } from "../../plugin-docker-compose/dist/index.js";
 import { EC2, Lambda, ECS, EKS } from "../dist/providers/aws/compute.js";
 import { Aurora, RDS, Elasticache, Redshift } from "../dist/providers/aws/database.js";
 import { ALB, ELB, Route53 } from "../dist/providers/aws/network.js";
@@ -349,7 +350,7 @@ async function generateExample10() {
   const { HookEvent } = await import("../dist/index.js");
 
   // Create a plugin that modifies node labels
-  const labelPrefixPlugin = () => ({
+  const labelPrefixPlugin = {
     name: "label-prefix",
     version: "1.0.0",
     apiVersion: "1.0",
@@ -368,10 +369,10 @@ async function generateExample10() {
         ],
       },
     ],
-  });
+  };
 
   // Create a plugin that adds colored edges
-  const coloredEdgePlugin = () => ({
+  const coloredEdgePlugin = {
     name: "colored-edges",
     version: "1.0.0",
     apiVersion: "1.0",
@@ -392,10 +393,10 @@ async function generateExample10() {
         ],
       },
     ],
-  });
+  };
 
   // Create a plugin that modifies node attributes
-  const nodeStylePlugin = () => ({
+  const nodeStylePlugin = {
     name: "node-style",
     version: "1.0.0",
     apiVersion: "1.0",
@@ -415,7 +416,7 @@ async function generateExample10() {
         ],
       },
     ],
-  });
+  };
 
   const diagram = Diagram("Plugin Example");
 
@@ -439,7 +440,7 @@ async function generateExample11() {
   const { HookEvent } = await import("../dist/index.js");
 
   // Environment-based styling plugin
-  const environmentStylingPlugin = (environment) => () => ({
+  const environmentStylingPlugin = (environment) => ({
     name: "environment-styling",
     version: "1.0.0",
     apiVersion: "1.0",
@@ -561,6 +562,50 @@ async function generateQuickstartCloud() {
   console.log("  ✓ Generated");
 }
 
+async function generateDockerCompose() {
+  console.log("Generating ecommerce-app.svg...");
+  const composeYaml = `
+version: "3.8"
+name: ecommerce-app
+services:
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+  api:
+    image: node:18
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - cache
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ecommerce
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  cache:
+    image: redis:7-alpine
+
+volumes:
+  pgdata:
+`;
+
+  const diagram = Diagram("E-commerce Application");
+  await diagram.registerPlugins([dockerComposePlugin]);
+  await diagram.import(composeYaml, "docker-compose");
+
+  const svg = await diagram.render();
+  fs.writeFileSync(path.join(OUTPUT_DIR, "ecommerce-app.svg"), svg);
+  console.log("  ✓ Generated");
+}
+
 async function main() {
   console.log("Generating example SVGs...\n");
 
@@ -577,6 +622,7 @@ async function main() {
   await generateExample11();
   await generateQuickstartBasic();
   await generateQuickstartCloud();
+  await generateDockerCompose();
 
   console.log("\n✓ All SVGs generated successfully!");
   console.log(`  Output directory: ${OUTPUT_DIR}`);

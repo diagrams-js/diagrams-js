@@ -24,8 +24,8 @@ const myExporter = {
   version: "1.0.0",
   apiVersion: "1.0",
   runtimeSupport: {
-    node: true,
     browser: true,
+    node: true,
     deno: true,
     bun: true,
   },
@@ -59,12 +59,11 @@ console.log(result); // "Diagram: My Architecture"
 
 ### Built-in Plugins
 
-Built-in plugins (like JSON) are automatically registered when you call plugin-related methods:
+Built-in plugins (like JSON) are automatically registered:
 
 ```typescript
 const diagram = Diagram("My Architecture");
 
-// Built-in JSON plugin auto-registers on first use
 const json = await diagram.export("json"); // Works without explicit registration
 const json2 = diagram.toJSON(); // Also works
 ```
@@ -78,7 +77,7 @@ const myPlugin = {
   name: "my-plugin",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   capabilities: [
     {
       type: "importer",
@@ -139,7 +138,7 @@ const createDockerComposePlugin = (config?: { defaultVersion?: string }) => ({
   name: "docker-compose",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   capabilities: [
     {
       type: "importer",
@@ -189,7 +188,7 @@ const terraformPlugin = {
   name: "terraform",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   capabilities: [
     {
       type: "exporter",
@@ -224,7 +223,7 @@ const kubernetesPlugin = {
   name: "kubernetes",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   capabilities: [
     {
       type: "exporter",
@@ -266,7 +265,7 @@ const awsMetadataPlugin = {
   name: "aws-metadata",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   capabilities: [
     {
       type: "metadata",
@@ -311,7 +310,7 @@ const loggingPlugin = {
   name: "logging",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   capabilities: [
     {
       type: "hook",
@@ -358,7 +357,7 @@ const basePlugin = {
   name: "base-plugin",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   capabilities: [
     {
       type: "exporter",
@@ -374,7 +373,7 @@ const advancedPlugin = {
   name: "advanced",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   dependencies: ["base-plugin"], // Depends on base-plugin
   capabilities: [
     {
@@ -410,7 +409,7 @@ const myPlugin = {
   name: "my-yaml-plugin",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   initialize: async (config, context) => {
     // Load the YAML module during initialization
     const yaml = await context.loadYaml();
@@ -462,7 +461,7 @@ const myPlugin = {
   name: "my-plugin",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   initialize: async (config, context) => {
     const resources = await context.loadResourcesList();
     if (resources?.findResource) {
@@ -532,7 +531,7 @@ const mySimplePlugin = {
   name: "my-simple-plugin",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   capabilities: [
     // ...
   ],
@@ -543,7 +542,7 @@ const createMyPlugin = (config: { apiKey: string }) => ({
   name: "my-plugin",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   capabilities: [
     // ... use config.apiKey ...
   ],
@@ -640,7 +639,7 @@ const createDockerComposePlugin = () => ({
   name: "docker-compose",
   version: "1.0.0",
   apiVersion: "1.0",
-  runtimeSupport: { node: true, browser: true, deno: true, bun: true },
+  runtimeSupport: { browser: true, node: true, deno: true, bun: true },
   capabilities: [
     {
       type: "importer",
