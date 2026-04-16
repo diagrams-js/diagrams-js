@@ -21,7 +21,8 @@ export default defineConfig({
     minify: true,
     sourcemap: false,
     deps: {
-      onlyBundle: ["@viz-js/viz"],
+      onlyBundle: false,
+      alwaysBundle: ["@viz-js/viz"],
       neverBundle: ["js-yaml"], // js-yaml is built by esbuild in a separate module
     },
   },
