@@ -17,6 +17,7 @@ import { buildDiagramJSON, type DiagramJSON, fromJSON as fromJSONImpl } from "./
 import { createPluginRegistry, createJSONPlugin } from "./plugins/index.js";
 import type { PluginRegistry } from "./plugins/types.js";
 import { HookEvent as HookEventEnum } from "./plugins/types.js";
+import { computeDiff, renderDiff } from "./diff.js";
 
 // Render function overload types for proper type inference
 type RenderFunction = {
@@ -1753,7 +1754,6 @@ Diagram.diff = async function (
   after: import("./json.js").DiagramJSON | Diagram,
   opts?: import("./diff.js").DiffOptions,
 ): Promise<import("./diff.js").DiagramDiffResult> {
-  const { computeDiff } = await import("./diff.js");
   return computeDiff(before, after, opts);
 };
 
@@ -1771,7 +1771,6 @@ Diagram.renderDiff = async function (
   after: import("./json.js").DiagramJSON | Diagram,
   opts?: import("./diff.js").RenderDiffOptions,
 ): Promise<string> {
-  const { computeDiff, renderDiff } = await import("./diff.js");
   const diff = computeDiff(before, after, opts as import("./diff.js").DiffOptions);
   return renderDiff(diff, before, after, opts);
 };

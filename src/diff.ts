@@ -19,6 +19,8 @@
  * @packageDocumentation
  */
 
+import { Diagram as DiagramConstructor } from "./Diagram.js";
+
 import type { Diagram } from "./Diagram.js";
 import type { DiagramJSON, DiagramNodeJSON, DiagramEdgeJSON, DiagramClusterJSON } from "./json.js";
 
@@ -1161,9 +1163,6 @@ export async function renderDiff(
     typeof (after as Diagram).toJSON === "function"
       ? (after as Diagram).toJSON()
       : (after as DiagramJSON);
-
-  // Import Diagram constructor dynamically to avoid circular dependency
-  const { Diagram: DiagramConstructor } = await import("./Diagram.js");
 
   // Render both diagrams
   const beforeDiagram = await DiagramConstructor.fromJSON(beforeJson);
