@@ -7,6 +7,21 @@ export default defineConfig({
   run: {
     enablePrePostScripts: false, // Disables automatic pre/post hooks
   },
+  build: {
+    lib: {
+      entry: "src/index.ts",
+      fileName: "index.js",
+      formats: ["es"],
+    },
+    minify: true,
+    sourcemap: false,
+    rolldownOptions: {
+      output: {
+        codeSplitting: false,
+      },
+    },
+  },
+
   pack: {
     entry: "src/index.ts",
     outExtensions: () => ({
@@ -18,8 +33,9 @@ export default defineConfig({
     },
     exports: true,
     format: ["esm"],
-    minify: true,
+    minify: false,
     sourcemap: false,
+    unbundle: false,
     deps: {
       onlyBundle: false,
       alwaysBundle: ["@viz-js/viz"],

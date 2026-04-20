@@ -317,6 +317,59 @@ export interface DiagramConstructor {
     input: import("./json.js").DiagramJSON | string,
     opts?: import("./json.js").FromJSONOptions,
   ): Promise<Diagram>;
+
+  /**
+   * Compute the diff between two diagram versions.
+   * Compares nodes, edges, and clusters to identify added, removed, modified, and renamed elements.
+   *
+   * @param before - The original diagram (JSON or Diagram object)
+   * @param after - The updated diagram (JSON or Diagram object)
+   * @param opts - Options for diff computation
+   * @returns Complete diff result with summary and detailed changes
+   *
+   * @example
+   * ```typescript
+   * import { Diagram } from "diagrams-js";
+   *
+   * const before = diagramV1.toJSON();
+   * const after = diagramV2.toJSON();
+   *
+   * const diff = Diagram.diff(before, after);
+   * console.log(diff.summary); // { added: 2, removed: 1, modified: 3, unchanged: 5, renamed: 0 }
+   * ```
+   */
+  diff(
+    before: import("./json.js").DiagramJSON | Diagram,
+    after: import("./json.js").DiagramJSON | Diagram,
+    opts?: import("./diff.js").DiffOptions,
+  ): import("./diff.js").DiagramDiffResult;
+
+  /**
+   * Render a visual diff between two diagram versions.
+   * Generates a side-by-side SVG or self-contained HTML showing changes.
+   *
+   * @param before - The original diagram (JSON or Diagram object)
+   * @param after - The updated diagram (JSON or Diagram object)
+   * @param opts - Options for rendering the diff
+   * @returns Promise resolving to SVG or HTML string
+   *
+   * @example
+   * ```typescript
+   * import { Diagram } from "diagrams-js";
+   * import { writeFileSync } from "fs";
+   *
+   * const before = diagramV1.toJSON();
+   * const after = diagramV2.toJSON();
+   *
+   * const html = await Diagram.renderDiff(before, after, { format: "html" });
+   * writeFileSync("diff.html", html);
+   * ```
+   */
+  renderDiff(
+    before: import("./json.js").DiagramJSON | Diagram,
+    after: import("./json.js").DiagramJSON | Diagram,
+    opts?: import("./diff.js").RenderDiffOptions,
+  ): Promise<string>;
 }
 
 /**
@@ -1685,6 +1738,43 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
  * ```
  */
 Diagram.fromJSON = fromJSONImpl;
+
+/**
+ * Compute the diff between two diagram versions.
+ * This is a convenience static method that wraps `computeDiff` from `./diff.js`.
+ *
+ * @param before - The original diagram (JSON or Diagram object)
+ * @param after - The updated diagram (JSON or Diagram object)
+ * @param opts - Options for diff computation
+ * @returns Complete diff result with summary and detailed changes
+ */
+Diagram.diff = async function (
+  before: import("./json.js").DiagramJSON | Diagram,
+  after: import("./json.js").DiagramJSON | Diagram,
+  opts?: import("./diff.js").DiffOptions,
+): Promise<import("./diff.js").DiagramDiffResult> {
+  const { computeDiff } = await import("./diff.js");
+  return computeDiff(before, after, opts);
+};
+
+/**
+ * Render a visual diff between two diagram versions.
+ * This is a convenience static method that wraps `renderDiff` from `./diff.js`.
+ *
+ * @param before - The original diagram (JSON or Diagram object)
+ * @param after - The updated diagram (JSON or Diagram object)
+ * @param opts - Options for rendering the diff
+ * @returns Promise resolving to SVG or HTML string
+ */
+Diagram.renderDiff = async function (
+  before: import("./json.js").DiagramJSON | Diagram,
+  after: import("./json.js").DiagramJSON | Diagram,
+  opts?: import("./diff.js").RenderDiffOptions,
+): Promise<string> {
+  const { computeDiff, renderDiff } = await import("./diff.js");
+  const diff = computeDiff(before, after, opts as import("./diff.js").DiffOptions);
+  return renderDiff(diff, before, after, opts);
+};
 
 /**
  * Extract format from file extension
