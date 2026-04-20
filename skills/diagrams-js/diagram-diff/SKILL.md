@@ -84,7 +84,7 @@ const html = await renderDiff(diff, before, after, {
   format: "html", // "html" or "svg"
   theme: "light", // "light" or "dark"
   layout: "side-by-side", // "side-by-side" or "stacked"
-  showUnchanged: "dim", // "show", "dim", or "hide"
+  showUnchanged: "show", // "show" (default), "dim", or "hide"
   showLegend: true, // Show color legend
   showSummary: true, // Show change counts
   hoverDetails: true, // Show tooltips on hover
@@ -93,20 +93,20 @@ const html = await renderDiff(diff, before, after, {
 
 ## Change Types
 
-| Kind        | Color     | Description                                         |
-| ----------- | --------- | --------------------------------------------------- |
-| `added`     | 🟢 Green  | New element in after version                        |
-| `removed`   | 🔴 Red    | Element deleted in after version                    |
-| `modified`  | 🟠 Amber  | Properties changed                                  |
-| `renamed`   | 🟣 Purple | ID changed but same entity (matched by fingerprint) |
-| `unchanged` | ⚪ Gray   | No changes (dimmed by default)                      |
+| Kind        | Color    | Description                                  |
+| ----------- | -------- | -------------------------------------------- |
+| `added`     | 🟢 Green | New element in after version                 |
+| `removed`   | 🔴 Red   | Element deleted in after version             |
+| `modified`  | 🟠 Amber | Properties changed (including label changes) |
+| `unchanged` | ⚪ Gray  | No changes (shown by default)                |
 
 ## Node Matching
 
-Nodes are matched in two phases:
+Nodes are matched in phases:
 
-1. **ID Matching**: Same `id` → direct match
-2. **Fingerprint Matching**: Unmatched nodes compared by `(label, provider, service, type)`
+1. **Fingerprint Matching**: Nodes matched by `(label, provider, service, type)`
+2. **Label Fingerprint + Edge Connectivity**: Unmatched nodes with same `(provider, service, type)` are matched using edge connectivity to disambiguate
+3. **Simple Label Fingerprint**: Remaining unmatched nodes matched 1:1 by `(provider, service, type)`
 
 This detects renames (same entity, different ID) vs true add/remove.
 
@@ -277,7 +277,7 @@ console.log(diff.summary);
 const html = await renderDiff(diff, v1.toJSON(), v2.toJSON(), {
   format: "html",
   theme: "light",
-  showUnchanged: "dim",
+  showUnchanged: "show", // or "dim" to dim unchanged, "hide" to hide them
 });
 
 await fs.writeFile("architecture-diff.html", html);
@@ -287,7 +287,7 @@ The HTML shows:
 
 - 🟢 Green: New S3 "Assets" node
 - 🟠 Amber: Changed EC2 → Lambda node
-- ⚪ Dimmed: Unchanged RDS node
+- ⚪ Unchanged: RDS node (shown normally, use `showUnchanged: "dim"` to dim)
 
 ## See Also
 

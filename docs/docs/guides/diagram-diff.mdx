@@ -5,7 +5,7 @@ sidebar_position: 10
 
 # Diagram Diff
 
-Compare two versions of a diagram visually to see what changed. The diff feature highlights **added**, **removed**, **modified**, and **renamed** elements with color-coded overlays in a side-by-side view.
+Compare two versions of a diagram visually to see what changed. The diff feature highlights **added**, **removed**, and **modified** elements with color-coded overlays in a side-by-side view.
 
 ## Overview
 
@@ -28,7 +28,7 @@ const after = JSON.parse(await fs.readFile("arch-v2.json", "utf8"));
 // Compute the diff
 const diff = computeDiff(before, after);
 console.log(diff.summary);
-// { added: 2, removed: 1, modified: 3, unchanged: 5, renamed: 0 }
+// { added: 2, removed: 1, modified: 3, unchanged: 5 }
 
 // Render visual diff as HTML
 const html = await renderDiff(diff, before, after, { format: "html" });
@@ -70,7 +70,6 @@ const diff: DiagramDiffResult = computeDiff(before, after);
     removed: number;
     modified: number;
     unchanged: number;
-    renamed: number;
   };
 
   // Diagram-level changes (name, theme, direction, etc.)
@@ -87,13 +86,12 @@ const diff: DiagramDiffResult = computeDiff(before, after);
 
 Each node in the diff has a `kind` indicating what changed:
 
-| Kind        | Description                     | Has Before | Has After |
-| ----------- | ------------------------------- | ---------- | --------- |
-| `added`     | New node in after version       | ❌         | ✅        |
-| `removed`   | Node deleted in after version   | ✅         | ❌        |
-| `modified`  | Node properties changed         | ✅         | ✅        |
-| `renamed`   | Node ID changed but same entity | ✅         | ✅        |
-| `unchanged` | No changes                      | ✅         | ✅        |
+| Kind        | Description                   | Has Before | Has After |
+| ----------- | ----------------------------- | ---------- | --------- |
+| `added`     | New node in after version     | ❌         | ✅        |
+| `removed`   | Node deleted in after version | ✅         | ❌        |
+| `modified`  | Node properties changed       | ✅         | ✅        |
+| `unchanged` | No changes                    | ✅         | ✅        |
 
 ```typescript
 const nodeDiff = diff.nodes.get("web-server");
@@ -106,12 +104,13 @@ if (nodeDiff?.kind === "modified") {
 
 ### Node Matching
 
-Nodes are matched using a two-phase approach:
+Nodes are matched using a three-phase approach:
 
-1. **ID Matching**: Nodes with the same `id` are matched directly
-2. **Fingerprint Matching**: Unmatched nodes are compared by `(label, provider, service, type)` fingerprint to detect renames
+1. **Fingerprint Matching**: Nodes with identical `(label, provider, service, type)` are matched directly
+2. **Label Fingerprint + Edge Connectivity**: Unmatched nodes with same `(provider, service, type)` are matched using edge connectivity to disambiguate multiple candidates
+3. **Simple Label Fingerprint**: Remaining unmatched nodes are matched 1:1 by `(provider, service, type)`
 
-This means if you rename a node ID but keep the same label and type, it's detected as `renamed` rather than `removed` + `added`.
+This means if you change a node's label but keep the same provider and type, it's detected as `modified` rather than `removed` + `added`.
 
 ## Rendering Diffs
 
@@ -128,7 +127,7 @@ const html = await renderDiff(diff, before, after, options);
 Self-contained HTML page with:
 
 - Side-by-side diagram panels
-- Color-coded elements (green=added, red=removed, amber=modified, purple=renamed)
+- Color-coded elements (green=added, red=removed, amber=modified)
 - Summary header with change counts
 - Legend
 - Hover tooltips showing specific changes
@@ -160,7 +159,12 @@ const svg = await renderDiff(diff, before, after, {
 Control how unchanged elements appear:
 
 ```typescript
-// Dim unchanged elements (default)
+// Show unchanged elements normally (default)
+{
+  showUnchanged: "show";
+}
+
+// Dim unchanged elements
 {
   showUnchanged: "dim";
 }
@@ -168,11 +172,6 @@ Control how unchanged elements appear:
 // Hide unchanged elements entirely
 {
   showUnchanged: "hide";
-}
-
-// Show unchanged elements normally
-{
-  showUnchanged: "show";
 }
 ```
 
@@ -226,12 +225,12 @@ web2.to(storage);
 const diff = computeDiff(v1.toJSON(), v2.toJSON());
 
 console.log("Changes:", diff.summary);
-// Changes: { added: 1, removed: 0, modified: 1, unchanged: 1, renamed: 0 }
+// Changes: { added: 1, removed: 0, modified: 1, unchanged: 1 }
 
 const html = await renderDiff(diff, v1.toJSON(), v2.toJSON(), {
   format: "html",
   theme: "light",
-  showUnchanged: "dim",
+  showUnchanged: "show", // or "dim" to dim unchanged, "hide" to hide them
 });
 
 writeFileSync("architecture-diff.html", html);
@@ -259,15 +258,13 @@ For now, you can integrate manually by exporting JSON at each revision and runni
 
 ## Best Practices
 
-1. **Use stable node IDs**: Node IDs should represent the logical entity, not the instance. This improves rename detection.
-
-2. **Export JSON for versioning**: Save `diagram.toJSON()` alongside your code for reproducible diffs:
+1. **Export JSON for versioning**: Save `diagram.toJSON()` alongside your code for reproducible diffs:
 
    ```typescript
    await diagram.save("architecture.json", { format: "json" });
    ```
 
-3. **Ignore cosmetic changes**: Use `ignore` options to focus on meaningful changes:
+2. **Ignore cosmetic changes**: Use `ignore` options to focus on meaningful changes:
 
    ```typescript
    computeDiff(before, after, {
@@ -275,17 +272,17 @@ For now, you can integrate manually by exporting JSON at each revision and runni
    });
    ```
 
-4. **Review metadata changes**: Infrastructure specs (CPU, memory) in metadata will be diffed by default. Review these in `nodeDiff.changes`.
+3. **Review metadata changes**: Infrastructure specs (CPU, memory) in metadata will be diffed by default. Review these in `nodeDiff.changes`.
 
 ## Troubleshooting
 
-### Nodes showing as removed+added instead of renamed
+### Nodes showing as removed+added instead of modified
 
-Ensure the node has the same `label`, `provider`, `service`, and `type` in both versions. If any of these differ, it won't match as a rename.
+Ensure the node has the same `label`, `provider`, `service`, and `type` in both versions. If any of these differ, it won't match as a modification.
 
 ### Edges not matching after node rename
 
-Edges are matched using resolved node IDs. If a node is detected as renamed, edges connected to it should still match. If not, check that the fingerprint matching succeeded.
+Edges are matched using resolved node IDs. If a node is detected as modified, edges connected to it should still match. If not, check that the fingerprint matching succeeded.
 
 ### Layout changes cluttering the diff
 

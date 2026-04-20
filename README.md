@@ -85,7 +85,7 @@ const after = JSON.parse(await fs.readFile("arch-v2.json", "utf8"));
 const html = await Diagram.renderDiff(before, after, {
   format: "html",
   theme: "light",
-  showUnchanged: "dim", // Dim unchanged elements
+  showUnchanged: "show", // "show" (default), "dim", or "hide"
 });
 
 await fs.writeFile("diff.html", html);
@@ -95,8 +95,7 @@ The diff shows:
 
 - 🟢 **Green**: Added elements
 - 🔴 **Red**: Removed elements
-- 🟠 **Amber**: Modified elements
-- 🟣 **Purple**: Renamed elements (same entity, different ID)
+- 🟠 **Amber**: Modified elements (including label changes)
 
 ### Browser
 
