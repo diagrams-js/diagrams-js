@@ -65,6 +65,8 @@ export {
   createPluginRegistry,
   createJSONPlugin,
   jsonPlugin,
+  createSVGPlugin,
+  svgPlugin,
   HookEvent,
   PluginError,
   DependencyError,

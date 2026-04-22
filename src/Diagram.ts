@@ -14,7 +14,8 @@ import {
 } from "./types.js";
 import { injectIcons, type NodeIconMap, type IconData } from "./icons.js";
 import { buildDiagramJSON, type DiagramJSON, fromJSON as fromJSONImpl } from "./json.js";
-import { createPluginRegistry, createJSONPlugin } from "./plugins/index.js";
+import { createPluginRegistry, createJSONPlugin, createSVGPlugin } from "./plugins/index.js";
+import { embedDiagramData } from "./plugins/built-in/svg.js";
 import type { PluginRegistry } from "./plugins/types.js";
 import { HookEvent as HookEventEnum } from "./plugins/types.js";
 import { computeDiff, renderDiff } from "./diff.js";
@@ -320,6 +321,23 @@ export interface DiagramConstructor {
   ): Promise<Diagram>;
 
   /**
+   * Create a Diagram from an SVG string with embedded diagram metadata.
+   * This is the SVG counterpart to `Diagram.fromJSON()`.
+   *
+   * @param svg - The SVG string containing embedded diagram data
+   * @returns A fully constructed Diagram with all nodes, edges, and clusters
+   *
+   * @example
+   * ```typescript
+   * import { Diagram } from "diagrams-js";
+   *
+   * const svg = await diagram.export("svg");
+   * const restored = await Diagram.fromSVG(svg);
+   * ```
+   */
+  fromSVG(svg: string): Promise<Diagram>;
+
+  /**
    * Compute the diff between two diagram versions.
    * Compares nodes, edges, and clusters to identify added, removed, modified, and renamed elements.
    *
@@ -434,8 +452,13 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
 
   // Auto-register built-in plugins on first use
   async function ensureBuiltInPlugins(): Promise<void> {
-    if (!pluginsInitialized && !registry.getPlugin("json")) {
-      await registry.register(createJSONPlugin());
+    if (!pluginsInitialized) {
+      if (!registry.getPlugin("json")) {
+        await registry.register(createJSONPlugin());
+      }
+      if (!registry.getPlugin("svg")) {
+        await registry.register(createSVGPlugin());
+      }
       pluginsInitialized = true;
     }
   }
@@ -781,6 +804,11 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
         if (Object.keys(_iconData).length > 0 && _nodeIconMap.length > 0) {
           output = injectIcons(output as string, _nodeIconMap, _iconData);
         }
+      }
+
+      // Embed diagram metadata into SVG by default (allows later re-import)
+      if (format === "svg" && options.embedData !== false) {
+        output = embedDiagramData(output as string, diagram.toJSON());
       }
 
       // If PNG format was requested, convert SVG to PNG
@@ -1581,9 +1609,12 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
     async registerPlugins(
       plugins: import("./plugins/types.js").DiagramsPlugin[] = [],
     ): Promise<void> {
-      // Register built-in JSON plugin first (always available)
+      // Register built-in plugins first (always available)
       if (!registry.getPlugin("json")) {
         await registry.register(createJSONPlugin());
+      }
+      if (!registry.getPlugin("svg")) {
+        await registry.register(createSVGPlugin());
       }
 
       // Register all provided plugins
@@ -1739,6 +1770,32 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
  * ```
  */
 Diagram.fromJSON = fromJSONImpl;
+
+/**
+ * Create a Diagram from an SVG string with embedded diagram metadata.
+ */
+Diagram.fromSVG = async function (svg: string): Promise<Diagram> {
+  const match = svg.match(/data-diagram-json="([^"]+)"/);
+  if (!match) {
+    throw new Error(
+      "Invalid diagram SVG: missing or corrupted embedded diagram data. " +
+        "Make sure the SVG was exported using diagrams-js SVG export.",
+    );
+  }
+  let jsonStr: string;
+  if (typeof Buffer !== "undefined") {
+    jsonStr = Buffer.from(match[1], "base64").toString("utf-8");
+  } else {
+    const binary = atob(match[1]);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    jsonStr = new TextDecoder().decode(bytes);
+  }
+  const json = JSON.parse(jsonStr) as import("./json.js").DiagramJSON;
+  return fromJSONImpl(json);
+};
 
 /**
  * Compute the diff between two diagram versions.
