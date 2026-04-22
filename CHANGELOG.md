@@ -1,3 +1,24 @@
+## [0.4.0] - 2026-04-22
+
+### Features
+
+- feat: diagrams diff (baec195)
+
+### Bug Fixes
+
+- fix build (d603fd3)
+- fix playground example (40ad6e9)
+
+### Other Changes
+
+- add svg import in visual editor (916b89f)
+- update AGENTS.md (8f6fd9c)
+- add svg plugin (import/export) (150ee33)
+- update diff (d882439)
+- update docs (92cefa9)
+- visual editor import docker compose and kubernetes (8ebcf40)
+- add visual editor (a7dc6a1)
+
 ## [Unreleased]
 
 ### Features
