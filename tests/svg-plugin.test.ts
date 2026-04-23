@@ -25,7 +25,8 @@ describe("SVG Plugin - Export", () => {
     expect(svg).toContain('data-node-id="web"');
     expect(svg).toContain('data-node-label="Web"');
     expect(svg).toContain('data-node-provider="aws"');
-    expect(svg).toContain('data-node-type="EC2"');
+    expect(svg).toContain('data-node-type="compute"');
+    expect(svg).toContain('data-node-resource="EC2"');
   });
 
   it("should embed cluster data attributes in exported SVG", async () => {
@@ -146,8 +147,8 @@ describe("SVG Plugin - Import via Diagram.fromSVG()", () => {
     const json = restored.toJSON();
 
     expect(json.nodes[0].provider).toBe("aws");
-    expect(json.nodes[0].service).toBe("compute");
-    expect(json.nodes[0].type).toBe("EC2");
+    expect(json.nodes[0].type).toBe("compute");
+    expect(json.nodes[0].resource).toBe("EC2");
   });
 });
 

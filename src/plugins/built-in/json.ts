@@ -111,17 +111,19 @@ export async function mergeDiagrams(
   // Get the JSON representation of the source diagram
   const json = source.toJSON();
 
-  // Collect unique provider/service pairs from nodes that have them
-  const providerServicePairs = new Map<string, [string, string]>();
+  // Collect unique provider/type pairs from nodes that have them
+  const providerTypePairs = new Map<string, [string, string]>();
   for (const node of json.nodes) {
-    if (node.provider && node.service) {
-      const key = `${node.provider}/${node.service}`;
-      providerServicePairs.set(key, [node.provider, node.service]);
+    // Backward compat: old JSON used `service` for category
+    const category = node.type || (node as any).service;
+    if (node.provider && category) {
+      const key = `${node.provider}/${category}`;
+      providerTypePairs.set(key, [node.provider, category]);
     }
   }
 
-  // Dynamically load provider modules based on provider/service
-  const factoryLookup = await loadProviderModules(Array.from(providerServicePairs.values()));
+  // Dynamically load provider modules based on provider/type
+  const factoryLookup = await loadProviderModules(Array.from(providerTypePairs.values()));
 
   // Build a map of node IDs to Node objects from the source diagram
   const sourceNodes = new Map<string, Node>();
@@ -133,8 +135,10 @@ export async function mergeDiagrams(
 
     // Create nodes in the target diagram
     for (const nodeDef of diagJson.nodes) {
-      // Try to use a provider factory function if type is specified and a matching factory exists
-      const factory = nodeDef.type ? factoryLookup.get(nodeDef.type) : undefined;
+      // Backward compat: old JSON used `type` for resource name; new JSON uses `resource`
+      const resourceName = nodeDef.resource || (nodeDef as any).type;
+      // Try to use a provider factory function if resource is specified and a matching factory exists
+      const factory = resourceName ? factoryLookup.get(resourceName) : undefined;
 
       let node: Node;
       if (factory) {
@@ -166,11 +170,13 @@ export async function mergeDiagrams(
         if (nodeDef.provider) {
           nodeOptions["~provider"] = nodeDef.provider;
         }
-        if (nodeDef.service) {
-          nodeOptions["~type"] = nodeDef.service;
+        // Backward compat: old JSON used `service` for category; new JSON uses `type`
+        const category = nodeDef.type || (nodeDef as any).service;
+        if (category) {
+          nodeOptions["~type"] = category;
         }
-        if (nodeDef.type) {
-          nodeOptions["~resource"] = nodeDef.type;
+        if (resourceName) {
+          nodeOptions["~resource"] = resourceName;
         }
         if (nodeDef.iconUrl) {
           nodeOptions["~iconDataUrl"] = nodeDef.iconUrl;

@@ -164,15 +164,15 @@ console.log(JSON.stringify(json, null, 2));
       "id": "n1",
       "label": "Web Server",
       "provider": "aws",
-      "service": "compute",
-      "type": "EC2"
+      "type": "compute",
+      "resource": "EC2"
     },
     {
       "id": "n2",
       "label": "Database",
       "provider": "aws",
-      "service": "database",
-      "type": "RDS"
+      "type": "database",
+      "resource": "RDS"
     }
   ],
   "edges": [{ "from": "n1", "to": "n2" }]
@@ -193,15 +193,15 @@ const json = {
       id: "web",
       label: "Web Server",
       provider: "aws",
-      service: "compute",
-      type: "EC2",
+      type: "compute",
+      resource: "EC2",
     },
     {
       id: "db",
       label: "Database",
       provider: "aws",
-      service: "database",
-      type: "RDS",
+      type: "database",
+      resource: "RDS",
     },
   ],
   edges: [{ from: "web", to: "db", label: "SQL" }],

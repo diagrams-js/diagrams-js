@@ -106,21 +106,21 @@ Nodes are matched using a three-phase approach:
 
 ### Phase 1: Fingerprint Matching
 
-Nodes with identical `(label, provider, service, type)` are matched directly as `unchanged` or `modified`.
+Nodes with identical `(label, provider, type, resource)` are matched directly as `unchanged` or `modified`.
 
 ```typescript
-// Before: { label: "Web Server", provider: "aws", service: "compute", type: "EC2" }
-// After:  { label: "Web Server", provider: "aws", service: "compute", type: "EC2" }
+// Before: { label: "Web Server", provider: "aws", type: "compute", resource: "EC2" }
+// After:  { label: "Web Server", provider: "aws", type: "compute", resource: "EC2" }
 // Result: unchanged
 
-// Before: { label: "Web Server", provider: "aws", service: "compute", type: "EC2" }
-// After:  { label: "Web Server v2", provider: "aws", service: "compute", type: "EC2" }
+// Before: { label: "Web Server", provider: "aws", type: "compute", resource: "EC2" }
+// After:  { label: "Web Server v2", provider: "aws", type: "compute", resource: "EC2" }
 // Result: modified (label change)
 ```
 
 ### Phase 2: Label Fingerprint + Edge Connectivity
 
-Unmatched nodes with the same `(provider, service, type)` are matched using edge connectivity:
+Unmatched nodes with the same `(provider, type, resource)` are matched using edge connectivity:
 
 - If edge connectivity patterns match → paired and marked as `modified` (label change)
 - If edge connectivity differs → treated as separate nodes (removed + added)
@@ -139,7 +139,7 @@ Unmatched nodes with the same `(provider, service, type)` are matched using edge
 
 ### Phase 3: Simple Label Fingerprint
 
-Remaining unmatched nodes are matched 1:1 by `(provider, service, type)`:
+Remaining unmatched nodes are matched 1:1 by `(provider, type, resource)`:
 
 - Same label → `unchanged`
 - Different labels → `modified`
@@ -245,12 +245,12 @@ Correct:
 // Same provider/type with matching connectivity → detected as modified
 ```
 
-Keep the same `(provider, service, type)` and similar edge connectivity for modification detection.
+Keep the same `(provider, type, resource)` and similar edge connectivity for modification detection.
 
 ### MEDIUM Confusing modified with removed+added
 
-- `modified`: Same `(provider, service, type)` with matching edge connectivity, but different label
-- `removed` + `added`: Different labels without matching connectivity, or different `(provider, service, type)`
+- `modified`: Same `(provider, type, resource)` with matching edge connectivity, but different label
+- `removed` + `added`: Different labels without matching connectivity, or different `(provider, type, resource)`
 
 ```typescript
 if (nodeDiff.kind === "modified") {
@@ -273,7 +273,7 @@ if (nodeDiff.kind === "added") {
 
 ### Use Stable Node Identifiers
 
-Node matching relies on `(label, provider, service, type)`, not IDs:
+Node matching relies on `(label, provider, type, resource)`, not IDs:
 
 ```typescript
 // Good: Consistent identifiers across versions

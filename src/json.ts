@@ -40,9 +40,9 @@ export interface DiagramNodeJSON {
   /** Cloud provider identifier (e.g., 'aws', 'gcp', 'azure') */
   provider?: string;
   /** Service type within the provider (e.g., 'compute', 'storage') */
-  service?: string;
-  /** Specific resource type (e.g., 'EC2', 'S3', 'RDS') */
   type?: string;
+  /** Specific resource type (e.g., 'EC2', 'S3', 'RDS') */
+  resource?: string;
   /** Custom icon URL or data URI */
   iconUrl?: string;
   /** Additional Graphviz attributes */
@@ -216,11 +216,11 @@ function serializeNode(
     const resource = raw["~resource"] as string | undefined;
 
     if (provider) json.provider = provider;
-    if (service) json.service = service;
-    if (resource) json.type = resource;
+    if (service) json.type = service;
+    if (resource) json.resource = resource;
 
     // Extract icon URL for Custom nodes only.
-    // Provider nodes get icons resolved from their provider/service/type triple
+    // Provider nodes get icons resolved from their provider/type/resource triple
     // at import time, so we don't embed them in JSON.
     if ("~getIconUrl" in raw && typeof raw["~getIconUrl"] === "function") {
       json.iconUrl = (raw["~getIconUrl"] as () => string)();
@@ -496,8 +496,8 @@ export function buildDiagramJSON(
  *   name: "My Architecture",
  *   direction: "LR",
  *   nodes: [
- *     { id: "web", label: "Web Server", provider: "aws", service: "compute", type: "EC2" },
- *     { id: "db", label: "Database", provider: "aws", service: "database", type: "RDS" }
+ *     { id: "web", label: "Web Server", provider: "aws", type: "compute", resource: "EC2" },
+ *     { id: "db", label: "Database", provider: "aws", type: "database", resource: "RDS" }
  *   ],
  *   edges: [
  *     { from: "web", to: "db", label: "SQL" }
@@ -519,17 +519,19 @@ export async function fromJSON(
     throw new Error("Invalid diagram JSON: 'nodes' array is required");
   }
 
-  // Collect unique provider/service pairs from nodes that have them
-  const providerServicePairs = new Map<string, [string, string]>();
+  // Collect unique provider/type pairs from nodes that have them
+  const providerTypePairs = new Map<string, [string, string]>();
   for (const node of json.nodes) {
-    if (node.provider && node.service) {
-      const key = `${node.provider}/${node.service}`;
-      providerServicePairs.set(key, [node.provider, node.service]);
+    // Backward compat: old JSON used `service` for category and `type` for resource
+    const category = node.type || (node as any).service;
+    if (node.provider && category) {
+      const key = `${node.provider}/${category}`;
+      providerTypePairs.set(key, [node.provider, category]);
     }
   }
 
-  // Dynamically load provider modules based on provider/service
-  const factoryLookup = await loadProviderModules(Array.from(providerServicePairs.values()));
+  // Dynamically load provider modules based on provider/type
+  const factoryLookup = await loadProviderModules(Array.from(providerTypePairs.values()));
 
   // Layer on any explicitly passed provider modules as overrides
   if (opts?.providers) {
@@ -619,10 +621,12 @@ export async function fromJSON(
     }
     nodeIdSet.add(nodeDef.id);
 
-    // Try to use a provider factory function if type is specified and a matching factory exists.
+    // Try to use a provider factory function if resource is specified and a matching factory exists.
     // This gives us the correct icon, provider metadata, etc. automatically.
     let node: import("./Node.js").Node;
-    const factory = nodeDef.type ? factoryLookup.get(nodeDef.type) : undefined;
+    // Backward compat: old JSON used `type` for resource name; new JSON uses `resource`
+    const resourceName = nodeDef.resource || (nodeDef as any).type;
+    const factory = resourceName ? factoryLookup.get(resourceName) : undefined;
 
     if (factory) {
       // Use the provider factory - it sets ~provider, ~type, ~resource, ~iconDataUrl
@@ -652,11 +656,13 @@ export async function fromJSON(
       if (nodeDef.provider) {
         raw["~provider"] = nodeDef.provider;
       }
-      if (nodeDef.service) {
-        raw["~type"] = nodeDef.service;
+      // Backward compat: old JSON used `service` for category; new JSON uses `type`
+      const category = nodeDef.type || (nodeDef as any).service;
+      if (category) {
+        raw["~type"] = category;
       }
-      if (nodeDef.type) {
-        raw["~resource"] = nodeDef.type;
+      if (resourceName) {
+        raw["~resource"] = resourceName;
       }
       // Set explicit iconUrl (for data URLs or local paths)
       if (nodeDef.iconUrl) {

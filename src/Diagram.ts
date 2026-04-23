@@ -303,8 +303,8 @@ export interface DiagramConstructor {
    * const json = {
    *   name: "My Architecture",
    *   nodes: [
-   *     { id: "web", label: "Web Server", provider: "aws", service: "compute", type: "EC2" },
-   *     { id: "db", label: "Database", provider: "aws", service: "database", type: "RDS" }
+   *     { id: "web", label: "Web Server", provider: "aws", type: "compute", resource: "EC2" },
+   *     { id: "db", label: "Database", provider: "aws", type: "database", resource: "RDS" }
    *   ],
    *   edges: [
    *     { from: "web", to: "db", label: "SQL" }
@@ -1757,8 +1757,8 @@ export function Diagram(name = "", options: DiagramOptions = {}): Diagram {
  * const json = {
  *   name: "My Architecture",
  *   nodes: [
- *     { id: "web", label: "Web Server", provider: "aws", service: "compute", type: "EC2" },
- *     { id: "db", label: "Database", provider: "aws", service: "database", type: "RDS" }
+ *     { id: "web", label: "Web Server", provider: "aws", type: "compute", resource: "EC2" },
+ *     { id: "db", label: "Database", provider: "aws", type: "database", resource: "RDS" }
  *   ],
  *   edges: [
  *     { from: "web", to: "db", label: "SQL" }

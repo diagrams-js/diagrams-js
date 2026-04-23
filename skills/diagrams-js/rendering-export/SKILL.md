@@ -118,7 +118,7 @@ const json = diagram.toJSON();
 console.log(JSON.stringify(json, null, 2));
 ```
 
-JSON structure includes nodes with provider/service/type for automatic icon resolution, edges, clusters, and all diagram options.
+JSON structure includes nodes with provider/type/resource for automatic icon resolution, edges, clusters, and all diagram options.
 
 ### Import from JSON
 
@@ -130,8 +130,8 @@ import { Diagram } from "diagrams-js";
 const json = {
   name: "My Architecture",
   nodes: [
-    { id: "web", label: "Web Server", provider: "aws", service: "compute", type: "EC2" },
-    { id: "db", label: "Database", provider: "aws", service: "database", type: "RDS" },
+    { id: "web", label: "Web Server", provider: "aws", type: "compute", resource: "EC2" },
+    { id: "db", label: "Database", provider: "aws", type: "database", resource: "RDS" },
   ],
   edges: [{ from: "web", to: "db", label: "SQL" }],
 };

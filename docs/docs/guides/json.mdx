@@ -52,15 +52,15 @@ The exported JSON follows this structure:
       "id": "n1",
       "label": "Web Server",
       "provider": "aws",
-      "service": "compute",
-      "type": "EC2"
+      "type": "compute",
+      "resource": "EC2"
     },
     {
       "id": "n2",
       "label": "Database",
       "provider": "aws",
-      "service": "database",
-      "type": "RDS"
+      "type": "database",
+      "resource": "RDS"
     }
   ],
   "edges": [
@@ -80,8 +80,8 @@ Each node in the JSON has these fields:
 - `id` (required): Unique identifier for the node
 - `label`: Display label for the node
 - `provider`: Cloud provider (e.g., "aws", "azure", "gcp")
-- `service`: Service category (e.g., "compute", "database", "storage")
-- `type`: Resource type (e.g., "EC2", "S3", "RDS")
+- `type`: Service type (e.g., "compute", "database", "storage")
+- `resource`: Resource within the service type (e.g., "EC2", "S3", "RDS")
 - `iconUrl`: Custom icon URL (for Custom nodes)
 - `attrs`: Additional Graphviz attributes
 
@@ -99,15 +99,15 @@ const json = {
       id: "web",
       label: "Web Server",
       provider: "aws",
-      service: "compute",
-      type: "EC2",
+      type: "compute",
+      resource: "EC2",
     },
     {
       id: "db",
       label: "Database",
       provider: "aws",
-      service: "database",
-      type: "RDS",
+      type: "database",
+      resource: "RDS",
     },
   ],
   edges: [{ from: "web", to: "db", label: "SQL" }],
@@ -174,8 +174,8 @@ const diagramJSON = {
         id: `web-${i}`,
         label: name,
         provider: "aws",
-        service: "compute",
-        type: "EC2",
+        type: "compute",
+        resource: "EC2",
       })),
     },
   ],
@@ -294,8 +294,8 @@ const json = {
     id: r.id,
     label: r.name,
     provider: "aws",
-    service: r.service,
     type: r.type,
+    resource: r.resource,
   })),
 };
 

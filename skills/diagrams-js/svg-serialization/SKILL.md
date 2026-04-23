@@ -89,7 +89,7 @@ The embedded metadata includes:
 - **`data-diagram-json`** (root `<svg>`): Base64-encoded full diagram JSON
 - **`data-diagram-version`**: Format version for compatibility
 - **`data-node-id`**, **`data-node-label`**: Per-node identifiers
-- **`data-node-provider`**, **`data-node-service`**, **`data-node-type`**: Provider metadata
+- **`data-node-provider`**, **`data-node-type`**, **`data-node-resource`**: Provider metadata
 - **`data-node-metadata`**: Base64-encoded custom metadata
 - **`data-cluster-label`**, **`data-cluster-nodes`**: Cluster information
 

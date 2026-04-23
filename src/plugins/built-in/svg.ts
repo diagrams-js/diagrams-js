@@ -84,8 +84,8 @@ function buildNodeDataAttrs(node: DiagramJSON["nodes"][number]): string {
   const attrs: Record<string, string> = { "data-node-id": node.id };
   if (node.label !== undefined) attrs["data-node-label"] = node.label;
   if (node.provider !== undefined) attrs["data-node-provider"] = node.provider;
-  if (node.service !== undefined) attrs["data-node-service"] = node.service;
   if (node.type !== undefined) attrs["data-node-type"] = node.type;
+  if (node.resource !== undefined) attrs["data-node-resource"] = node.resource;
   if (node.metadata && Object.keys(node.metadata).length > 0) {
     attrs["data-node-metadata"] = utf8ToBase64(JSON.stringify(node.metadata));
   }

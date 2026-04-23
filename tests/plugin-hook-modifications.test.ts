@@ -236,10 +236,10 @@ describe("Plugin Hook Modification Tests", () => {
       const json = diagram.toJSON();
       const nodeData = json.nodes.find((n) => n.id === node.nodeId);
 
-      // JSON structure: provider -> ~provider, service -> ~type, type -> ~resource
+      // JSON structure: provider -> ~provider, type -> ~type, resource -> ~resource
       expect(nodeData?.provider).toBe("azure");
-      expect(nodeData?.service).toBe("storage");
-      expect(nodeData?.type).toBe("BlobStorage");
+      expect(nodeData?.type).toBe("storage");
+      expect(nodeData?.resource).toBe("BlobStorage");
     });
 
     it("should apply node attribute modifications to DOT output for nodes in clusters", async () => {

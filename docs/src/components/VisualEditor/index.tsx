@@ -73,8 +73,8 @@ function nodeFromDiagramJson(n: any): Node {
     };
   }
 
-  // VisualEditor JSON: provider node (type = category, resource = resource name)
-  if (n.provider && n.type && n.resource !== undefined) {
+  // Provider node (type = category, resource = resource name)
+  if (n.provider && (n.type || n.resource)) {
     return {
       ...base,
       provider: n.provider,
@@ -83,17 +83,7 @@ function nodeFromDiagramJson(n: any): Node {
     };
   }
 
-  // Diagram JSON: provider node (service = category, type = resource name)
-  if (n.provider && (n.service || n.type)) {
-    return {
-      ...base,
-      provider: n.provider,
-      type: n.service || n.type,
-      resource: n.type,
-    };
-  }
-
-  // Diagram JSON: custom node (iconUrl survives toJSON(), but custom/iconMode/iconName do not)
+  // Custom node (iconUrl survives toJSON(), but custom/iconMode/iconName do not)
   if (n.iconUrl) {
     const isIconify = n.iconUrl.includes("api.iconify.design");
     let iconName = n.iconName || "";

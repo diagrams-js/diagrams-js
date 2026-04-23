@@ -147,8 +147,8 @@ const json = {
     id: r.name,
     label: r.name,
     provider: "aws",
-    service: getService(r.type),
-    type: getResourceType(r.type),
+    type: getService(r.type),
+    resource: getResourceType(r.type),
   })),
 };
 
@@ -235,10 +235,10 @@ const json = {
     },
   ],
 };
-// Icons resolved from provider/service/type - clean JSON
+// Icons resolved from provider/type/resource - clean JSON
 ```
 
-Use provider/service/type fields for automatic icon resolution. Avoid embedding icon data URLs unless using Custom nodes.
+Use provider/type/resource fields for automatic icon resolution. Avoid embedding icon data URLs unless using Custom nodes.
 
 Source: source code - provider-loader.ts dynamic imports
 

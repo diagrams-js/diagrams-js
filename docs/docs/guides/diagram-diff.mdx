@@ -106,13 +106,13 @@ if (nodeDiff?.kind === "modified") {
 
 Nodes are matched using a three-phase approach:
 
-1. **Fingerprint Matching**: Nodes with identical `(label, provider, service, type)` are matched directly
-2. **Label Fingerprint + Edge Connectivity**: Unmatched nodes with same `(provider, service, type)` are matched using edge connectivity to disambiguate multiple candidates
-3. **Simple Label Fingerprint**: Remaining unmatched nodes are matched 1:1 by `(provider, service, type)`
+1. **Fingerprint Matching**: Nodes with identical `(label, provider, type, resource)` are matched directly
+2. **Label Fingerprint + Edge Connectivity**: Unmatched nodes with same `(provider, type, resource)` are matched using edge connectivity to disambiguate multiple candidates
+3. **Simple Label Fingerprint**: Remaining unmatched nodes are matched 1:1 by `(provider, type, resource)`
 
 #### Label Change Detection
 
-When nodes have the same `(provider, service, type)` but different labels:
+When nodes have the same `(provider, type, resource)` but different labels:
 
 - **Same label** → `unchanged`
 - **Different labels** → `modified` (label change)
@@ -329,11 +329,11 @@ For manual integration, you can also export JSON at each revision and run `Diagr
 This is the expected behavior when:
 
 - The node has a different `label` AND different edge connectivity
-- The node has different `provider`, `service`, or `type`
+- The node has different `provider`, `type`, or `resource`
 
-Nodes are only matched as `modified` when they share the same `(provider, service, type)` and have matching edge connectivity patterns. If you rename a node and significantly change its connections, it will be treated as removed + added.
+Nodes are only matched as `modified` when they share the same `(provider, type, resource)` and have matching edge connectivity patterns. If you rename a node and significantly change its connections, it will be treated as removed + added.
 
-To force a match as modified, ensure the node keeps the same `provider`, `service`, `type`, and similar edge connectivity.
+To force a match as modified, ensure the node keeps the same `provider`, `type`, `resource`, and similar edge connectivity.
 
 ### Edges not matching after node rename
 

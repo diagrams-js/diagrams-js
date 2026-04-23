@@ -843,7 +843,7 @@ describe("toJSON() - Provider Nodes", () => {
     const json = diagram.toJSON();
 
     expect(json.nodes[0].provider).toBe("aws");
-    expect(json.nodes[0].service).toBe("compute");
+    expect(json.nodes[0].type).toBe("compute");
   });
 
   it("should serialize resource on provider nodes", () => {
@@ -857,8 +857,8 @@ describe("toJSON() - Provider Nodes", () => {
     const json = diagram.toJSON();
 
     expect(json.nodes[0].provider).toBe("aws");
-    expect(json.nodes[0].service).toBe("compute");
-    expect(json.nodes[0].type).toBe("EC2");
+    expect(json.nodes[0].type).toBe("compute");
+    expect(json.nodes[0].resource).toBe("EC2");
   });
 
   it("should NOT include iconUrl for provider nodes", () => {
@@ -875,10 +875,10 @@ describe("toJSON() - Provider Nodes", () => {
 
     // Provider nodes should not embed iconUrl
     expect(json.nodes[0].iconUrl).toBeUndefined();
-    // But should still have provider/service/type for resolution
+    // But should still have provider/type/resource for resolution
     expect(json.nodes[0].provider).toBe("aws");
-    expect(json.nodes[0].service).toBe("compute");
-    expect(json.nodes[0].type).toBe("EC2");
+    expect(json.nodes[0].type).toBe("compute");
+    expect(json.nodes[0].resource).toBe("EC2");
   });
 
   it("should filter out default icon attributes for provider nodes", () => {
@@ -923,7 +923,7 @@ describe("toJSON() - Provider Nodes", () => {
 // ============================================================================
 
 describe("toJSON() / Diagram.fromJSON() - Real Provider Nodes", () => {
-  it("should serialize a real EKS node with provider/service/type but NO iconUrl", async () => {
+  it("should serialize a real EKS node with provider/type/resource but NO iconUrl", async () => {
     const { ElasticKubernetesService } = await import("../src/providers/aws/compute.js");
     const diagram = Diagram("EKS Test");
     diagram.add(ElasticKubernetesService("k8s source"));
@@ -933,13 +933,13 @@ describe("toJSON() / Diagram.fromJSON() - Real Provider Nodes", () => {
     expect(json.nodes).toHaveLength(1);
     expect(json.nodes[0].label).toBe("k8s source");
     expect(json.nodes[0].provider).toBe("aws");
-    expect(json.nodes[0].service).toBe("compute");
-    expect(json.nodes[0].type).toBe("ElasticKubernetesService");
-    // Provider nodes should NOT embed iconUrl - icons are resolved from type
+    expect(json.nodes[0].type).toBe("compute");
+    expect(json.nodes[0].resource).toBe("ElasticKubernetesService");
+    // Provider nodes should NOT embed iconUrl - icons are resolved from resource
     expect(json.nodes[0].iconUrl).toBeUndefined();
   });
 
-  it("should serialize a real EC2 node with type but NO iconUrl", async () => {
+  it("should serialize a real EC2 node with type/resource but NO iconUrl", async () => {
     const { EC2 } = await import("../src/providers/aws/compute.js");
     const diagram = Diagram("EC2 Test");
     diagram.add(EC2("Web Server"));
@@ -948,17 +948,17 @@ describe("toJSON() / Diagram.fromJSON() - Real Provider Nodes", () => {
 
     expect(json.nodes[0].label).toBe("Web Server");
     expect(json.nodes[0].provider).toBe("aws");
-    expect(json.nodes[0].service).toBe("compute");
-    expect(json.nodes[0].type).toBe("EC2");
+    expect(json.nodes[0].type).toBe("compute");
+    expect(json.nodes[0].resource).toBe("EC2");
     expect(json.nodes[0].iconUrl).toBeUndefined();
   });
 
   it("should auto-resolve icons via dynamic imports (no providers option needed)", async () => {
-    // Diagram.fromJSON dynamically imports provider modules based on provider/service
+    // Diagram.fromJSON dynamically imports provider modules based on provider/type
     const diagram = await Diagram.fromJSON({
       name: "Lambda Test",
       nodes: [
-        { id: "fn1", label: "My Function", provider: "aws", service: "compute", type: "Lambda" },
+        { id: "fn1", label: "My Function", provider: "aws", type: "compute", resource: "Lambda" },
       ],
     });
 
@@ -977,7 +977,7 @@ describe("toJSON() / Diagram.fromJSON() - Real Provider Nodes", () => {
   it("should auto-resolve icons for DOT output without providers option", async () => {
     const json = {
       name: "DOT Icon Test",
-      nodes: [{ id: "web", label: "Web", provider: "aws", service: "compute", type: "EC2" }],
+      nodes: [{ id: "web", label: "Web", provider: "aws", type: "compute", resource: "EC2" }],
     } satisfies DiagramJSON;
 
     // No providers option - modules loaded dynamically
@@ -1001,18 +1001,18 @@ describe("toJSON() / Diagram.fromJSON() - Real Provider Nodes", () => {
     const json1 = diagram.toJSON();
 
     // No iconUrl in JSON
-    expect(json1.nodes.find((n) => n.type === "EC2")!.iconUrl).toBeUndefined();
+    expect(json1.nodes.find((n) => n.resource === "EC2")!.iconUrl).toBeUndefined();
 
-    // Provider module loaded dynamically based on provider/service
+    // Provider module loaded dynamically based on provider/type
     const restored = await Diagram.fromJSON(json1);
     const json2 = restored.toJSON();
 
-    // Type field should survive double round-trip
-    const ec2Node = json2.nodes.find((n) => n.type === "EC2");
+    // Resource field should survive double round-trip
+    const ec2Node = json2.nodes.find((n) => n.resource === "EC2");
     expect(ec2Node).toBeDefined();
     expect(ec2Node!.provider).toBe("aws");
-    expect(ec2Node!.service).toBe("compute");
-    expect(ec2Node!.type).toBe("EC2");
+    expect(ec2Node!.type).toBe("compute");
+    expect(ec2Node!.resource).toBe("EC2");
 
     // Edges survive too
     expect(json2.edges).toHaveLength(1);
@@ -1045,7 +1045,7 @@ describe("toJSON() / Diagram.fromJSON() - Real Provider Nodes", () => {
   });
 
   it("should produce renderable diagram from Diagram.fromJSON without providers option", async () => {
-    // Provider modules loaded dynamically based on provider/service
+    // Provider modules loaded dynamically based on provider/type
     const diagram = await Diagram.fromJSON({
       name: "Event Processing",
       nodes: [
@@ -1053,15 +1053,15 @@ describe("toJSON() / Diagram.fromJSON() - Real Provider Nodes", () => {
           id: "eks-1",
           label: "k8s source",
           provider: "aws",
-          service: "compute",
-          type: "ElasticKubernetesService",
+          type: "compute",
+          resource: "ElasticKubernetesService",
         },
         {
           id: "lambda-1",
           label: "processor",
           provider: "aws",
-          service: "compute",
-          type: "Lambda",
+          type: "compute",
+          resource: "Lambda",
         },
       ],
       edges: [{ from: "eks-1", to: "lambda-1" }],
@@ -1076,12 +1076,18 @@ describe("toJSON() / Diagram.fromJSON() - Real Provider Nodes", () => {
     expect(svg).toContain("<image");
   });
 
-  it("should gracefully fall back to plain nodes when type is not registered", async () => {
-    // Use a fake type that no module has registered
+  it("should gracefully fall back to plain nodes when resource is not registered", async () => {
+    // Use a fake resource that no module has registered
     const diagram = await Diagram.fromJSON({
       name: "No Provider Test",
       nodes: [
-        { id: "web", label: "Web", provider: "custom", service: "compute", type: "UnknownType123" },
+        {
+          id: "web",
+          label: "Web",
+          provider: "custom",
+          type: "compute",
+          resource: "UnknownType123",
+        },
       ],
     });
 
@@ -1092,12 +1098,12 @@ describe("toJSON() / Diagram.fromJSON() - Real Provider Nodes", () => {
   });
 
   it("should work with multiple providers via dynamic imports", async () => {
-    // Provider modules loaded dynamically based on provider/service
+    // Provider modules loaded dynamically based on provider/type
     const diagram = await Diagram.fromJSON({
       name: "Multi Provider Test",
       nodes: [
-        { id: "web", label: "Web", provider: "aws", service: "compute", type: "EC2" },
-        { id: "db", label: "DB", provider: "aws", service: "database", type: "RDS" },
+        { id: "web", label: "Web", provider: "aws", type: "compute", resource: "EC2" },
+        { id: "db", label: "DB", provider: "aws", type: "database", resource: "RDS" },
       ],
       edges: [{ from: "web", to: "db" }],
     });
@@ -1346,7 +1352,7 @@ describe("Provisioning Consistency", () => {
     expect(dot).toContain('style="bold"');
   });
 
-  it("should preserve provider/service/type info for resource identification", () => {
+  it("should preserve provider/type/resource info for resource identification", () => {
     const diagram = Diagram("AWS Infra");
     const node = Node("API Server", { nodeId: "api" });
     (node as unknown as Record<string, unknown>)["~provider"] = "aws";
@@ -1357,8 +1363,8 @@ describe("Provisioning Consistency", () => {
     const json = diagram.toJSON();
     const nodeDef = json.nodes.find((n) => n.id === "api")!;
     expect(nodeDef.provider).toBe("aws");
-    expect(nodeDef.service).toBe("compute");
-    expect(nodeDef.type).toBe("EC2");
+    expect(nodeDef.type).toBe("compute");
+    expect(nodeDef.resource).toBe("EC2");
   });
 
   it("should preserve cluster hierarchy for security group mapping", async () => {

@@ -178,7 +178,7 @@ const json = diagram.toJSON();
 The JSON format includes:
 
 - `name`, `filename`, `direction`, `curvestyle`, `theme` - diagram properties
-- `nodes` - array of nodes with `id`, `label`, `provider`, `service`, `type`
+- `nodes` - array of nodes with `id`, `label`, `provider`, `type`, `resource`
 - `edges` - array of connections with `from`, `to`, `label`
 - `clusters` - nested groups of nodes
 - `graphAttr`, `nodeAttr`, `edgeAttr` - Graphviz attributes
@@ -197,15 +197,15 @@ const json = {
       id: "web",
       label: "Web Server",
       provider: "aws",
-      service: "compute",
-      type: "EC2",
+      type: "compute",
+      resource: "EC2",
     },
     {
       id: "db",
       label: "Database",
       provider: "aws",
-      service: "database",
-      type: "RDS",
+      type: "database",
+      resource: "RDS",
     },
   ],
   edges: [{ from: "web", to: "db", label: "SQL" }],

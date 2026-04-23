@@ -184,19 +184,19 @@ const COLORS = {
 
 /**
  * Compute a fingerprint for node matching fallback.
- * Combines label, provider, service, and type.
+ * Combines label, provider, type, and resource.
  * Excludes node ID since IDs are non-deterministic (auto-generated with timestamp + random).
  */
 function nodeFingerprint(node: DiagramNodeJSON): string {
-  return `${node.label || ""}|${node.provider || ""}|${node.service || ""}|${node.type || ""}`;
+  return `${node.label || ""}|${node.provider || ""}|${node.type || ""}|${node.resource || ""}`;
 }
 
 /**
  * Compute a label fingerprint for detecting label changes.
- * Same provider/service/type but different label = label change (treated as modified).
+ * Same provider/type/resource but different label = label change (treated as modified).
  */
 function labelFingerprint(node: DiagramNodeJSON): string {
-  return `${node.provider || ""}|${node.service || ""}|${node.type || ""}`;
+  return `${node.provider || ""}|${node.type || ""}|${node.resource || ""}`;
 }
 
 /**

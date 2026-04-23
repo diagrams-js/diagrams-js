@@ -26,15 +26,15 @@ function createNode(
   id: string,
   label: string,
   provider?: string,
-  service?: string,
   type?: string,
+  resource?: string,
 ): DiagramJSON["nodes"][0] {
   return {
     id,
     label,
     provider,
-    service,
     type,
+    resource,
     attrs: {},
   };
 }
@@ -115,7 +115,7 @@ describe("computeDiff", () => {
   });
 
   describe("Node matching by fingerprint", () => {
-    it("should match nodes with same label, provider, service, and type as unchanged", () => {
+    it("should match nodes with same label, provider, type, and resource as unchanged", () => {
       const before = createDiagramJSON({
         nodes: [createNode("id1", "worker", "aws", "compute", "EC2")],
       });
