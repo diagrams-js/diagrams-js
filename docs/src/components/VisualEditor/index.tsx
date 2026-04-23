@@ -51,6 +51,71 @@ interface Resource {
   resource: string;
 }
 
+/**
+ * Convert a node from JSON (VisualEditor or diagram.toJSON()) into VisualEditor Node state.
+ * Handles both provider nodes and custom nodes (including iconify inference from URLs).
+ */
+function nodeFromDiagramJson(n: any): Node {
+  const base: Node = {
+    id: n.id,
+    label: n.label || "",
+    clusterId: n.clusterId || null,
+  };
+
+  // VisualEditor JSON: explicit custom flag
+  if (n.custom) {
+    return {
+      ...base,
+      custom: true,
+      iconMode: n.iconMode === "iconify" ? "iconify" : "url",
+      iconUrl: n.iconUrl || "",
+      iconName: n.iconName || "",
+    };
+  }
+
+  // VisualEditor JSON: provider node (type = category, resource = resource name)
+  if (n.provider && n.type && n.resource !== undefined) {
+    return {
+      ...base,
+      provider: n.provider,
+      type: n.type,
+      resource: n.resource,
+    };
+  }
+
+  // Diagram JSON: provider node (service = category, type = resource name)
+  if (n.provider && (n.service || n.type)) {
+    return {
+      ...base,
+      provider: n.provider,
+      type: n.service || n.type,
+      resource: n.type,
+    };
+  }
+
+  // Diagram JSON: custom node (iconUrl survives toJSON(), but custom/iconMode/iconName do not)
+  if (n.iconUrl) {
+    const isIconify = n.iconUrl.includes("api.iconify.design");
+    let iconName = n.iconName || "";
+    if (isIconify && !iconName) {
+      const match = n.iconUrl.match(/api\.iconify\.design\/([^/]+)\/(.+)\.svg$/);
+      if (match) {
+        iconName = `${decodeURIComponent(match[1])}:${decodeURIComponent(match[2])}`;
+      }
+    }
+    return {
+      ...base,
+      custom: true,
+      iconMode: isIconify ? "iconify" : "url",
+      iconUrl: isIconify ? "" : n.iconUrl,
+      iconName,
+    };
+  }
+
+  // Fallback: plain node without provider or icon
+  return base;
+}
+
 // Default state
 const defaultState: DiagramState = {
   name: "My Architecture",
@@ -546,9 +611,18 @@ export default function VisualEditor(): React.JSX.Element {
 
           // Check if node has custom icon URL
           if (node.iconUrl) {
+            const isIconify = node.iconUrl.includes("api.iconify.design");
+            let iconName = "";
+            if (isIconify) {
+              const match = node.iconUrl.match(/api\.iconify\.design\/([^/]+)\/(.+)\.svg$/);
+              if (match) {
+                iconName = `${decodeURIComponent(match[1])}:${decodeURIComponent(match[2])}`;
+              }
+            }
             nodeData.custom = true;
-            nodeData.iconMode = "url";
-            nodeData.iconUrl = node.iconUrl;
+            nodeData.iconMode = isIconify ? "iconify" : "url";
+            nodeData.iconUrl = isIconify ? "" : node.iconUrl;
+            nodeData.iconName = iconName;
           } else if (node.provider && node.service && node.type) {
             // Provider-based icon (service nodes from Docker Compose)
             nodeData.provider = node.provider;
@@ -691,9 +765,18 @@ export default function VisualEditor(): React.JSX.Element {
 
           // Check if node has custom icon URL
           if (node.iconUrl) {
+            const isIconify = node.iconUrl.includes("api.iconify.design");
+            let iconName = "";
+            if (isIconify) {
+              const match = node.iconUrl.match(/api\.iconify\.design\/([^/]+)\/(.+)\.svg$/);
+              if (match) {
+                iconName = `${decodeURIComponent(match[1])}:${decodeURIComponent(match[2])}`;
+              }
+            }
             nodeData.custom = true;
-            nodeData.iconMode = "url";
-            nodeData.iconUrl = node.iconUrl;
+            nodeData.iconMode = isIconify ? "iconify" : "url";
+            nodeData.iconUrl = isIconify ? "" : node.iconUrl;
+            nodeData.iconName = iconName;
           } else if (node.provider && node.service && node.type) {
             // Provider-based icon (Kubernetes nodes)
             nodeData.provider = node.provider;
@@ -772,27 +855,7 @@ export default function VisualEditor(): React.JSX.Element {
         // Extract the imported diagram as JSON
         const data = diagram.toJSON();
 
-        const nodes = (Array.isArray(data.nodes) ? data.nodes : []).map((n: any) => {
-          if (n.custom) {
-            return {
-              id: n.id,
-              label: n.label,
-              custom: true,
-              iconMode: n.iconMode === "iconify" ? "iconify" : "url",
-              iconUrl: n.iconUrl || "",
-              iconName: n.iconName || "",
-              clusterId: n.clusterId || null,
-            };
-          }
-          return {
-            id: n.id,
-            label: n.label,
-            provider: n.provider,
-            type: n.type || n.service,
-            resource: n.resource || n.type,
-            clusterId: n.clusterId || null,
-          };
-        });
+        const nodes = (Array.isArray(data.nodes) ? data.nodes : []).map(nodeFromDiagramJson);
 
         const clusters = Array.isArray(data.clusters)
           ? data.clusters.map((c: any) => ({ id: c.id, label: c.label }))
@@ -846,27 +909,7 @@ export default function VisualEditor(): React.JSX.Element {
         const data = JSON.parse(e.target?.result as string);
         if (typeof data !== "object" || data === null) throw new Error("Not a JSON object");
 
-        const nodes = (Array.isArray(data.nodes) ? data.nodes : []).map((n: any) => {
-          if (n.custom) {
-            return {
-              id: n.id,
-              label: n.label,
-              custom: true,
-              iconMode: n.iconMode === "iconify" ? "iconify" : "url",
-              iconUrl: n.iconUrl || "",
-              iconName: n.iconName || "",
-              clusterId: n.clusterId || null,
-            };
-          }
-          return {
-            id: n.id,
-            label: n.label,
-            provider: n.provider,
-            type: n.type || n.service,
-            resource: n.resource || n.type,
-            clusterId: n.clusterId || null,
-          };
-        });
+        const nodes = (Array.isArray(data.nodes) ? data.nodes : []).map(nodeFromDiagramJson);
 
         const clusters = Array.isArray(data.clusters)
           ? data.clusters.map((c: any) => ({ id: c.id, label: c.label }))
@@ -946,27 +989,7 @@ export default function VisualEditor(): React.JSX.Element {
           const data = JSON.parse(decompressed);
           if (typeof data !== "object" || data === null) throw new Error("Not a JSON object");
 
-          const nodes = (Array.isArray(data.nodes) ? data.nodes : []).map((n: any) => {
-            if (n.custom) {
-              return {
-                id: n.id,
-                label: n.label,
-                custom: true,
-                iconMode: n.iconMode === "iconify" ? "iconify" : "url",
-                iconUrl: n.iconUrl || "",
-                iconName: n.iconName || "",
-                clusterId: n.clusterId || null,
-              };
-            }
-            return {
-              id: n.id,
-              label: n.label,
-              provider: n.provider,
-              type: n.type || n.service,
-              resource: n.resource || n.type,
-              clusterId: n.clusterId || null,
-            };
-          });
+          const nodes = (Array.isArray(data.nodes) ? data.nodes : []).map(nodeFromDiagramJson);
 
           const clusters = Array.isArray(data.clusters)
             ? data.clusters.map((c: any) => ({ id: c.id, label: c.label }))
