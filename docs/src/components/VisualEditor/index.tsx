@@ -8,6 +8,7 @@ import styles from "./styles.module.css";
 interface Cluster {
   id: string;
   label: string;
+  clusterId?: string | null;
 }
 
 interface Node {
@@ -223,10 +224,12 @@ export default function VisualEditor(): React.JSX.Element {
   );
 
   const addCluster = useCallback(
-    (label: string) => {
-      if (!label.trim()) return;
-      const newCluster: Cluster = { id: nextId("c"), label: label.trim() };
+    (label: string, parentClusterId?: string) => {
+      if (!label.trim()) return "";
+      const id = nextId("c");
+      const newCluster: Cluster = { id, label: label.trim(), clusterId: parentClusterId || null };
       setState((prev) => ({ ...prev, clusters: [...prev.clusters, newCluster] }));
+      return id;
     },
     [nextId],
   );
@@ -250,7 +253,9 @@ export default function VisualEditor(): React.JSX.Element {
   const deleteCluster = useCallback((id: string) => {
     setState((prev) => ({
       ...prev,
-      clusters: prev.clusters.filter((c) => c.id !== id),
+      clusters: prev.clusters
+        .filter((c) => c.id !== id)
+        .map((c) => (c.clusterId === id ? { ...c, clusterId: null } : c)),
       nodes: prev.nodes.map((n) => (n.clusterId === id ? { ...n, clusterId: null } : n)),
     }));
   }, []);
@@ -387,11 +392,21 @@ export default function VisualEditor(): React.JSX.Element {
       });
 
       const clusterMap = new Map<string, any>();
-      for (const c of state.clusters) {
-        const cluster = diagram.cluster(c.label);
-        cluster.clusterAttrs.data_state_id = c.id;
-        cluster.clusterAttrs.id = `cluster_${c.id}`;
-        clusterMap.set(c.id, cluster);
+      const remaining = new Set<Cluster>(state.clusters);
+      while (remaining.size > 0) {
+        let created = 0;
+        for (const c of remaining) {
+          const parentId = c.clusterId;
+          if (parentId && !clusterMap.has(parentId)) continue;
+          const parent = parentId ? clusterMap.get(parentId) : diagram;
+          const cluster = parent.cluster(c.label);
+          cluster.clusterAttrs.data_state_id = c.id;
+          cluster.clusterAttrs.id = `cluster_${c.id}`;
+          clusterMap.set(c.id, cluster);
+          remaining.delete(c);
+          created++;
+        }
+        if (created === 0) break; // Avoid infinite loop on cycles
       }
 
       const nodeMap = new Map<string, any>();
@@ -576,6 +591,7 @@ export default function VisualEditor(): React.JSX.Element {
             importedState.clusters.push({
               id: clusterId,
               label: cluster.label || "Cluster",
+              clusterId: null,
             });
 
             // Assign cluster to nodes that belong to it
@@ -727,6 +743,7 @@ export default function VisualEditor(): React.JSX.Element {
             importedState.clusters.push({
               id: clusterId,
               label: cluster.label || "Cluster",
+              clusterId: null,
             });
 
             // Assign cluster to nodes that belong to it
@@ -847,7 +864,11 @@ export default function VisualEditor(): React.JSX.Element {
         const nodes = (Array.isArray(data.nodes) ? data.nodes : []).map(nodeFromDiagramJson);
 
         const clusters = Array.isArray(data.clusters)
-          ? data.clusters.map((c: any) => ({ id: c.id, label: c.label }))
+          ? data.clusters.map((c: any) => ({
+              id: c.id,
+              label: c.label,
+              clusterId: c.clusterId || null,
+            }))
           : [];
 
         const edges = Array.isArray(data.edges)
@@ -901,7 +922,11 @@ export default function VisualEditor(): React.JSX.Element {
         const nodes = (Array.isArray(data.nodes) ? data.nodes : []).map(nodeFromDiagramJson);
 
         const clusters = Array.isArray(data.clusters)
-          ? data.clusters.map((c: any) => ({ id: c.id, label: c.label }))
+          ? data.clusters.map((c: any) => ({
+              id: c.id,
+              label: c.label,
+              clusterId: c.clusterId || null,
+            }))
           : [];
 
         const edges = Array.isArray(data.edges)
@@ -981,7 +1006,11 @@ export default function VisualEditor(): React.JSX.Element {
           const nodes = (Array.isArray(data.nodes) ? data.nodes : []).map(nodeFromDiagramJson);
 
           const clusters = Array.isArray(data.clusters)
-            ? data.clusters.map((c: any) => ({ id: c.id, label: c.label }))
+            ? data.clusters.map((c: any) => ({
+                id: c.id,
+                label: c.label,
+                clusterId: c.clusterId || null,
+              }))
             : [];
 
           const edges = Array.isArray(data.edges)
@@ -1151,6 +1180,7 @@ export default function VisualEditor(): React.JSX.Element {
             onDeleteNode={deleteNode}
             onDeleteCluster={deleteCluster}
             onDeleteEdge={deleteEdge}
+            onAddCluster={addCluster}
             onClose={() => setEditingItem(null)}
           />
         )}
@@ -1170,16 +1200,16 @@ function BuildPanel({
   state: DiagramState;
   allResources: Resource[];
   onAddNode: (node: Omit<Node, "id">) => void;
-  onAddCluster: (label: string) => void;
+  onAddCluster: (label: string, parentClusterId?: string) => string;
   onAddEdge: (edge: Omit<Edge, "id">) => void;
 }) {
   const [nodeLabel, setNodeLabel] = useState("");
-  const [useCustom, setUseCustom] = useState(false);
+  const [activeTab, setActiveTab] = useState<"select" | "search" | "custom">("select");
   const [iconMode, setIconMode] = useState<"url" | "iconify">("url");
   const [iconUrl, setIconUrl] = useState("");
   const [iconName, setIconName] = useState("");
   const [clusterId, setClusterId] = useState("");
-  const [clusterLabel, setClusterLabel] = useState("");
+  const [newClusterLabel, setNewClusterLabel] = useState("");
   const [selectedProvider, setSelectedProvider] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [selectedResource, setSelectedResource] = useState("");
@@ -1202,7 +1232,6 @@ function BuildPanel({
 
   // Validation states
   const [nodeLabelError, setNodeLabelError] = useState(false);
-  const [clusterLabelError, setClusterLabelError] = useState(false);
   const [iconUrlError, setIconUrlError] = useState(false);
   const [iconNameError, setIconNameError] = useState(false);
 
@@ -1215,9 +1244,7 @@ function BuildPanel({
   const [edgeLabel, setEdgeLabel] = useState("");
 
   // Accordion state - only one section open at a time (null = all closed), node section open by default
-  const [openBuildSection, setOpenBuildSection] = useState<"node" | "cluster" | "edge" | null>(
-    "node",
-  );
+  const [openBuildSection, setOpenBuildSection] = useState<"node" | "edge" | null>("node");
 
   // Get unique providers
   const providers = Array.from(new Set(allResources.map((r) => r.provider))).sort();
@@ -1266,7 +1293,7 @@ function BuildPanel({
     }
 
     // Validate custom icon fields
-    if (useCustom) {
+    if (activeTab === "custom") {
       if (iconMode === "url") {
         if (!iconUrl.trim()) {
           setIconUrlError(true);
@@ -1297,14 +1324,29 @@ function BuildPanel({
     setIconUrlError(false);
     setIconNameError(false);
 
-    if (useCustom) {
+    let finalClusterId = clusterId || null;
+    if (clusterId === "__new__") {
+      if (!newClusterLabel.trim()) {
+        alert("Please enter a name for the new cluster.");
+        return;
+      }
+      const newId = onAddCluster(newClusterLabel.trim());
+      if (!newId) {
+        alert("Failed to create cluster.");
+        return;
+      }
+      finalClusterId = newId;
+      setNewClusterLabel("");
+    }
+
+    if (activeTab === "custom") {
       onAddNode({
         label: nodeLabel.trim(),
         custom: true,
         iconMode,
         iconUrl: iconMode === "url" ? iconUrl : "",
         iconName: iconMode === "iconify" ? iconName : "",
-        clusterId: clusterId || null,
+        clusterId: finalClusterId,
       });
       setIconUrl("");
       setIconName("");
@@ -1314,7 +1356,7 @@ function BuildPanel({
         provider: selectedProvider,
         type: selectedType,
         resource: selectedResource,
-        clusterId: clusterId || null,
+        clusterId: finalClusterId,
       });
     }
     setNodeLabel("");
@@ -1382,17 +1424,53 @@ function BuildPanel({
 
       {openBuildSection === "node" && (
         <>
-          <label className={styles.toggleRow}>
+          <div className={`${styles.field} ${nodeLabelError ? styles.fieldError : ""}`}>
+            <label>
+              Label
+              {nodeLabelError && <span className={styles.requiredError}> (required)</span>}
+            </label>
             <input
-              type="checkbox"
-              checked={useCustom}
-              onChange={(e) => setUseCustom(e.target.checked)}
+              type="text"
+              placeholder="e.g. Web Server"
+              value={nodeLabel}
+              onChange={(e) => {
+                setNodeLabel(e.target.value);
+                if (e.target.value.trim()) setNodeLabelError(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleAddNode();
+                }
+              }}
+              className={nodeLabelError ? styles.inputError : ""}
             />
-            <span>Use custom icon (URL or Iconify)</span>
-          </label>
+          </div>
 
-          {!useCustom ? (
-            <>
+          {/* Tabs */}
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tab} ${activeTab === "select" ? styles.tabActive : ""}`}
+              onClick={() => setActiveTab("select")}
+            >
+              Select
+            </button>
+            <button
+              className={`${styles.tab} ${activeTab === "search" ? styles.tabActive : ""}`}
+              onClick={() => setActiveTab("search")}
+            >
+              Search
+            </button>
+            <button
+              className={`${styles.tab} ${activeTab === "custom" ? styles.tabActive : ""}`}
+              onClick={() => setActiveTab("custom")}
+            >
+              Custom
+            </button>
+          </div>
+
+          <div className={styles.tabContent}>
+            {activeTab === "select" && (
               <div className={styles.row3}>
                 <div className={styles.field}>
                   <label>Provider</label>
@@ -1446,9 +1524,10 @@ function BuildPanel({
                   </select>
                 </div>
               </div>
+            )}
 
+            {activeTab === "search" && (
               <div className={styles.field}>
-                <label>Or search</label>
                 <input
                   type="text"
                   placeholder="e.g. ec2, redis, lambda..."
@@ -1467,6 +1546,7 @@ function BuildPanel({
                           setSelectedResource(r.resource);
                           setSearchQuery("");
                           setSearchResults([]);
+                          setActiveTab("select");
                         }}
                       >
                         <div className={styles.resourceName}>{r.resource}</div>
@@ -1478,88 +1558,67 @@ function BuildPanel({
                   </div>
                 )}
               </div>
-            </>
-          ) : (
-            <>
-              <div className={styles.radioRow}>
-                <label>
-                  <input
-                    type="radio"
-                    value="url"
-                    checked={iconMode === "url"}
-                    onChange={() => setIconMode("url")}
-                  />
-                  URL
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    value="iconify"
-                    checked={iconMode === "iconify"}
-                    onChange={() => setIconMode("iconify")}
-                  />
-                  Iconify
-                </label>
-              </div>
-              {iconMode === "url" ? (
-                <div className={`${styles.field} ${iconUrlError ? styles.fieldError : ""}`}>
-                  <label>
-                    Image URL
-                    {iconUrlError && <span className={styles.requiredError}> (required)</span>}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="https://example.com/icon.svg"
-                    value={iconUrl}
-                    onChange={(e) => {
-                      setIconUrl(e.target.value);
-                      if (e.target.value.trim()) setIconUrlError(false);
-                    }}
-                    className={iconUrlError ? styles.inputError : ""}
-                  />
-                </div>
-              ) : (
-                <div className={`${styles.field} ${iconNameError ? styles.fieldError : ""}`}>
-                  <label>
-                    Iconify name (e.g. mdi:kubernetes)
-                    {iconNameError && <span className={styles.requiredError}> (required)</span>}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="prefix:name"
-                    value={iconName}
-                    onChange={(e) => {
-                      setIconName(e.target.value);
-                      if (e.target.value.includes(":")) setIconNameError(false);
-                    }}
-                    className={iconNameError ? styles.inputError : ""}
-                  />
-                </div>
-              )}
-            </>
-          )}
+            )}
 
-          <div className={`${styles.field} ${nodeLabelError ? styles.fieldError : ""}`}>
-            <label>
-              Label
-              {nodeLabelError && <span className={styles.requiredError}> (required)</span>}
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. Web Server"
-              value={nodeLabel}
-              onChange={(e) => {
-                setNodeLabel(e.target.value);
-                if (e.target.value.trim()) setNodeLabelError(false);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleAddNode();
-                }
-              }}
-              className={nodeLabelError ? styles.inputError : ""}
-            />
+            {activeTab === "custom" && (
+              <>
+                <div className={styles.radioRow}>
+                  <label>
+                    <input
+                      type="radio"
+                      value="url"
+                      checked={iconMode === "url"}
+                      onChange={() => setIconMode("url")}
+                    />
+                    URL
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      value="iconify"
+                      checked={iconMode === "iconify"}
+                      onChange={() => setIconMode("iconify")}
+                    />
+                    Iconify
+                  </label>
+                </div>
+                {iconMode === "url" ? (
+                  <div className={`${styles.field} ${iconUrlError ? styles.fieldError : ""}`}>
+                    <label>
+                      Image URL
+                      {iconUrlError && <span className={styles.requiredError}> (required)</span>}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="https://example.com/icon.svg"
+                      value={iconUrl}
+                      onChange={(e) => {
+                        setIconUrl(e.target.value);
+                        if (e.target.value.trim()) setIconUrlError(false);
+                      }}
+                      className={iconUrlError ? styles.inputError : ""}
+                    />
+                  </div>
+                ) : (
+                  <div className={`${styles.field} ${iconNameError ? styles.fieldError : ""}`}>
+                    <label>
+                      Iconify name (e.g. mdi:kubernetes)
+                      {iconNameError && <span className={styles.requiredError}> (required)</span>}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="prefix:name"
+                      value={iconName}
+                      onChange={(e) => {
+                        setIconName(e.target.value);
+                        if (e.target.value.includes(":")) setIconNameError(false);
+                      }}
+                      className={iconNameError ? styles.inputError : ""}
+                    />
+                  </div>
+                )}
+              </>
+            )}
           </div>
 
           <div className={styles.field}>
@@ -1571,85 +1630,22 @@ function BuildPanel({
                   {c.label}
                 </option>
               ))}
+              <option value="__new__">— Create new cluster —</option>
             </select>
+            {clusterId === "__new__" && (
+              <input
+                type="text"
+                placeholder="New cluster name"
+                value={newClusterLabel}
+                onChange={(e) => setNewClusterLabel(e.target.value)}
+                style={{ marginTop: "0.5rem" }}
+                autoFocus
+              />
+            )}
           </div>
 
           <button className={styles.btnAdd} onClick={handleAddNode}>
             Add Node
-          </button>
-        </>
-      )}
-
-      {/* Add Cluster Section */}
-      <h3
-        className={styles.panelTitle}
-        style={{
-          marginTop: "1.5rem",
-          cursor: "pointer",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-        onClick={() => setOpenBuildSection(openBuildSection === "cluster" ? null : "cluster")}
-      >
-        <span>Add Cluster</span>
-        <span style={{ fontSize: "0.75rem", color: "var(--ve-text-secondary)" }}>
-          <span
-            style={{
-              fontSize: "0.75rem",
-              color: "var(--ve-text-secondary)",
-              transform: openBuildSection === "cluster" ? "rotate(0deg)" : "rotate(-90deg)",
-              transition: "transform 0.2s ease",
-              display: "inline-block",
-            }}
-          >
-            ▼
-          </span>
-        </span>
-      </h3>
-      {openBuildSection === "cluster" && (
-        <>
-          <div className={`${styles.field} ${clusterLabelError ? styles.fieldError : ""}`}>
-            <label>
-              Label
-              {clusterLabelError && <span className={styles.requiredError}> (required)</span>}
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. VPC"
-              value={clusterLabel}
-              onChange={(e) => {
-                setClusterLabel(e.target.value);
-                if (e.target.value.trim()) setClusterLabelError(false);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  if (!clusterLabel.trim()) {
-                    setClusterLabelError(true);
-                    return;
-                  }
-                  setClusterLabelError(false);
-                  onAddCluster(clusterLabel);
-                  setClusterLabel("");
-                }
-              }}
-              className={clusterLabelError ? styles.inputError : ""}
-            />
-          </div>
-          <button
-            className={styles.btnAdd}
-            onClick={() => {
-              if (!clusterLabel.trim()) {
-                setClusterLabelError(true);
-                return;
-              }
-              setClusterLabelError(false);
-              onAddCluster(clusterLabel);
-              setClusterLabel("");
-            }}
-          >
-            Add Cluster
           </button>
         </>
       )}
@@ -1973,7 +1969,9 @@ function Canvas({
       {!isLibraryLoaded && (
         <div className={styles.canvasLoading}>Loading diagrams-js library...</div>
       )}
-      {isLibraryLoaded && isLoading && <div className={styles.canvasLoading}>Rendering...</div>}
+      {isLibraryLoaded && isLoading && !svgContent && (
+        <div className={styles.canvasLoading}>Rendering...</div>
+      )}
       {error && (
         <div className={styles.canvasError}>
           <strong>Render error:</strong>
@@ -1988,11 +1986,16 @@ function Canvas({
         </div>
       )}
       {svgContent && (
-        <div
-          ref={containerRef}
-          className={styles.canvasInner}
-          dangerouslySetInnerHTML={{ __html: svgContent }}
-        />
+        <div style={{ position: "relative" }}>
+          {isLibraryLoaded && isLoading && (
+            <div className={styles.canvasLoadingOverlay}>Rendering...</div>
+          )}
+          <div
+            ref={containerRef}
+            className={styles.canvasInner}
+            dangerouslySetInnerHTML={{ __html: svgContent }}
+          />
+        </div>
       )}
     </div>
   );
@@ -2145,6 +2148,8 @@ function ItemsList({
         ) : (
           state.clusters.map((c) => {
             const kids = state.nodes.filter((n) => n.clusterId === c.id).length;
+            const nested = state.clusters.filter((child) => child.clusterId === c.id).length;
+            const parent = c.clusterId ? state.clusters.find((p) => p.id === c.clusterId) : null;
             const isSelected = selected?.type === "cluster" && selected.id === c.id;
             return (
               <div
@@ -2154,7 +2159,11 @@ function ItemsList({
               >
                 <div className={styles.listItemInfo}>
                   <strong>{c.label}</strong>
-                  <div className={styles.listItemMeta}>{kids} node(s)</div>
+                  <div className={styles.listItemMeta}>
+                    {kids} node(s)
+                    {nested > 0 ? ` · ${nested} nested` : ""}
+                    {parent ? ` · inside ${parent.label}` : ""}
+                  </div>
                 </div>
                 <div className={styles.listActions}>
                   <button
@@ -2278,6 +2287,7 @@ function EditModal({
   onDeleteNode,
   onDeleteCluster,
   onDeleteEdge,
+  onAddCluster,
   onClose,
 }: {
   item: Selection;
@@ -2289,6 +2299,7 @@ function EditModal({
   onDeleteNode: (id: string) => void;
   onDeleteCluster: (id: string) => void;
   onDeleteEdge: (id: string) => void;
+  onAddCluster: (label: string, parentClusterId?: string) => string;
   onClose: () => void;
 }) {
   if (!item) return null;
@@ -2299,11 +2310,14 @@ function EditModal({
 
   // Node edit state
   const [nodeLabel, setNodeLabel] = useState(node?.label || "");
-  const [useCustom, setUseCustom] = useState(node?.custom || false);
+  const [nodeEditTab, setNodeEditTab] = useState<"select" | "search" | "custom">(
+    node?.custom ? "custom" : "select",
+  );
   const [iconMode, setIconMode] = useState<"url" | "iconify">(node?.iconMode || "url");
   const [iconUrl, setIconUrl] = useState(node?.iconUrl || "");
   const [iconName, setIconName] = useState(node?.iconName || "");
   const [clusterId, setClusterId] = useState(node?.clusterId || "");
+  const [newClusterLabel, setNewClusterLabel] = useState("");
   const [selectedProvider, setSelectedProvider] = useState(node?.provider || "");
   const [selectedType, setSelectedType] = useState(node?.type || "");
   const [selectedResource, setSelectedResource] = useState(node?.resource || "");
@@ -2312,6 +2326,8 @@ function EditModal({
 
   // Cluster edit state
   const [clusterLabel, setClusterLabel] = useState(cluster?.label || "");
+  const [clusterParentId, setClusterParentId] = useState(cluster?.clusterId || "");
+  const [newParentClusterLabel, setNewParentClusterLabel] = useState("");
 
   // Edge edit state
   const [edgeFrom, setEdgeFrom] = useState(edge?.from || "");
@@ -2360,7 +2376,22 @@ function EditModal({
         alert("Label is required");
         return;
       }
-      if (useCustom) {
+
+      let finalClusterId = clusterId || null;
+      if (clusterId === "__new__") {
+        if (!newClusterLabel.trim()) {
+          alert("Please enter a name for the new cluster.");
+          return;
+        }
+        const newId = onAddCluster(newClusterLabel.trim());
+        if (!newId) {
+          alert("Failed to create cluster.");
+          return;
+        }
+        finalClusterId = newId;
+      }
+
+      if (nodeEditTab === "custom") {
         if (iconMode === "url" && !iconUrl.trim()) {
           alert("Please provide an image URL.");
           return;
@@ -2375,7 +2406,7 @@ function EditModal({
           iconMode,
           iconUrl: iconMode === "url" ? iconUrl : "",
           iconName: iconMode === "iconify" ? iconName : "",
-          clusterId: clusterId || null,
+          clusterId: finalClusterId,
           provider: undefined,
           type: undefined,
           resource: undefined,
@@ -2390,7 +2421,7 @@ function EditModal({
           provider: selectedProvider,
           type: selectedType,
           resource: selectedResource,
-          clusterId: clusterId || null,
+          clusterId: finalClusterId,
           custom: undefined,
           iconMode: undefined,
           iconUrl: undefined,
@@ -2402,7 +2433,30 @@ function EditModal({
         alert("Label is required");
         return;
       }
-      onUpdateCluster(item.id, { label: clusterLabel.trim() });
+      if (clusterParentId && clusterParentId === item.id) {
+        alert("A cluster cannot be nested inside itself.");
+        return;
+      }
+
+      let finalParentId = clusterParentId || null;
+      if (clusterParentId === "__new__") {
+        if (!newParentClusterLabel.trim()) {
+          alert("Please enter a name for the new parent cluster.");
+          return;
+        }
+        const newId = onAddCluster(newParentClusterLabel.trim());
+        if (!newId) {
+          alert("Failed to create cluster.");
+          return;
+        }
+        finalParentId = newId;
+        setNewParentClusterLabel("");
+      }
+
+      onUpdateCluster(item.id, {
+        label: clusterLabel.trim(),
+        clusterId: finalParentId,
+      });
     } else if (item.type === "edge" && edge) {
       if (edgeFrom === edgeTo) {
         alert("Source and target must differ.");
@@ -2448,7 +2502,7 @@ function EditModal({
         <div className={styles.modalBody}>
           {item.type === "node" && node && (
             <>
-              <div className={styles.field}>
+              <div className={styles.field} style={{ marginBottom: "0.5rem" }}>
                 <label>Label</label>
                 <input
                   type="text"
@@ -2458,17 +2512,30 @@ function EditModal({
                 />
               </div>
 
-              <label className={styles.toggleRow}>
-                <input
-                  type="checkbox"
-                  checked={useCustom}
-                  onChange={(e) => setUseCustom(e.target.checked)}
-                />
-                <span>Use custom icon (URL or Iconify)</span>
-              </label>
+              {/* Tabs */}
+              <div className={styles.tabs}>
+                <button
+                  className={`${styles.tab} ${nodeEditTab === "select" ? styles.tabActive : ""}`}
+                  onClick={() => setNodeEditTab("select")}
+                >
+                  Select
+                </button>
+                <button
+                  className={`${styles.tab} ${nodeEditTab === "search" ? styles.tabActive : ""}`}
+                  onClick={() => setNodeEditTab("search")}
+                >
+                  Search
+                </button>
+                <button
+                  className={`${styles.tab} ${nodeEditTab === "custom" ? styles.tabActive : ""}`}
+                  onClick={() => setNodeEditTab("custom")}
+                >
+                  Custom
+                </button>
+              </div>
 
-              {!useCustom ? (
-                <>
+              <div className={styles.tabContent}>
+                {nodeEditTab === "select" && (
                   <div className={styles.row3}>
                     <div className={styles.field}>
                       <label>Provider</label>
@@ -2522,9 +2589,10 @@ function EditModal({
                       </select>
                     </div>
                   </div>
+                )}
 
+                {nodeEditTab === "search" && (
                   <div className={styles.field}>
-                    <label>Or search</label>
                     <input
                       type="text"
                       placeholder="e.g. ec2, redis, lambda..."
@@ -2543,6 +2611,7 @@ function EditModal({
                               setSelectedResource(r.resource);
                               setSearchQuery("");
                               setSearchResults([]);
+                              setNodeEditTab("select");
                             }}
                           >
                             <div className={styles.resourceName}>{r.resource}</div>
@@ -2554,52 +2623,54 @@ function EditModal({
                       </div>
                     )}
                   </div>
-                </>
-              ) : (
-                <>
-                  <div className={styles.radioRow}>
-                    <label>
-                      <input
-                        type="radio"
-                        value="url"
-                        checked={iconMode === "url"}
-                        onChange={() => setIconMode("url")}
-                      />{" "}
-                      URL
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        value="iconify"
-                        checked={iconMode === "iconify"}
-                        onChange={() => setIconMode("iconify")}
-                      />{" "}
-                      Iconify
-                    </label>
-                  </div>
-                  {iconMode === "url" ? (
-                    <div className={styles.field}>
-                      <label>Image URL</label>
-                      <input
-                        type="text"
-                        placeholder="https://example.com/icon.svg"
-                        value={iconUrl}
-                        onChange={(e) => setIconUrl(e.target.value)}
-                      />
+                )}
+
+                {nodeEditTab === "custom" && (
+                  <>
+                    <div className={styles.radioRow}>
+                      <label>
+                        <input
+                          type="radio"
+                          value="url"
+                          checked={iconMode === "url"}
+                          onChange={() => setIconMode("url")}
+                        />{" "}
+                        URL
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          value="iconify"
+                          checked={iconMode === "iconify"}
+                          onChange={() => setIconMode("iconify")}
+                        />{" "}
+                        Iconify
+                      </label>
                     </div>
-                  ) : (
-                    <div className={styles.field}>
-                      <label>Iconify name (e.g. mdi:kubernetes)</label>
-                      <input
-                        type="text"
-                        placeholder="prefix:name"
-                        value={iconName}
-                        onChange={(e) => setIconName(e.target.value)}
-                      />
-                    </div>
-                  )}
-                </>
-              )}
+                    {iconMode === "url" ? (
+                      <div className={styles.field}>
+                        <label>Image URL</label>
+                        <input
+                          type="text"
+                          placeholder="https://example.com/icon.svg"
+                          value={iconUrl}
+                          onChange={(e) => setIconUrl(e.target.value)}
+                        />
+                      </div>
+                    ) : (
+                      <div className={styles.field}>
+                        <label>Iconify name (e.g. mdi:kubernetes)</label>
+                        <input
+                          type="text"
+                          placeholder="prefix:name"
+                          value={iconName}
+                          onChange={(e) => setIconName(e.target.value)}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
 
               <div className={styles.field}>
                 <label>Cluster</label>
@@ -2610,7 +2681,18 @@ function EditModal({
                       {c.label}
                     </option>
                   ))}
+                  <option value="__new__">— Create new cluster —</option>
                 </select>
+                {clusterId === "__new__" && (
+                  <input
+                    type="text"
+                    placeholder="New cluster name"
+                    value={newClusterLabel}
+                    onChange={(e) => setNewClusterLabel(e.target.value)}
+                    style={{ marginTop: "0.5rem" }}
+                    autoFocus
+                  />
+                )}
               </div>
             </>
           )}
@@ -2627,8 +2709,37 @@ function EditModal({
                 />
               </div>
               <div className={styles.field}>
+                <label>Parent Cluster</label>
+                <select
+                  value={clusterParentId}
+                  onChange={(e) => setClusterParentId(e.target.value)}
+                >
+                  <option value="">— None —</option>
+                  {state.clusters
+                    .filter((c) => c.id !== item.id)
+                    .map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.label}
+                      </option>
+                    ))}
+                  <option value="__new__">— Create new cluster —</option>
+                </select>
+                {clusterParentId === "__new__" && (
+                  <input
+                    type="text"
+                    placeholder="New cluster name"
+                    value={newParentClusterLabel}
+                    onChange={(e) => setNewParentClusterLabel(e.target.value)}
+                    style={{ marginTop: "0.5rem" }}
+                    autoFocus
+                  />
+                )}
+              </div>
+              <div className={styles.field}>
                 <label style={{ color: "var(--ve-text-secondary)" }}>
                   Contains {state.nodes.filter((n) => n.clusterId === cluster.id).length} node(s)
+                  {state.clusters.filter((c) => c.clusterId === cluster.id).length > 0 &&
+                    ` · ${state.clusters.filter((c) => c.clusterId === cluster.id).length} nested cluster(s)`}
                 </label>
               </div>
             </>
