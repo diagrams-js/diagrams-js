@@ -377,7 +377,7 @@ export default function VisualEditor(): React.JSX.Element {
     setError("");
 
     try {
-      const { Diagram, Edge, Custom } = diagramModuleRef.current;
+      const { Diagram, Edge, Custom, Node } = diagramModuleRef.current;
 
       const diagram = Diagram(state.name || "Diagram", {
         direction: state.direction,
@@ -407,9 +407,12 @@ export default function VisualEditor(): React.JSX.Element {
           const url = resolveCustomUrl(n);
           if (!url) throw new Error(`Custom node "${n.label}" has no resolvable icon URL`);
           nodeInstance = parent.add(Custom(n.label, url, nodeOptions));
-        } else {
-          const Cls = await loadNodeClass(n.provider!, n.type!, n.resource!);
+        } else if (n.provider && n.type) {
+          const Cls = await loadNodeClass(n.provider, n.type, n.resource!);
           nodeInstance = parent.add(Cls(n.label, nodeOptions));
+        } else {
+          // Plain node without provider info (e.g. fallback from imported JSON)
+          nodeInstance = parent.add(Node(n.label, nodeOptions));
         }
         nodeMap.set(n.id, nodeInstance);
       }
