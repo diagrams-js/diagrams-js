@@ -533,6 +533,69 @@ await diagram.import(composeYaml, "docker-compose");
     },
   },
   {
+    name: "Diagram Diff",
+    config: {
+      title: "Diagram Diff",
+      script: {
+        language: "javascript",
+        content: `import { Diagram, computeDiff, renderDiff } from "diagrams-js";
+import { EC2, Lambda } from "diagrams-js/aws/compute";
+import { RDS } from "diagrams-js/aws/database";
+import { ELB } from "diagrams-js/aws/network";
+import { Docker } from "diagrams-js/onprem/container";
+
+const v1 = Diagram("Grouped Workers", {
+  direction: "TB",
+});
+const lb1 = v1.add(ELB("lb"));
+const workers1 = [
+  v1.add(Docker("worker1")),
+  v1.add(Docker("worker2")),
+  v1.add(EC2("worker3")),
+  v1.add(EC2("worker4")),
+  v1.add(Lambda("worker5")),
+];
+const events1 = v1.add(RDS("events"));
+lb1.to(workers1);
+workers1.forEach(w => w.to(events1));
+const v1Json = v1.toJSON();
+
+const v2 = Diagram("Grouped Workers", {
+  direction: "TB",
+});
+const lb2 = v2.add(ELB("lb"));
+const workers2 = [
+  v2.add(Docker("worker1")),
+  v2.add(EC2("my worker3")),
+  v2.add(EC2("worker4")),
+  v2.add(Lambda("worker5")),
+];
+const events2 = v2.add(RDS("events"));
+const events2Backup = v2.add(RDS("events backup"));
+lb2.to(workers2);
+workers2.forEach(w => w.to(events2));
+events2.to(events2Backup);
+const v2Json = v2.toJSON();
+
+// Compute and render diff
+const diff = computeDiff(v1Json, v2Json);
+console.log("Changes:", diff.summary);
+
+const output = await renderDiff(diff, v1Json, v2Json, {
+  format: "html", // or "svg"
+  theme: "light", // or "dark"
+  layout: "side-by-side", // or "stacked"
+  showUnchanged: "show", // or "dim" to dim unchanged, "hide" to hide them
+  showLegend: true,
+  showSummary: true,
+});
+
+document.getElementById("diagram").innerHTML = output;
+`,
+      },
+    },
+  },
+  {
     name: "Blank Template",
     config: {
       title: "Blank Template",
@@ -549,12 +612,14 @@ const server = diagram.add(EC2("Server"));
     },
   },
 ].map((ex) => {
-  ex.config.script.content += `
-const svg = await diagram.render();
+  if (!ex.name.includes("Diff")) {
+    ex.config.script.content += `
+  const svg = await diagram.render();
 
-document.getElementById("diagram").innerHTML = svg;
+  document.getElementById("diagram").innerHTML = svg;
 
-//await diagram.save("${ex.config.title.toLowerCase().replaceAll(" ", "-")}.svg");
-`;
+  //await diagram.save("${ex.config.title.toLowerCase().replaceAll(" ", "-")}.svg");
+  `;
+  }
   return ex;
 });
