@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState, useCallback, useRef } from "react";
+import { compress, decompress } from "livecodes";
 import { useColorMode } from "@docusaurus/theme-common";
 import useIsBrowser from "@docusaurus/useIsBrowser";
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 import styles from "./styles.module.css";
 
 // State types
@@ -976,7 +976,7 @@ export default function VisualEditor(): React.JSX.Element {
 
     try {
       const json = JSON.stringify(state);
-      const compressed = compressToEncodedURIComponent(json);
+      const compressed = compress(json);
       const url = `${window.location.origin}${window.location.pathname}#${compressed}`;
 
       await navigator.clipboard.writeText(url);
@@ -998,7 +998,7 @@ export default function VisualEditor(): React.JSX.Element {
     if (hash) {
       try {
         const compressed = hash.substring(1); // Remove '#'
-        const decompressed = decompressFromEncodedURIComponent(compressed);
+        const decompressed = decompress(compressed);
         if (decompressed) {
           const data = JSON.parse(decompressed);
           if (typeof data !== "object" || data === null) throw new Error("Not a JSON object");

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import LiveCodes from "livecodes/react";
+import { compress, decompress } from "livecodes";
 import { useColorMode } from "@docusaurus/theme-common";
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 import styles from "./styles.module.css";
 import { examples } from "./examples";
 
@@ -55,7 +55,7 @@ export default function Playground(): React.JSX.Element {
     if (hash) {
       try {
         const compressed = hash.substring(1); // Remove '#'
-        const decompressed = decompressFromEncodedURIComponent(compressed);
+        const decompressed = decompress(compressed);
         if (decompressed) {
           const parsed = JSON.parse(decompressed);
           // Ensure theme matches current color mode
@@ -105,7 +105,7 @@ export default function Playground(): React.JSX.Element {
     try {
       const config = await playground.getConfig();
       const json = JSON.stringify(config);
-      const compressed = compressToEncodedURIComponent(json);
+      const compressed = compress(json);
       const url = `${window.location.origin}${window.location.pathname}#${compressed}`;
 
       await navigator.clipboard.writeText(url);
