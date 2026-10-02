@@ -12,6 +12,7 @@ import secret_managerIcon from "../../../resources/gcp/security/secret-manager.p
 import security_command_centerIcon from "../../../resources/gcp/security/security-command-center.png";
 import security_health_advisorIcon from "../../../resources/gcp/security/security-health-advisor.png";
 import security_scannerIcon from "../../../resources/gcp/security/security-scanner.png";
+import workload_identity_poolIcon from "../../../resources/gcp/security/workload-identity-pool.png";
 
 function _Security(label?: string, options?: Record<string, unknown>) {
   const node = _Gcp(label, options);
@@ -107,6 +108,13 @@ export function SecurityScanner(label?: string, options?: Record<string, unknown
   const node = _Security(label ?? "SecurityScanner", options);
   (node as unknown as Record<string, unknown>)["~resource"] = "SecurityScanner";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = security_scannerIcon;
+  return node;
+}
+
+export function WorkloadIdentityPool(label?: string, options?: Record<string, unknown>) {
+  const node = _Security(label ?? "WorkloadIdentityPool", options);
+  (node as unknown as Record<string, unknown>)["~resource"] = "WorkloadIdentityPool";
+  (node as unknown as Record<string, unknown>)["~iconDataUrl"] = workload_identity_poolIcon;
   return node;
 }
 
