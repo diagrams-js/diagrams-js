@@ -13,6 +13,7 @@ import fsx_for_windows_file_serverIcon from "../../../resources/aws/storage/fsx-
 import fsxIcon from "../../../resources/aws/storage/fsx.png";
 import multiple_volumes_resourceIcon from "../../../resources/aws/storage/multiple-volumes-resource.png";
 import s3_access_pointsIcon from "../../../resources/aws/storage/s3-access-points.png";
+import s3_filesIcon from "../../../resources/aws/storage/s3-files.png";
 import s3_glacier_archiveIcon from "../../../resources/aws/storage/s3-glacier-archive.png";
 import s3_glacier_vaultIcon from "../../../resources/aws/storage/s3-glacier-vault.png";
 import s3_glacierIcon from "../../../resources/aws/storage/s3-glacier.png";
@@ -135,6 +136,13 @@ export function S3AccessPoints(label?: string, options?: Record<string, unknown>
   const node = _Storage(label ?? "S3AccessPoints", options);
   (node as unknown as Record<string, unknown>)["~resource"] = "S3AccessPoints";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = s3_access_pointsIcon;
+  return node;
+}
+
+export function S3Files(label?: string, options?: Record<string, unknown>) {
+  const node = _Storage(label ?? "S3Files", options);
+  (node as unknown as Record<string, unknown>)["~resource"] = "S3Files";
+  (node as unknown as Record<string, unknown>)["~iconDataUrl"] = s3_filesIcon;
   return node;
 }
 
