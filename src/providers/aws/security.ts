@@ -37,7 +37,14 @@ import shield_advancedIcon from "../../../resources/aws/security/shield-advanced
 import shieldIcon from "../../../resources/aws/security/shield.png";
 import simple_adIcon from "../../../resources/aws/security/simple-ad.png";
 import single_sign_onIcon from "../../../resources/aws/security/single-sign-on.png";
+import verified_permissionsIcon from "../../../resources/aws/security/verified-permissions.png";
+import waf_bad_botIcon from "../../../resources/aws/security/waf-bad-bot.png";
+import waf_bot_controlIcon from "../../../resources/aws/security/waf-bot-control.png";
+import waf_botIcon from "../../../resources/aws/security/waf-bot.png";
 import waf_filtering_ruleIcon from "../../../resources/aws/security/waf-filtering-rule.png";
+import waf_labelsIcon from "../../../resources/aws/security/waf-labels.png";
+import waf_managed_ruleIcon from "../../../resources/aws/security/waf-managed-rule.png";
+import waf_ruleIcon from "../../../resources/aws/security/waf-rule.png";
 import wafIcon from "../../../resources/aws/security/waf.png";
 
 function _Security(label?: string, options?: Record<string, unknown>) {
@@ -373,10 +380,59 @@ export function SingleSignOn(label?: string, options?: Record<string, unknown>) 
   return node;
 }
 
+export function VerifiedPermissions(label?: string, options?: Record<string, unknown>) {
+  const node = _Security(label ?? "VerifiedPermissions", options);
+  (node as unknown as Record<string, unknown>)["~resource"] = "VerifiedPermissions";
+  (node as unknown as Record<string, unknown>)["~iconDataUrl"] = verified_permissionsIcon;
+  return node;
+}
+
+export function WAFBadBot(label?: string, options?: Record<string, unknown>) {
+  const node = _Security(label ?? "WAFBadBot", options);
+  (node as unknown as Record<string, unknown>)["~resource"] = "WAFBadBot";
+  (node as unknown as Record<string, unknown>)["~iconDataUrl"] = waf_bad_botIcon;
+  return node;
+}
+
+export function WAFBotControl(label?: string, options?: Record<string, unknown>) {
+  const node = _Security(label ?? "WAFBotControl", options);
+  (node as unknown as Record<string, unknown>)["~resource"] = "WAFBotControl";
+  (node as unknown as Record<string, unknown>)["~iconDataUrl"] = waf_bot_controlIcon;
+  return node;
+}
+
+export function WAFBot(label?: string, options?: Record<string, unknown>) {
+  const node = _Security(label ?? "WAFBot", options);
+  (node as unknown as Record<string, unknown>)["~resource"] = "WAFBot";
+  (node as unknown as Record<string, unknown>)["~iconDataUrl"] = waf_botIcon;
+  return node;
+}
+
 export function WAFFilteringRule(label?: string, options?: Record<string, unknown>) {
   const node = _Security(label ?? "WAFFilteringRule", options);
   (node as unknown as Record<string, unknown>)["~resource"] = "WAFFilteringRule";
   (node as unknown as Record<string, unknown>)["~iconDataUrl"] = waf_filtering_ruleIcon;
+  return node;
+}
+
+export function WAFLabels(label?: string, options?: Record<string, unknown>) {
+  const node = _Security(label ?? "WAFLabels", options);
+  (node as unknown as Record<string, unknown>)["~resource"] = "WAFLabels";
+  (node as unknown as Record<string, unknown>)["~iconDataUrl"] = waf_labelsIcon;
+  return node;
+}
+
+export function WAFManagedRule(label?: string, options?: Record<string, unknown>) {
+  const node = _Security(label ?? "WAFManagedRule", options);
+  (node as unknown as Record<string, unknown>)["~resource"] = "WAFManagedRule";
+  (node as unknown as Record<string, unknown>)["~iconDataUrl"] = waf_managed_ruleIcon;
+  return node;
+}
+
+export function WAFRule(label?: string, options?: Record<string, unknown>) {
+  const node = _Security(label ?? "WAFRule", options);
+  (node as unknown as Record<string, unknown>)["~resource"] = "WAFRule";
+  (node as unknown as Record<string, unknown>)["~iconDataUrl"] = waf_ruleIcon;
   return node;
 }
 
